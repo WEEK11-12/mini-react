@@ -8,7 +8,7 @@ UI 데이터와 화면을 일치시키는 방법, 변경되지 않은 DOM을 유
 
 ## 요구사항 명세서 작성 방법
 
-**[요구사항 명세서의 구조와 작성 예시](docs/core-time/README.md)**
+**[요구사항 명세서의 구조와 작성 예시](docs/guides/requirements-specification.md)**
 
 보고서형 요구사항 명세서의 목차·항목 양식, 유스케이스·인수 조건·경계 상황 작성 방법과 변경 관리 기준을 정리했습니다. 이 자료는 작성 가이드이며 완성된 프로젝트 명세서는 아닙니다.
 
@@ -64,8 +64,8 @@ mini-react/
 └── docs/
     ├── requirements.md
     ├── design.md
-    └── core-time/
-        └── README.md
+    └── guides/
+        └── requirements-specification.md
 ~~~
 
 ## 협업과 기여
