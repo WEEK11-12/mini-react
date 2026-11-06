@@ -1,4 +1,4 @@
-title: "Daily Scrum"
+title: "[Daily Scrum] YYYY-MM-DD : 이름"
 body:
   - type: textarea
     id: yesterday
