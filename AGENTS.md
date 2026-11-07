@@ -6,7 +6,7 @@
 
 1. [README](README.md)에서 프로젝트의 목적과 현재 상태를 확인한다.
 2. [requirements.md](docs/requirements.md)의 관련 ID·인수 조건·미정 사항을 확인한다.
-3. [design.md](docs/design.md)의 확정 결정과 제안을 구분한다.
+3. [design.md](docs/design.md)의 확정 결정과 제안을 구분하고, 관련된 `docs/design/` 상세 설계 문서가 있으면 함께 읽는다. 빈 작성 틀을 확정 설계로 취급하지 않는다.
 4. 관련 코드·테스트·Git 변경 상태를 확인한다. 문서만으로 구현·검증 상태를 단정하지 않는다.
 
 | 적용 상황 | 지킬 행동 | 확인 기준 |

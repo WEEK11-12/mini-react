@@ -14,6 +14,17 @@
 | 루트 전용 State·Hook | Hook 저장소와 갱신 흐름의 소유자를 루트로 제한한다. | CON-02~03, FR-10~16 |
 | 학습 가능한 구조 | 각 단계의 입력·출력과 실패 지점을 테스트로 관찰할 수 있게 한다. | Q-01~04 |
 
+### 상세 설계 문서 지도
+
+이 문서는 전체 흐름과 공통 결정을 관리한다. 아래 파일은 관련 요구사항과 결정이 구체화될 때 채운다. 현재 파일의 제목과 항목은 **작성 틀**이며, 상세 구현 방식을 확정하지 않는다.
+
+| 상세 문서 | 다룰 책임 | 관련 요구 |
+| --- | --- | --- |
+| [Virtual DOM](design/virtual-dom.md) | DOM 읽기, UI 트리 표현·렌더링 | FR-01~02, FR-05, FR-16 |
+| [Diff·Patch](design/diff-patch.md) | 트리 비교, 변경 정보, 실제 DOM 반영 | FR-03~05, FR-16 |
+| [History](design/history.md) | Phase 1의 편집·적용과 이력 탐색 | FR-06~09 |
+| [컴포넌트·Hooks](design/component-hooks.md) | 함수형 컴포넌트, 루트 State, 세 Hook | FR-10~16 |
+
 ## 2. 전체 동작 흐름
 
 ### Phase 1 · 편집과 History

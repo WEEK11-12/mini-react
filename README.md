@@ -22,7 +22,7 @@ Virtual DOM부터 Hooks까지 직접 구현하며, **데이터 변경 → 새 UI
 | --- | --- |
 | [과제 원문](https://github.com/WEEK11-12/mini-react/blob/main/docs/assignment.md) | 출발점이 되는 필수 기능과 기술 제약 확인 |
 | [요구사항 명세서](docs/requirements.md) | **무엇을 구현하고 어떤 결과면 완료인지** 확인. 이 Markdown 파일이 SRS 본문 |
-| [설계 문서](docs/design.md) | 요구 ID별 **해결 구조·선택 이유·대안·한계** 확인 |
+| [설계 문서](docs/design.md) | 전체 흐름·선택 이유와 `docs/design/` 상세 설계 문서의 안내 확인 |
 | [AI 작업 규칙](AGENTS.md) | AI가 읽을 문서, 미정 사항 처리, 변경·검증·보고 규칙 확인 |
 | [요구사항 작성 가이드](docs/guides/requirements-specification.md) | ID별 항목 양식과 PR 검토 기준 확인 |
 | [팀 Wiki](https://github.com/WEEK11-12/mini-react/wiki) | React 개념 학습 자료 확인 |
