@@ -1,8 +1,10 @@
 # 미결정 사항의 임시 결정
 
-상태: **전체 임시 채택 / 팀 확정 전** · 작성일: 2026-11-09
+상태: **OPEN 정책은 임시 채택 / key 기반 자식 대응은 사용자 요청으로 채택** · 작성일: 2026-11-09
 
 설계를 진행하기 위해 선택한 기준이다. 아래 결정은 과제 원문의 추가 요구가 아니며, 기존 요구사항의 미결정 상태도 그대로 유지한다.
+
+key 기반 비교·DOM 재사용 방향은 후속 사용자 요청에 따라 인덱스 전용 비교에서 변경했다. key 값의 세부 정책·HTML 표현·unkeyed fallback·API는 그 방향을 구현하기 위한 설계 계약이며, 그 밖 OPEN 항목의 확정을 뜻하지 않는다.
 
 
 ## 한눈에 보기
@@ -43,6 +45,7 @@ flowchart TD
 - 노드: HTML 요소와 텍스트. 공백 텍스트는 유지한다. 주석·SVG·사용자 정의 요소는 미지원 오류로 처리한다.
 - 태그: `div`, `span`, `p`, `section`, `article`, `header`, `footer`, `main`, `h1`~`h6`, `ul`, `ol`, `li`, `strong`, `em`, `br`, `label`, `button`, `input`, `textarea`.
 - 공통 속성: `id`, `class`, `title`, `data-*` 및 아래에 열거한 `aria-*` 속성.
+- `data-key`는 일반 data-*와 달리 VElement.key에 대응하는 예약 속성이다. HTML의 `key` 속성과 정규화 VDOM의 attrs.data-key는 허용하지 않는다. [key 계약](renderer.md#key와-자식-정체성)을 따른다.
 - 추가 속성: label의 `for`; button의 `type`, `disabled`; input의 `type`, `name`, `placeholder`, `disabled`, `value`, `checked`; textarea의 `name`, `placeholder`, `disabled`.
 - input은 `text`, `checkbox`만 지원한다. type 생략은 text로 정규화한다. button은 type=button만 지원하며 생략도 button으로 정규화한다.
 - `style`, URL 속성, `on*` HTML 속성, script·iframe·외부 리소스 태그는 입력으로 허용하지 않는다. 화면 스타일은 프로젝트 CSS와 허용된 class로 제공한다.
@@ -75,7 +78,7 @@ flowchart TD
 
 | 선택 | 내용 | 변경 시 영향 |
 | --- | --- | --- |
-| 자식 대응 | 인덱스 기반 비교. key 이동 최적화는 제외 | Diff·Patch와 노드 정체성 테스트 |
+| 자식 대응 | 사용자 요청으로 key 기반 대응 채택. 같은 부모·같은 key·같은 tag는 DOM 재사용·이동. key 없는 자식만 같은 전체 인덱스의 unkeyed 자식에 대응 | VDOM·HTML 왕복·Diff·Patch·History·자식 API·노드 정체성 검증 |
 | Phase 2 UI 작성 | h()와 text()로 VDOM 생성. 초기 구현에서 JSX 변환은 제외 | 컴포넌트 작성 API |
 | 갱신 시점 | 유휴 상태의 setter는 동기 갱신. Effect 처리 중 요청은 현재 Effect 처리가 끝난 뒤 순서대로 처리 | 런타임과 Hook 테스트 |
 | History 저장 | 불변 VDOM 스냅샷 배열과 cursor 사용 | History 저장·복원 |
@@ -88,6 +91,9 @@ flowchart TD
 | 영역별 실제 ID + 논리 ID 왕복 | 일반 컨테이너와 공통 렌더러를 유지하면서 label·ARIA 연결을 격리 | Shadow DOM/iframe은 트리 격리가 가능하지만 호스트·스타일·이벤트 경계를 추가한다. 단순 접두어만 적용하는 방식은 읽기·이력 비교를 오염시키므로 제외 |
 | 실행 중 unmount 진입 거부 | setup 반환 전 cleanup 회수와 제거 요청 보류 상태를 추가하지 않음 | 제거 보류 방식의 편의성은 포기. 실행 중 작업을 끝낸 뒤 호출자가 idle에서 제거해야 함 |
 | DOM 재구성 후 정리·faulted | 이전 DOM에 연결된 Effect를 정상 실행 자원으로 재사용하지 않음 | 자동 Effect 재설정은 setup 보관·재실행 실패 정책이 필요하므로 제외. 화면 복구 후 State를 유지한 자동 재개는 제공하지 않음 |
+| key 기반 대응 + unkeyed 위치 fallback | 사용자 요청의 재정렬 정체성을 보장하면서 기존 key 없는 HTML·공백 텍스트도 지원 | 인덱스 전용은 재정렬 항목의 DOM 정체성을 보존하지 못하므로 대체. 모든 자식에 key를 강제하는 방식은 텍스트·일반 HTML 편집을 불필요하게 제한하므로 제외 |
+
+key는 비어 있지 않은 문자열만 지원하고 형제 중복은 적용 전 오류로 처리한다. HTML에는 예약 data-key로 보존한다. 최소 DOM 이동 횟수나 LIS 최적화는 요구하지 않으며 구현에 위임한다. key는 자식 DOM 정체성만 다루고 루트 Hook 슬롯·Effect 수명을 새로 정의하지 않는다.
 
 메모리 이력은 상태 수와 DOM 크기에 비례해 증가한다. 자동 삭제 정책이 필요해지면 OPEN-06을 다시 결정한다.
 

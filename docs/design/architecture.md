@@ -1,6 +1,6 @@
 # 전체 구조
 
-상태: 임시 설계 · 기준: [임시 결정](temporary-decisions.md)
+상태: key 기반 자식 대응 채택 / 나머지 정책은 임시 설계 · 기준: [결정 기록](temporary-decisions.md)
 
 ## 시스템 경계
 
@@ -21,9 +21,9 @@ flowchart TD
 
 | 모듈 | 소유 데이터 | 책임 |
 | --- | --- | --- |
-| vdom / dom-reader | VNode 타입과 정규화 규칙 | DOM 읽기, 함수 결과 정규화, 입력 검증 |
-| diff | 변경 계획 | 두 VDOM을 비교. DOM 변경 없음 |
-| patch / dom-bindings | 임시 DOM 노드 참조, DOMScope 생성·해제 규칙 | 초기 생성, 변경 계획 적용, 영역별 ID 변환, 속성·프로퍼티·이벤트 처리 |
+| vdom / dom-reader | VNode 타입, key 메타데이터와 정규화 규칙 | DOM의 예약 data-key 읽기, 함수 결과 정규화, 형제 key 중복 등 입력 검증 |
+| diff | key/위치 대응과 다음 순서를 포함한 변경 계획 | 두 VDOM을 비교. DOM 변경 없음 |
+| patch / dom-bindings | 임시 DOM 노드 참조, DOMScope 생성·해제 규칙 | 초기 생성, 대응 노드 재사용·이동·교체·제거, 영역별 ID 변환, 속성·프로퍼티·이벤트 처리 |
 | FunctionComponent | currentTree, hooks, 상태 업데이트 대기열, 루트 DOMScope | 렌더 → 커밋 → Effect 실행, 제거와 실패 시 자원 정리 |
 | hooks | 현재 루트·호출 문맥, 슬롯 접근 | State·Effect·Memo API 제공 |
 | HistoryStore | 스냅샷 배열·cursor | Phase 1 저장과 탐색. DOM 접근 없음 |
@@ -81,6 +81,8 @@ class FunctionComponent<P> {
 
 컨테이너는 교체되지 않는 호스트 요소이며 VRoot에는 그 내부 노드만 담는다. 두 영역의 바깥쪽 id·제목·버튼은 VDOM의 대상에서 제외한다.
 
+key는 VElement의 선택적 메타데이터로 유지한다. HTML 편집은 data-key, 컴포넌트 작성은 예약 Props.key를 사용하며 두 경로는 같은 VDOM으로 정규화된다. diff는 같은 부모의 key로 대응하고 patch는 기존 DOM 참조를 목표 순서로 배치한다. [상세 계약](renderer.md#key와-자식-정체성)은 렌더러가 기준이다.
+
 ## Phase 1 흐름
 
 1. 실제 영역의 초기 DOM을 읽어 초기 VDOM을 만든다.
@@ -111,6 +113,8 @@ Phase 2의 DOM을 다시 읽어 State로 역변환하지 않는다. State가 UI 
 - UI 값 비교는 HTML 원문 문자열이 아니라 정규화한 구조·속성·텍스트·폼 상태를 기준으로 한다.
 - VDOM·Diff·History는 논리 ID만 다룬다. 같은 논리 트리를 다른 scope에 반영해도 읽어 얻는 지원 HTML 데이터는 같고, label·ARIA ID 참조는 자기 영역 안에서만 연결된다. readDOM은 Phase 2의 이벤트 함수나 Hook State를 복원하는 API가 아니다.
 - DOM 재구성은 화면의 복구이지 Effect 수명과 컴포넌트 실행의 복구가 아니다. faulted 상태에서 기존 setter·이벤트·대기 요청은 실행되지 않는다.
+- 정상 갱신에서 같은 부모·같은 key·같은 tag의 DOM은 재정렬해도 같은 객체다. key는 형제 범위이며 ID 이름공간·루트 Hook 순서와 독립적이다. key 없는 자식은 위치 fallback만 제공한다.
+- History 스냅샷과 직렬화는 key를 보존한다. 중복 key 검증 실패는 마지막 성공 DOM·Hook·History를 변경하지 않는다.
 
 ## 요구사항 연결
 

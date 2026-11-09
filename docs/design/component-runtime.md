@@ -55,6 +55,15 @@ type RootComponent<P> = (props: P) => Child;
 
 자식 함수는 여러 노드나 빈 결과도 반환할 수 있으므로 h()의 공통 반환 타입은 Child다. 자식에게 전달하는 props.children은 나머지 children 인수로 구성하며, props.children과 중복 지정하면 오류로 처리한다.
 
+### key 전달 경계
+
+- `h('li', { key: itemId }, ...)`의 key는 host VElement.key로 정규화한다. attrs.key·attrs.data-key는 허용하지 않는다.
+- `h(ChildComponent, { key: itemId, ...props }, ...)`는 예약 key를 자식 Props에서 제외하고 자식 함수를 실행한다. 일반 값으로도 itemId가 필요하면 별도 Props 필드로 전달한다.
+- key가 지정된 자식 함수의 정규화 결과는 정확히 하나의 VElement여야 한다. 반환 요소를 복사해 외부 key를 부여하며 반환된 원본 VNode는 수정하지 않는다. 반환 요소에 이미 key가 있으면 같은 값만 허용하고 다른 값은 오류다. 빈 결과·텍스트만의 결과·복수 노드 결과에 외부 key를 지정하면 렌더 검증 오류다.
+- 외부 key가 없는 자식 함수는 기존처럼 빈 결과·배열·텍스트를 반환할 수 있다. 반환 요소들의 key는 평탄화 후 실제 부모의 형제 목록에서 검증한다. 다중 노드 항목을 묶어 재정렬하려면 명시적인 keyed host wrapper를 사용한다.
+
+현재 구조는 자식 함수를 즉시 실행해 host VDOM으로 정규화하므로 별도 자식 인스턴스 수명이 없다. key는 최종 VElement의 DOM 대응에 적용되며 자식 함수 타입의 변경만으로 재마운트하지 않는다. 자식 key 변경·삭제·이동은 루트 generation·State·Hook 슬롯을 초기화하지 않는다. 루트 인스턴스의 수명은 mount/unmount가 결정한다. [렌더러의 key 계약](renderer.md#key와-자식-정체성)을 따른다.
+
 자식 호출 중에는 Hook 사용 문맥을 일시적으로 'child'로 전환한다. 루트에서 `h`의 인수로 먼저 평가되는 `useState()`는 루트 문맥이고, 자식 함수 본문에서 호출한 Hook은 오류다. 자식 컴포넌트의 직접 함수 호출은 지원 계약 밖으로 둔다.
 
 ## FunctionComponent의 기록
@@ -92,6 +101,8 @@ mount 대상은 이 인스턴스가 전용으로 관리하는 빈 컨테이너�
 7. 변경된 Effect를 정리·설정하고 다음 대기 요청을 처리한다.
 
 Props 갱신은 update(nextProps)로 요청한다. 자식 Props에 들어가는 콜백도 새 UI의 이벤트 함수로 반영된다.
+
+key 기반 재정렬도 동일한 update·Diff·Patch 경로로 처리한다. 같은 key·같은 tag의 노드 이동 자체는 루트 Effect의 정리·재설정을 유발하지 않으며 Effect는 기존 의존성 규칙을 따른다. key 변경으로 DOM이 교체되는 경우에도 루트 Effect가 그 노드의 수명을 자동 추적하지 않는다. DOM을 참조하는 Effect는 노드 생성을 바꾸는 입력을 의존성에 포함하거나 수명 동안 유지되는 노드만 참조해야 한다.
 
 ## 업데이트 실행 규칙
 

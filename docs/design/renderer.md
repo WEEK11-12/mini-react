@@ -2,7 +2,7 @@
 
 관련 요구사항: [VDOM](../requirements.md#vdom), [DIFF](../requirements.md#diff), [PATCH](../requirements.md#patch)
 
-기준: [OPEN-01·11 및 추가 설계 선택](temporary-decisions.md). 이 문서의 데이터 모델과 알고리즘은 임시 설계다.
+기준: [OPEN-01·11 및 추가 설계 선택](temporary-decisions.md). key 기반 자식 대응은 사용자 요청으로 채택한 설계 방향이다. 나머지 지원 범위와 API 세부 정책은 임시 설계다.
 
 
 ## 한눈에 보기
@@ -22,6 +22,7 @@ classDiagram
   class VElement {
     kind : element
     tag : string
+    key
     attrs
     domProps
     events
@@ -47,6 +48,7 @@ classDiagram
 type EventName = 'click' | 'input' | 'change';
 type Handler = (event: Event) => void;
 type Props = {
+  key?: string;
   attrs?: Record<string, string>;
   domProps?: { value?: string; checked?: boolean; disabled?: boolean };
   events?: Partial<Record<EventName, Handler>>;
@@ -57,6 +59,7 @@ type VText = { kind: 'text'; value: string };
 type VElement = {
   kind: 'element';
   tag: string;
+  key?: string;
   attrs: Readonly<Record<string, string>>;
   domProps: Readonly<{ value?: string; checked?: boolean; disabled?: boolean }>;
   events: Readonly<Partial<Record<EventName, Handler>>>;
@@ -67,6 +70,8 @@ type VRoot = { kind: 'root'; children: readonly VNode[] };
 ```
 
 입력 Props의 `children`은 컴포넌트용이다. host element에서는 정규화된 children으로 옮기고, 알 수 없는 host 속성·프로퍼티·이벤트 키는 검증 오류로 처리한다.
+
+`key`는 예약된 정체성 메타데이터이며 attrs·domProps·events와 별개다. `h()`의 입력에서 VElement.key로 옮기고, 정규화된 VDOM의 attrs에 `key`나 예약 속성 `data-key`를 중복 저장하면 검증 오류다. DOM 읽기·쓰기에서만 data-key를 key로 변환한다.
 
 - VRoot는 컨테이너 안의 0개 이상 노드를 표현한다. 실제 root DOM 노드를 만들지 않는다.
 - textarea는 children 대신 domProps.value로 정규화한다. HTML text와 value가 중복 지정되면 오류다.
@@ -82,6 +87,33 @@ type VRoot = { kind: 'root'; children: readonly VNode[] };
 `mountTree(container, tree, scope)`는 createElement/createTextNode로 트리를 만든 뒤 빈 컨테이너에 연결한다. append 전에 scope에 따른 실제 ID·참조 속성과 children을 구성하고, value/checked/disabled와 이벤트 바인딩을 적용한다. `applyPlan(container, plan, scope)`도 동일한 변환을 사용한다.
 
 HTML 편집 내용은 분리된 template에 파싱하고 전체 검증 후에만 미리보기에 연결한다. 브라우저 파서가 정상적으로 보정하는 HTML은 정규화해 수용하며, 미지원 태그·속성은 조용히 제거하지 않고 오류로 표시한다.
+
+## key와 자식 정체성
+
+### 값·범위·HTML 왕복
+
+- key는 선택적인 비어 있지 않은 문자열이다. 생략/undefined는 unkeyed이며 null·숫자·객체·빈 문자열은 검증 오류다. HTML 왕복으로 보존할 수 없는 U+0000과 단독 surrogate도 거부한다. 문자열을 trim하거나 숫자로 변환하지 않고 정확히 비교한다. 생성 시점이나 현재 배열 인덱스가 아니라 항목의 안정적인 식별값을 사용한다.
+- key의 유일성 범위는 같은 부모의 정규화된 children이다. VRoot.children도 하나의 형제 목록이다. 다른 부모·다른 DOMScope에는 같은 key가 있어도 된다. 배열 평탄화 후 형제 중복을 검사하며 중복 key를 발견하면 DOM 변경 전에 오류로 거부한다.
+- VText에는 key를 두지 않는다. 공백을 포함한 텍스트도 자식 인덱스를 차지한다. 텍스트/여러 노드를 묶어 이동해야 하면 key를 가진 지원 host 요소로 감싼다. keyed Fragment·노드 범위 이동은 추가하지 않는다.
+- 원본 HTML의 예약 속성 `data-key`는 readDOM에서 VElement.key로 읽는다. mountTree/applyPlan은 key가 있으면 같은 문자열의 data-key를 기록하고 생략하면 제거한다. 직렬화도 key를 data-key로 이스케이프해 내보내며 일반 data-* attrs로 중복 취급하지 않는다. 따옴표·앰퍼샌드·개행 등도 파싱 후 같은 값으로 보존해야 한다. 원본 HTML은 브라우저 파싱 후의 속성값을 기준으로 하며, 파싱 전 소스 문자열의 바이트 동일성을 보장하지 않는다. HTML의 `key` 속성은 지원하지 않는다.
+- key는 논리 id·ARIA ID 참조·DOMScope와 독립적이다. 영역별 접두어를 붙이거나 id에서 자동 추출하지 않는다. 두 영역의 같은 논리 트리는 같은 key와 서로 다른 실제 ID를 가진다.
+
+### 대응과 재사용 계약
+
+각 부모에서 이전/다음 형제 목록을 다음 기준으로 대응한다. 이는 관찰 가능한 대응 규칙이며 탐색 알고리즘을 지정하지 않는다.
+
+| 다음 자식 | 이전 자식의 대응 기준 | 결과 |
+| --- | --- | --- |
+| key가 있는 요소 | 같은 부모의 같은 key를 가진 이전 요소. 이전 위치와 무관 | tag가 같으면 같은 DOM 객체 재사용·필요 시 이동·내용 갱신. tag가 다르면 해당 노드와 하위 트리 교체 |
+| key가 없는 요소·텍스트 | 전체 children 배열의 정확히 같은 이전 인덱스에 있는 unkeyed 자식만 대응 | kind/tag가 같으면 재사용·내용 갱신, 다르면 교체. 다른 위치의 unkeyed 자식을 찾아 재사용하지 않음 |
+| 대응하는 이전 자식 없음 | 없음 | 새 DOM 생성 |
+| 다음 목록에서 대응되지 않은 이전 자식 | 없음 | DOM·해당 하위 트리의 이벤트 바인딩 제거 |
+
+한쪽만 keyed이거나 key가 달라지면 같은 tag·같은 위치여도 대응하지 않는다. 각 이전 자식은 최대 한 번만 소비한다. keyed와 unkeyed가 섞여도 위 규칙을 그대로 적용하며 unkeyed 인덱스는 keyed/공백 텍스트까지 포함한 전체 목록 기준이다. 중간 삽입 시 unkeyed 항목의 논리 정체성은 보장하지 않는다.
+
+같은 key라도 다른 부모로 옮기면 제거 + 생성이다. 부모 자체가 교체되면 그 하위 key가 같아도 기존 DOM 재사용을 보장하지 않는다. 삭제된 노드는 별도 캐시에 두지 않으므로 이후 같은 key가 재등장해도 새로 만든다. 이전 스냅샷으로 돌아갈 때도 현재 살아 있는 같은 부모·같은 key·같은 tag의 DOM만 재사용한다.
+
+key는 DOM 재사용 기준이지 사용자 State 저장소가 아니다. 같은 노드를 이동할 때 기존 이벤트 바인딩을 이동만을 이유로 해제·중복 등록하지 않는다. 변경된 이벤트·폼 프로퍼티는 목표 VDOM대로 갱신한다. DOM 객체 보존과 달리 이동 과정의 브라우저 포커스·선택 영역 보존은 별도 보장하지 않는다.
 
 ## 영역별 식별자 계약
 
@@ -107,42 +139,47 @@ ID 인코딩·역변환 자료구조·이름공간 발급 방법은 구현에 �
 
 ## Diff 전략
 
-자식은 같은 인덱스로 대응시킨다. 같은 kind/tag는 재사용하고, 다른 종류 또는 다른 태그는 교체한다. 목록 중간 삽입은 뒤의 위치별 비교로 처리하므로 key 기반 정체성 보존을 제공하지 않는다.
+자식 대응은 위 key 계약을 따른다. 같은 key·같은 tag의 요소는 위치가 바뀌어도 재사용하며, unkeyed 자식에만 위치 기반 fallback을 적용한다. key 변경도 구조·정체성 변경이므로 무변경으로 판단하지 않는다.
 
 변경 결과는 평면 DOM 경로 배열 대신 **계층형 계획**으로 표현한다.
 
 ```ts
 type NodePlan =
   | { op: 'keep'; next: VNode }
-  | { op: 'replace'; next: VNode }
   | { op: 'text'; next: VText }
   | { op: 'element'; next: VElement; children: ChildrenPlan };
+type ChildPlacement =
+  | { op: 'create'; next: VNode }
+  | { op: 'reuse'; oldIndex: number; patch: NodePlan }
+  | { op: 'replace'; oldIndex: number; next: VNode };
 type ChildrenPlan = {
-  common: readonly NodePlan[]; // old/new 공통 길이, 이전 인덱스 기준
-  removeTail: number;         // 이전 목록 끝에서 제거할 개수
-  append: readonly VNode[];   // 새 목록 끝에 추가할 노드
+  ordered: readonly ChildPlacement[]; // 다음 children과 같은 순서
+  remove: readonly number[];          // 대응되지 않은 이전 인덱스
 };
 type PatchPlan = { previous: VRoot; next: VRoot; children: ChildrenPlan };
 ```
 
-Diff는 attrs 이름·값, 텍스트, domProps 값, 이벤트 함수 참조를 비교한다. 두 트리를 수정하지 않는다. 변경이 없으면 keep 계획을 만들며 적용 단계에서 불필요한 쓰기를 하지 않는다.
+oldIndex는 이 부모의 변경 전 childNodes 인덱스다. ordered의 길이는 다음 children 길이와 같고 각 항목은 해당 다음 자식을 나타낸다. reuse/replace의 oldIndex는 중복되지 않으며 remove와도 겹치지 않는다. 이전 인덱스는 ordered에서 한 번 참조되거나 remove에 한 번 포함되어야 한다. create에는 이전 노드가 없다.
+
+NodePlan의 keep은 재사용 노드의 내용이 같다는 뜻이며 위치까지 같다는 뜻은 아니다. 위치 변경은 ordered가 표현한다. Diff는 key 대응 후 attrs 이름·값, 텍스트, domProps 값, 이벤트 함수 참조를 비교한다. 두 트리와 History를 수정하지 않으며 DOM에 접근하지 않는다.
 
 ## 계획 적용 순서
 
-각 부모에서 다음 순서로 적용한다.
+Patch는 각 부모의 변경 전 childNodes 참조를 확보해 oldIndex를 실제 노드에 연결한다. 이후 DOM이 이동·삭제되어도 변동된 live 인덱스로 대상을 다시 찾지 않는다.
 
-1. 변경 전 childNodes의 참조를 배열로 확보한다.
-2. 공통 인덱스의 계획을 확보한 노드 참조에 재귀 적용한다.
-3. 이전 목록의 초과 노드를 끝에서부터 제거한다.
-4. 새 목록의 초과 노드를 끝에 추가한다.
+- create/replace용 새 노드는 사전 검증·준비한다. reuse 대상에는 NodePlan을 적용하고 같은 DOM 객체를 ordered가 지정한 다음 위치에 배치한다.
+- remove 대상과 replace의 이전 노드는 하위 트리 바인딩을 해제하고 제거한다. 단순 이동은 제거로 취급하지 않는다.
+- 적용 완료 후 childNodes의 개수·순서·각 노드의 내용이 다음 VDOM과 대응해야 한다. 재정렬만으로 컨테이너를 비우거나 재사용 노드를 복제하면 계약 위반이다.
+- 이미 올바른 위치·내용의 노드는 이동하거나 다시 쓰지 않는다. 전체 무변경 입력은 폼의 실제 값 보정이 필요하지 않은 한 DOM 쓰기가 없어야 한다.
 
-노드 참조는 적용 시작 시점에 확보하므로 앞선 교체·삭제로 인덱스가 밀려도 다른 노드를 잘못 수정하지 않는다. 타입 교체는 그 하위 트리만 새로 만들고 replaceChild한다.
+DOM 배치의 구체적인 순회 순서·anchor 계산·key 탐색 자료구조는 구현에 위임한다. 최소 이동 횟수·LIS 최적화·특정 시간복잡도는 이번 인수 조건이 아니다. 대응·노드 보존·최종 순서·무변경 쓰기 생략은 구현 방식에 관계없이 지킨다.
 
 ## 속성·폼·이벤트
 
 | 대상 | 반영 방식 |
 | --- | --- |
 | 문자열 속성 | 달라진 값만 setAttribute, 삭제된 이름은 removeAttribute |
+| key 메타데이터 | 예약 data-key로 반영. attrs나 DOMScope ID 변환에 포함하지 않음 |
 | id·for·지원 ARIA ID 참조 | 논리 값을 scope로 변환해 반영. 원본 VDOM은 변경하지 않음 |
 | 텍스트 | 기존 Text.nodeValue를 변경 |
 | value/checked/disabled | DOM 프로퍼티에 반영. 실제 값이 목표와 다를 때만 대입 |
@@ -156,6 +193,7 @@ Phase 1에서는 실제 영역의 input/change 기본 이벤트 후 현재 appli
 
 - 전체 VDOM 검증과 새 노드 준비는 기존 DOM을 바꾸기 전에 수행한다.
 - 잘못된 입력·미지원 속성은 검증 오류이며 DOM을 바꾸지 않는다.
+- 중복·잘못된 key와 잘못된 계획 인덱스는 변경 전에 거부한다. 준비 단계에서 실패하면 새 노드의 바인딩·임시 참조도 회수한다. key 검증 실패는 기존 DOM·Hook·History를 변경하지 않는다.
 - 예상하지 못한 적용 오류가 발생하면 호출자에게 예외를 전달한다. 렌더러 자체가 모든 DOM 작업의 원자성을 보장하지 않는다.
 - 호출자는 같은 DOMScope와 마지막 성공 VDOM으로 복구할 수 있다. 이 오류 경로에서는 DOM 객체 정체성이 보존되지 않을 수 있으며, 정상 부분 갱신 경로와 구분한다.
 - 렌더러는 Effect의 소유자가 아니다. Phase 2 호출자는 [런타임 복구 절차](component-runtime.md#실패-처리)에 따라 기존 Effect·이벤트를 정리하고 재구성 결과를 비활성 화면으로만 남긴다. 복구용 생성은 이벤트가 비어 있는 표시용 트리를 사용하며 마지막 성공 VDOM 자체는 수정하지 않는다.
@@ -169,3 +207,5 @@ Phase 1에서는 실제 영역의 input/change 기본 이벤트 후 현재 appli
 - value/checked 변경과 이벤트 함수 교체가 DOM에 실제로 반영되는가?
 - 현재 DOM을 읽어 재생성한 뒤에도 폼 상태가 같은가?
 - 같은 논리 ID를 가진 두 영역의 label·ARIA 연결이 자기 영역에 한정되고, 읽기·직렬화·이력 이동 후 논리 ID가 보존되는가?
+- key 기반 삽입·삭제·재정렬에서 대응된 DOM 객체가 유지되고, key 변경·tag 변경·부모 변경은 지정된 교체/생성 경계를 따르는가?
+- data-key와 VElement.key가 폼 조작·직렬화·History를 왕복하며 attrs나 scope와 혼동되지 않는가?

@@ -57,7 +57,7 @@
 - 적용 성공 후 DOM과 적용 기준 트리의 일관성을 유지한다. 입력 검증 실패 시 기존 적용 상태와 History를 보존한다.
 - 렌더 계산, DOM 반영, Hook 기록 커밋, Effect 실행의 순서와 실패 시 보존되는 상태를 함께 확인한다.
 - TypeScript·Vite·Vitest+jsdom·Playwright는 현재 임시 도구 선택이다. 설치된 도구로 단정하지 않는다.
-- SSR, Fiber, 동시 렌더링, key 기반 이동 최적화, 개발용 Strict Mode는 현재 설계 범위 밖이다. 필요성이 확인되지 않은 확장을 추가하지 않는다.
+- SSR, Fiber, 동시 렌더링, 개발용 Strict Mode는 현재 설계 범위 밖이다. key 기반 자식 비교와 정체성 보존은 채택된 방향이며, 세부 계약은 [VDOM·Diff·Patch 설계의 ‘key와 자식 정체성’ 절](docs/design/renderer.md)을 따른다.
 
 ## 공통 판단과 검토 방식
 

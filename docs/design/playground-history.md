@@ -81,6 +81,8 @@ flowchart TB
 
 입력 문자열과 VDOM은 다르다. HTML 파서가 공백·속성·태그를 정규화할 수 있으므로 적용 결과의 검증은 문자열 일치로 하지 않는다.
 
+형제 항목의 정체성은 [렌더러 key 계약](renderer.md#key와-자식-정체성)을 따른다. 재정렬을 확인하는 샘플은 안정적인 data-key를 부여한다. key는 previewTree·appliedTree·History에 보존하며 actualScope/previewScope의 실제 ID 변환에는 포함하지 않는다.
+
 ## 초기 로드
 
 1. 최초 샘플은 scope 없이 읽어 논리 ID를 가진 initialTree로 검증한다. 아직 미리보기는 연결하지 않는다.
@@ -105,6 +107,8 @@ flowchart TB
 input/change 이벤트에서 `readDOM(previewContainer, previewScope)`로 현재 미리보기를 읽어 논리 previewTree와 editorText를 갱신한다. 현재 입력 오류가 있으면 폼 조작을 막아 잘못된 editorText를 덮어쓰지 않는다.
 
 직렬화 시 input value/checked를 HTML 속성으로, textarea value를 이스케이프된 텍스트로 기록한다. ID·for·ARIA ID 참조는 논리 값을 사용한다. 연결된 DOM의 outerHTML은 직렬화 원본으로 사용하지 않는다. 이벤트 함수는 직렬화하지 않는다. 이 경로는 Phase 1에만 사용한다.
+
+예약 data-key는 VElement.key에서 한 번만 직렬화하고 HTML 파싱·폼 조작 후 읽기에서도 같은 key를 복원한다. key를 생성 순서나 현재 배열 인덱스로 다시 발급하지 않는다. 사용자가 data-key를 변경·제거하면 다음 Patch에서 정체성 변경으로 처리한다. 중복/빈 key는 마지막 유효 미리보기와 실제 영역·History를 유지하는 입력 오류다.
 
 실제 영역 label은 실제 영역 input에, 미리보기 label은 미리보기 input에 연결되어야 한다. 실제 영역 폼 값을 appliedTree로 복원하는 규칙은 유지하되, 그 규칙을 영역 간 ID 격리의 대안으로 사용하지 않는다. [렌더러 계약](renderer.md#영역별-식별자-계약)을 따른다.
 
@@ -136,7 +140,7 @@ class HistoryStore {
 
 - 생성 시 초기 상태를 넣고 cursor=0으로 둔다.
 - push는 현재 cursor 뒤 기록을 버리고 스냅샷을 추가한다.
-- 스냅샷은 DOM 참조·함수·DOMScope·실제 ID 없이 논리 VDOM을 재귀 복사한다. 이후 수정하지 않는다.
+- 스냅샷은 DOM 참조·함수·DOMScope·실제 ID 없이 key를 포함한 논리 VDOM을 재귀 복사한다. 이후 수정하지 않는다.
 - peek는 위치를 바꾸지 않는다. 컨트롤러가 DOM 복원에 성공한 뒤 commitMove로 cursor를 이동한다.
 - 경계 요청은 무효이며 cursor·DOM·편집 내용을 그대로 둔다.
 - 모든 기록은 메모리에만 유지한다. 새로고침하면 새 샘플 상태로 초기화한다.
@@ -150,6 +154,8 @@ class HistoryStore {
 5. 성공 후 cursor·appliedTree·previewTree·editorText를 동기화하고 편집 오류를 해제한다.
 
 이동 완료 시 미적용 편집은 폐기한다. 기존 이력 스냅샷이나 Hook State를 변경하지 않는다.
+
+재정렬 상태로 이동할 때 각 영역에 현재 존재하는 같은 부모·같은 key·같은 tag의 DOM을 이동·재사용한다. 과거 스냅샷이 과거의 DOM 객체를 보유하지는 않는다. 이미 삭제되었거나 부모가 교체된 항목은 같은 key로 되돌아와도 새 DOM을 생성한다. 복구를 위한 전체 재생성 경로의 정체성 예외는 기존과 같다.
 
 ## 오류 처리
 
@@ -173,6 +179,7 @@ Phase 1에는 사용자 Hook Effect가 없으므로 복구 성공 후 편집을 
 - 제거 버튼: 루트 unmount 후 구독 정리 확인.
 - 다시 시작: 새 상태와 새 구독으로 mount.
 - DOM 재구성이 필요한 실패: 화면 복구 여부와 별개로 faulted 표시, 컨테이너 조작 차단, 제거·다시 시작 안내. 다시 시작은 unmount 완료 후 mount를 호출한다.
+- key 기반 비교: 별도 목록 시연에서 루트가 안정적인 항목 ID와 순서를 관리하고 keyed 자식 함수를 렌더한다. 앞 삽입·삭제·역순 버튼으로 최종 순서와 기존 항목 DOM 객체의 재사용을 확인한다. 자식 State·Hook은 추가하지 않는다.
 
 검증 화면이 컨테이너 조작 차단을 소유한다. 복구 화면에서는 차단을 유지하고, 제거 완료 후 새 mount가 성공했을 때만 해제한다. 제거·다시 시작 컨트롤은 관리 컨테이너 밖에 둔다.
 

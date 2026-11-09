@@ -55,6 +55,8 @@ type MemoSlot = { kind: 'memo'; deps: readonly unknown[]; value: unknown };
 - Hook 기록은 렌더 candidate에 작성하고, 성공한 DOM 반영 후 확정한다.
 - 조건부 호출·호출 순서 변경은 지원하지 않는다. 같은 종류끼리의 순서 교환까지 자동 검출하지는 않는다.
 
+VDOM 자식의 key와 Hook 슬롯 식별은 서로 다른 계약이다. key 기반 DOM 재정렬은 루트의 hooks 인덱스·setter 참조·generation을 바꾸지 않는다. key를 통해 자식에 State·Effect 슬롯을 만들거나 루트 Hook 호출 순서를 재배열하지 않는다. 자식은 계속 상태 없는 순수 함수다.
+
 ## 의존성 비교
 
 ```mermaid
@@ -112,6 +114,8 @@ useEffect(setup: () => void | (() => void), deps?: readonly unknown[]): void
 
 타이밍은 **DOM 반영 뒤**로 정하며, 브라우저 페인트 뒤임을 보장하지 않는다. 설정은 동기 함수지만 내부에서 비동기 작업을 시작하고 정리에서 취소할 수 있다.
 
+key로 재사용된 DOM의 단순 이동은 Effect 재실행 조건이 아니다. 반대로 key 변경·tag 변경·부모 교체로 DOM이 새로 만들어져도 루트 Effect가 자동 재실행되는 것은 아니다. DOM 참조 Effect는 노드의 생성을 바꾸는 입력을 deps로 관리해야 한다. [] Effect로 특정 노드를 참조하려면 정상 갱신 동안 해당 노드가 유지되는 조건을 사용 측에서 보장한다. 예기치 않은 Patch 실패의 전체 정리·faulted 정책은 별도로 유지한다.
+
 ### 제거 시
 
 idle/faulted에서 수락된 unmount만 unmounting phase로 전환한다. 현재 cleanup을 기록에서 먼저 제거한 뒤 한 번씩 실행하고 슬롯을 비운다. cleanup 중 setter는 무효, 재진입 unmount는 오류다. cleanup 오류에도 나머지 정리·DOM 제거를 계속한다. 초기 정리·설정을 반복하는 Strict Mode 동작은 제공하지 않는다.
@@ -156,3 +160,4 @@ useMemo<T>(calculate: () => T, deps: readonly unknown[]): T
 | 실패한 렌더 | 새 Effect가 실행되지 않고 이전 기록 유지 |
 | 실행 중 unmount | 상태 변경 전 거부, 정상 반환한 cleanup은 보관, idle 제거에서 해제 |
 | DOM 재구성 | 기존 [] Effect도 정리, 새 setup 미실행, faulted 이후 명시적 재마운트만 허용 |
+| keyed 자식 재정렬 | 대응 DOM 유지, 루트 State·setter·Hook 순서 유지, 동일 deps Effect는 재실행하지 않음 |

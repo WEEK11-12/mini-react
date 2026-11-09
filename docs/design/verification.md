@@ -29,9 +29,9 @@ flowchart TD
 
 | 요구사항 | 검증 대상 | 핵심 확인 |
 | --- | --- | --- |
-| [VDOM-01](../requirements.md#vdom-01), [VDOM-02](../requirements.md#vdom-02) | readDOM | 중첩·순서·공백·속성·현재 폼 값, 미지원 입력 |
-| [DIFF-01](../requirements.md#diff-01), [DIFF-02](../requirements.md#diff-02), [DIFF-03](../requirements.md#diff-03) | diff | 추가·삭제·태그·텍스트·속성·무변경, 입력 불변 |
-| [PATCH-01](../requirements.md#patch-01), [PATCH-02](../requirements.md#patch-02), [PATCH-03](../requirements.md#patch-03) | mountTree/applyPlan | 목표 DOM 일치, 형제 참조 보존, 무변경 쓰기 없음 |
+| [VDOM-01](../requirements.md#vdom-01), [VDOM-02](../requirements.md#vdom-02) | readDOM | 중첩·순서·공백·속성·key/data-key 왕복·현재 폼 값·미지원 입력 |
+| [DIFF-01](../requirements.md#diff-01), [DIFF-02](../requirements.md#diff-02), [DIFF-03](../requirements.md#diff-03) | diff | key 대응·재정렬·추가·삭제·태그·텍스트·속성·무변경, 입력 불변 |
+| [PATCH-01](../requirements.md#patch-01), [PATCH-02](../requirements.md#patch-02), [PATCH-03](../requirements.md#patch-03) | mountTree/applyPlan | 목표 DOM 순서·내용 일치, key 대응 DOM 참조 보존, 무변경 쓰기 없음 |
 | [COMP-01](../requirements.md#comp-01), [COMP-02](../requirements.md#comp-02), [COMP-03](../requirements.md#comp-03) | FunctionComponent | 초기 표시·Props 전달·State 부분 갱신 |
 | [STA-01](../requirements.md#sta-01), [STA-02](../requirements.md#sta-02), [STA-03](../requirements.md#sta-03) | useState | 초기화·두 슬롯 독립·setter·함수형 업데이트·같은 값 생략 |
 | [EFF-01](../requirements.md#eff-01), [EFF-02](../requirements.md#eff-02), [EFF-03](../requirements.md#eff-03), [EFF-04](../requirements.md#eff-04) | useEffect | DOM 반영 후 설정·의존성 비교·정리 순서·제거 |
@@ -86,6 +86,30 @@ flowchart TD
 ## 설계 검토 회귀 사례
 
 아래는 구현 후 실행할 검증 계약이며, 현재 통과한 테스트를 뜻하지 않는다. 브라우저의 label 기본 동작은 jsdom 검사만으로 대체하지 않고 Playwright Chromium에서 확인한다.
+
+### key 기반 대응과 DOM 재사용
+
+관련: [VDOM-02](../requirements.md#vdom-02), [DIFF-01](../requirements.md#diff-01), [DIFF-03](../requirements.md#diff-03), [PATCH-03](../requirements.md#patch-03), [HIST-03](../requirements.md#hist-03). 대응 기준은 [렌더러](renderer.md#key와-자식-정체성)를 따른다.
+
+| 조건 | 관찰할 결과 |
+| --- | --- |
+| 같은 부모의 [a,b,c] → [c,a,b], 역순·앞/중간 삽입·삭제 | 최종 순서·내용 일치, 양쪽에 남는 같은 key·같은 tag의 DOM 객체 동일. 새 항목만 생성, 삭제 항목 바인딩만 해제 |
+| 같은 key의 속성·텍스트·이벤트·폼 값도 동시에 변경 | 같은 DOM 재사용 후 목표 내용 반영. 이벤트는 교체된 함수만 호출, 이동만으로 리스너 중복 등록·해제 없음 |
+| 같은 tag·위치에서 key a → b, keyed ↔ unkeyed | 이전 DOM을 재사용하지 않음. key 변경을 무변경으로 판정하지 않음 |
+| 같은 key의 tag 변경, key 항목의 부모 변경/부모 교체 | 해당 노드·하위 DOM 재생성. 다른 부모의 같은 key를 전역 검색해 가져오지 않음 |
+| key 없는 자식만 존재하거나 keyed/텍스트와 혼합 | unkeyed는 전체 childNodes의 같은 인덱스에 있는 unkeyed에만 대응. 공백 텍스트도 인덱스에 포함. 이전 노드 중복 소비 없음 |
+| 형제 key 중복, 빈/잘못된 타입 key, U+0000·단독 surrogate, attrs.data-key 중복 입력 | 기존 DOM·State·Memo·History 확정 전 오류. 마지막 유효 미리보기 유지. 다른 부모의 같은 key는 허용 |
+| data-key에 공백·따옴표·개행·특수문자가 있는 유효 문자열 | 브라우저 파싱 후 정규화 VDOM의 정확한 문자열과 key 유무 보존. trim·숫자 변환 없음. HTML 이스케이프 후 왕복 동등 |
+| DOM → VDOM → HTML → 원본 파싱 → 두 scope 렌더 | key 보존, attrs.data-key 중복 없음, 양쪽 data-key는 같고 실제 id는 scope마다 다름 |
+| [a,b,c] → [c,a,b] Patch 후 뒤로/앞으로 | 두 영역에서 살아 있는 각 key의 DOM 객체 유지, 순서·editorText·History 일치, 스냅샷 불변 |
+| b 삭제 후 b가 있는 이력으로 돌아가기 | b는 새 DOM이며 삭제 전 객체 부활 없음. 남아 있던 a/c는 대응 조건이 유지되면 기존 DOM |
+| 정렬·내용·폼 값 모두 무변경 | DOM 쓰기·이동 없음. keep인 자식도 순서만 바뀌면 실제 객체 이동 가능 |
+| oldIndex 중복/범위 밖/누락·remove 중복 또는 ordered와 겹침 | DOM 변경 전 계획 오류. ordered 길이와 next children 길이도 검사 |
+| 이동·삽입·삭제가 섞인 적용 도중 실패 | History·candidate를 확정하지 않음. Phase 1은 기존 scope로 복구, Phase 2는 기존 Effect 정리 후 faulted. key가 실패 경로의 객체 정체성까지 보장하지 않음 |
+| keyed 자식 함수가 단일 요소/복수 노드/빈 값/텍스트 반환 | 단일 요소에 외부 key 부여, 원본 VNode 불변·자식 Props에 예약 key 없음. 나머지 외부 key 지정은 렌더 오류. 반환 요소와 외부 key 충돌도 오류 |
+| keyed 자식 재정렬·key 변경과 루트 Hook | 루트 State·setter·generation·Hook 순서 유지. 동일 deps Effect는 이동만으로 재실행하지 않음. DOM을 교체하는 입력을 deps로 둔 Effect는 이전 자원 정리 후 새 DOM 연결 |
+
+DOM 결과 문자열만으로 판정하지 않고 변경 전 저장한 노드 참조와 변경 후 참조를 비교한다. 무변경 검사는 쓰기/이동 계측을 포함한다. 포커스·선택 영역의 이동 시 보존과 최소 DOM 이동 횟수는 이번 인수 조건이 아니다. key 검색 자료구조·배치 알고리즘은 테스트가 특정 구현을 강제하지 않도록 한다.
 
 ### ID 격리와 논리 값 왕복
 
@@ -148,6 +172,8 @@ flowchart TD
 
 1단계에는 scope 생성·읽기/쓰기 왕복·ID 참조 검증을, 3단계에는 label 클릭과 이력 이동을 포함한다. 5단계에는 제거 재진입 거부와 DOM 재구성 후 faulted·재마운트 검증을 포함한다. 이 계약은 구현 착수 전 설계 검증 에이전트가 재검토한다.
 
+key 지원은 1단계의 VDOM·data-key 왕복·형제 중복 검증에서 시작한다. 2단계에서 keyed 대응·목표 순서·노드 보존을, 3단계에서 편집·이력 왕복을, 4~6단계에서 자식 key 전달·루트 Hook 분리와 브라우저 재정렬을 확인한다.
+
 ## 설계 변경 시 점검
 
 | 변경 | 함께 검토할 부분 |
@@ -156,6 +182,6 @@ flowchart TD
 | 의존성 비교 변경 | Effect·Memo·객체 관련 테스트 |
 | 이력 정책 변경 | HistoryStore·버튼 상태·편집 처리·오류 복원 |
 | Hook 사용 범위 확대 | FunctionComponent 구조·호출 문맥·슬롯 소유권 |
-| key 기반 이동 추가 | VDOM 타입·Diff 대응·Patch 계획·DOM 정체성 기대값 |
+| key 계약 변경 | VDOM·data-key 예약·자식 API·Diff 대응·Patch 계획·History·Hook 분리·DOM 정체성 기대값 |
 | 식별자·ARIA 범위 변경 | DOMScope·reader·bindings·serializer·History와 브라우저 label/ARIA 연결 |
 | 제거·DOM 복구 정책 변경 | phase 진입 검사·generation·대기열·Effect 소유권·이벤트와 재마운트 |
