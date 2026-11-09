@@ -1,0 +1,84 @@
+# 미결정 사항의 임시 결정
+
+상태: **전체 임시 채택 / 팀 확정 전** · 작성일: 2026-11-09
+
+설계를 진행하기 위해 선택한 기준이다. 아래 결정은 과제 원문의 추가 요구가 아니며, 기존 요구사항의 미결정 상태도 그대로 유지한다.
+
+
+## 한눈에 보기
+
+```mermaid
+flowchart TD
+  O["OPEN-01 ~ OPEN-15"] --> T["임시 선택 · 이유 · 영향 범위"]
+  T --> D["시스템별 설계"]
+  D --> V["검증 사례"]
+  T --> R{"팀 검토"}
+  R -->|수정| T
+  R -->|채택| E["외부 동작은 요구사항에 반영"]
+  R -->|채택| I["내부 구조는 설계에 유지"]
+```
+
+| 원문 | 임시 결정 | 선택 이유 | 영향 문서 |
+| --- | --- | --- | --- |
+| [OPEN-01](../requirements.md#open-01) | 아래의 HTML·폼·이벤트 지원 목록을 적용한다. | 샘플 편집과 상호작용에 필요한 범위를 명시 | [렌더러](renderer.md), [웹페이지](playground-history.md) |
+| [OPEN-02](../requirements.md#open-02) | 테스트 영역에 HTML 입력창과 미리보기를 둔다. | 태그·속성·텍스트 변경을 모두 표현 가능 | [웹페이지](playground-history.md) |
+| [OPEN-03](../requirements.md#open-03) | 최초 VDOM을 이력 0번으로 저장한다. | 첫 Patch를 초기 상태까지 되돌릴 수 있음 | [이력](playground-history.md) |
+| [OPEN-04](../requirements.md#open-04) | 과거에서 새 Patch가 성공하면 이후 이력을 제거하고 새 상태를 추가한다. | 단일 선형 이력으로 이동 규칙 단순화 | [이력](playground-history.md) |
+| [OPEN-05](../requirements.md#open-05) | 변경 없는 Patch도 성공 요청당 이력 한 개를 저장한다. | 과제의 Patch 후 저장 동작을 그대로 적용 | [이력](playground-history.md), [검증](verification.md) |
+| [OPEN-06](../requirements.md#open-06) | 현재 페이지 메모리에만 저장한다. 새로고침 시 초기화하며, 초기 구현에는 자동 삭제나 개수 제한을 두지 않는다. | 저장소 연동 없이 복원 기능에 집중 | [이력](playground-history.md) |
+| [OPEN-07](../requirements.md#open-07) | 직접 값·함수형 업데이트를 지원하고, 함수형 초기값도 지원한다. Object.is로 같은 상태면 갱신을 생략한다. | 이전 값 기반 변경과 초기화 동작을 명확히 함 | [Hook](hooks.md) |
+| [OPEN-08](../requirements.md#open-08) | 권장 EFF-04를 임시 채택한다. 루트에 unmount()를 추가하고 다시 mount()하면 새 상태로 시작한다. | Effect 정리를 검증할 명확한 경계 제공 | [런타임](component-runtime.md), [Hook](hooks.md) |
+| [OPEN-09](../requirements.md#open-09) | 입력은 적용 전 검증한다. 검증 실패 시 실제 영역·적용 기준·이력을 유지하고 오류를 표시한다. 런타임 실패는 단계별로 처리한다. | 잘못된 입력이 적용 상태를 훼손하지 않도록 함 | [렌더러](renderer.md), [런타임](component-runtime.md), [웹페이지](playground-history.md) |
+| [OPEN-10](../requirements.md#open-10) | TypeScript, Vite, Vitest+jsdom, Playwright를 개발 도구 후보로 사용한다. 실행 UI에는 외부 프레임워크를 사용하지 않는다. | 타입 계약과 모듈·브라우저 검증 지원 | [전체 구조](architecture.md), [검증](verification.md) |
+| [OPEN-11](../requirements.md#open-11) | 의존성은 항목별 Object.is로 비교한다. Effect는 생략·빈 배열·배열을 지원한다. Memo는 배열을 필수로 받는다. | 비용과 실행 규칙이 예측 가능한 비교 | [Hook](hooks.md) |
+| [OPEN-12](../requirements.md#open-12) | 이력 이동이 가능한 경우 미적용 편집을 폐기하고 선택 상태로 입력창·미리보기를 동기화한다. 경계의 무효 이동은 편집을 보존한다. | 이동 완료 후 두 영역이 같은 상태를 나타냄 | [웹페이지](playground-history.md) |
+| [OPEN-13](../requirements.md#open-13) | 의존성이 같으면 Memo 결과의 같은 객체 참조를 반환한다. | 재계산과 불필요한 복사 생략 | [Hook](hooks.md) |
+| [OPEN-14](../requirements.md#open-14) | 버튼당 한 단계 이동한다. 처음/끝에서는 해당 버튼을 비활성화하고 API 호출도 무효 처리한다. | 탐색 경계가 명확함 | [이력](playground-history.md) |
+| [OPEN-15](../requirements.md#open-15) | 루트 본문에서 항상 같은 순서·개수로 Hook을 호출한다. 슬롯 종류·개수와 호출 문맥을 검사한다. | 배열 인덱스로 기록 연결 가능 | [런타임](component-runtime.md), [Hook](hooks.md) |
+
+## OPEN-01 세부 범위
+
+### HTML과 텍스트
+
+- 노드: HTML 요소와 텍스트. 공백 텍스트는 유지한다. 주석·SVG·사용자 정의 요소는 미지원 오류로 처리한다.
+- 태그: `div`, `span`, `p`, `section`, `article`, `header`, `footer`, `main`, `h1`~`h6`, `ul`, `ol`, `li`, `strong`, `em`, `br`, `label`, `button`, `input`, `textarea`.
+- 공통 속성: `id`, `class`, `title`, `data-*`, `aria-*`.
+- 추가 속성: label의 `for`; button의 `type`, `disabled`; input의 `type`, `name`, `placeholder`, `disabled`, `value`, `checked`; textarea의 `name`, `placeholder`, `disabled`.
+- input은 `text`, `checkbox`만 지원한다. type 생략은 text로 정규화한다. button은 type=button만 지원하며 생략도 button으로 정규화한다.
+- `style`, URL 속성, `on*` HTML 속성, script·iframe·외부 리소스 태그는 입력으로 허용하지 않는다. 화면 스타일은 프로젝트 CSS와 허용된 class로 제공한다.
+
+이 목록은 영구 제한이 아니다. 지원 범위 변경 시 변환·검증·Patch·편집 테스트를 함께 수정한다.
+
+### 폼의 현재 값
+
+- input text와 textarea는 현재 `value`를 보존한다.
+- checkbox는 현재 `checked`와 문자열 `value`를 보존한다. 체크 여부를 단순한 속성 존재와 혼동하지 않도록 별도 필드에 둔다.
+- select, radio, file, number 등은 이번 범위에서 제외한다.
+- textarea의 문자열 내용은 VDOM에서 `value`로 정규화한다. HTML로 내보낼 때는 태그 내부 텍스트로 변환한다.
+
+### UI 이벤트
+
+- Phase 2에서 `click`, `input`, `change`의 네이티브 이벤트를 지원한다. 함수 콜백으로 등록·교체·제거한다.
+- HTML 입력창의 문자열을 JavaScript 핸들러로 실행하지 않는다.
+- Phase 1 미리보기의 폼 조작은 컨트롤러가 관찰해 HTML 입력창에 반영한다. 이 콜백은 사용자 VDOM의 일부가 아니다.
+
+## 추가 설계 선택
+
+| 선택 | 내용 | 변경 시 영향 |
+| --- | --- | --- |
+| 자식 대응 | 인덱스 기반 비교. key 이동 최적화는 제외 | Diff·Patch와 노드 정체성 테스트 |
+| Phase 2 UI 작성 | h()와 text()로 VDOM 생성. 초기 구현에서 JSX 변환은 제외 | 컴포넌트 작성 API |
+| 갱신 시점 | 유휴 상태의 setter는 동기 갱신. Effect 처리 중 요청은 현재 Effect 처리가 끝난 뒤 순서대로 처리 | 런타임과 Hook 테스트 |
+| History 저장 | 불변 VDOM 스냅샷 배열과 cursor 사용 | History 저장·복원 |
+| 검증 브라우저 | 로컬 Chrome에서 시연하고 Playwright Chromium에서 자동 검증. 실제 버전은 검증 기록에 남김 | 재현 환경 |
+
+메모리 이력은 상태 수와 DOM 크기에 비례해 증가한다. 자동 삭제 정책이 필요해지면 OPEN-06을 다시 결정한다.
+
+## 임시 결정을 확정하는 절차
+
+1. 팀에서 선택과 이유를 검토한다.
+2. 외부 동작·지원 범위는 requirements.md의 인수 조건과 결정 상태에 반영한다.
+3. 자료구조·알고리즘·파일 구성은 설계 문서에서 유지한다.
+4. 변경 영향을 받는 문서와 검증 사례를 함께 갱신한다.
+
+Hook 호출 검사는 모든 잘못된 사용을 증명하는 기능이 아니다. 같은 종류의 Hook 두 개가 위치를 바꾸는 경우처럼 슬롯 종류·개수만으로 발견하지 못하는 사용은 지원 규칙 위반으로 문서화한다.
