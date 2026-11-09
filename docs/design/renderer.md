@@ -77,11 +77,33 @@ type VRoot = { kind: 'root'; children: readonly VNode[] };
 
 ## DOM 읽기와 생성
 
-`readDOM(container)`는 childNodes를 순서대로 방문한다. 요소는 허용 목록을 검사하고, 텍스트는 공백까지 그대로 보존한다. input/textarea에서는 속성의 초기값보다 현재 프로퍼티 값을 읽는다.
+`readDOM(container, scope?)`는 Element 또는 DocumentFragment의 childNodes를 순서대로 방문한다. 요소는 허용 목록을 검사하고, 텍스트는 공백까지 그대로 보존한다. input/textarea에서는 속성의 초기값보다 현재 프로퍼티 값을 읽는다. scope가 있으면 식별자를 논리 값으로 역변환하며, 생략하면 원본 DOM의 논리 값을 읽는다. 분리된 template은 content를 읽기 대상으로 사용한다. 네이티브 이벤트 리스너를 역변환하지 않으며 반환 events는 비어 있다.
 
-`mountTree`는 createElement/createTextNode로 트리를 만든 뒤 빈 컨테이너에 연결한다. append 전에 attrs·children을 구성하고, value/checked/disabled와 이벤트 바인딩을 적용한다.
+`mountTree(container, tree, scope)`는 createElement/createTextNode로 트리를 만든 뒤 빈 컨테이너에 연결한다. append 전에 scope에 따른 실제 ID·참조 속성과 children을 구성하고, value/checked/disabled와 이벤트 바인딩을 적용한다. `applyPlan(container, plan, scope)`도 동일한 변환을 사용한다.
 
 HTML 편집 내용은 분리된 template에 파싱하고 전체 검증 후에만 미리보기에 연결한다. 브라우저 파서가 정상적으로 보정하는 HTML은 정규화해 수용하며, 미지원 태그·속성은 조용히 제거하지 않고 오류로 표시한다.
+
+## 영역별 식별자 계약
+
+### 논리 값과 DOM 값
+
+- VElement.attrs의 `id`, label의 `for`, 지원 ARIA ID 참조는 항상 논리 값이다. Diff와 HTML 직렬화에는 scope나 실제 ID를 넣지 않는다.
+- `createDOMScope(container)`는 문서에서 고유한 이름공간을 가진 불투명 DOMScope를 생성한다. 논리 ID → 실제 ID 변환은 scope 안에서 안정적이고 일대일이며, 서로 다른 scope의 실제 ID 집합은 겹치지 않는다. 단순 문자열 접두어 제거로 논리 값을 추측하지 않는다.
+- 호스트 UI도 생성 ID 이름공간을 예약하고 같은 실제 ID를 사용하지 않는다. 임베딩 측의 임의 DOM 변경·예약 이름공간 침범은 지원 계약 밖이다.
+- 쓰기는 `id`와 모든 지원 ID 참조를 함께 변환한다. ID 목록은 HTML 공백으로 토큰화해 각 토큰을 변환하고 한 칸 공백으로 정규화한다. 원본 DOM·컴포넌트 Props의 입력 정규화에도 같은 목록 규칙을 적용한다. 읽기는 같은 scope로 각각 역변환한다. 다른 scope의 값이나 역변환할 수 없는 값은 오류이며 그대로 통과시키지 않는다.
+- 논리 ID는 빈 문자열·HTML 공백을 포함할 수 없고 VRoot 안에서 유일해야 한다. 단일 참조는 정확히 한 ID, 목록 참조는 한 개 이상 ID를 가져야 한다. 모든 대상은 같은 VRoot에 있어야 한다. label의 대상은 지원하는 labelable 요소여야 한다. ID·참조 전체 검증은 연결 전 수행한다.
+- 지원 ARIA 속성과 단일/목록 구분은 [OPEN-01 세부 범위](temporary-decisions.md#식별자와-aria-범위-보완)를 따른다. 일반 문자열 속성에 포함된 ID처럼 보이는 값은 변환하지 않는다.
+
+이벤트가 없는 Phase 1 논리 트리 T를 실제 영역 scope A와 미리보기 scope B로 생성하면 실제 `id` 값은 다르지만 `readDOM(actual, A)`와 `readDOM(preview, B)`는 T와 의미상 같아야 한다. 직렬화된 HTML·History에 실제 ID가 새어 나오면 계약 위반이다. ID 변경·삭제와 참조 변경도 같은 검증·변환 규칙을 따른다.
+
+### 소유권과 수명
+
+- 컨트롤러는 실제·미리보기 scope를 각각 소유하고, FunctionComponent는 자기 루트 scope를 소유한다. 동일하거나 중첩된 컨테이너에 scope를 중복 생성하지 않는다. scope를 사용한 읽기·쓰기에서는 지정 컨테이너와 scope 소유 컨테이너의 동일성을 검사하고 불일치를 오류로 거부한다.
+- scope는 컨테이너 수명 동안 유지하며 Patch·이력 이동·실패 복구에서 재사용한다. `releaseDOMScope(scope)`는 바인딩을 해제하고 관리 DOM을 비운 뒤 호출한다. 해제된 scope로 읽기·쓰기는 오류다.
+- 최초 원본 샘플과 분리된 template은 scope 없이 읽는다. 최초 샘플은 논리 트리를 확보·검증한 후 비우고 scope를 적용해 다시 생성하며, 그 뒤 미리보기를 연결한다. 서로 다른 영역에 원본 ID를 복제한 채 연결하지 않는다.
+- scope는 보안 격리가 아니라 ID 연결 격리다. 프로젝트 CSS는 class를 사용한다. scoped DOM에서 `document.getElementById(논리ID)` 조회는 지원하지 않는다. DOM을 참조하는 코드는 소유 컨테이너와 실제 노드 참조를 기준으로 작성한다.
+
+ID 인코딩·역변환 자료구조·이름공간 발급 방법은 구현에 위임한다. 일대일성, 문서 내 고유성, 왕복 보존, 해제 후 사용 금지는 구현 방식과 무관한 불변조건이다.
 
 ## Diff 전략
 
@@ -121,6 +143,7 @@ Diff는 attrs 이름·값, 텍스트, domProps 값, 이벤트 함수 참조를 �
 | 대상 | 반영 방식 |
 | --- | --- |
 | 문자열 속성 | 달라진 값만 setAttribute, 삭제된 이름은 removeAttribute |
+| id·for·지원 ARIA ID 참조 | 논리 값을 scope로 변환해 반영. 원본 VDOM은 변경하지 않음 |
 | 텍스트 | 기존 Text.nodeValue를 변경 |
 | value/checked/disabled | DOM 프로퍼티에 반영. 실제 값이 목표와 다를 때만 대입 |
 | 이벤트 | 이전 함수와 다르면 removeEventListener 후 addEventListener. 삭제 시 해제 |
@@ -134,7 +157,8 @@ Phase 1에서는 실제 영역의 input/change 기본 이벤트 후 현재 appli
 - 전체 VDOM 검증과 새 노드 준비는 기존 DOM을 바꾸기 전에 수행한다.
 - 잘못된 입력·미지원 속성은 검증 오류이며 DOM을 바꾸지 않는다.
 - 예상하지 못한 적용 오류가 발생하면 호출자에게 예외를 전달한다. 렌더러 자체가 모든 DOM 작업의 원자성을 보장하지 않는다.
-- 호출자는 마지막 성공 VDOM으로 복구할 수 있다. 이 오류 경로에서는 DOM 객체 정체성이 보존되지 않을 수 있으며, 정상 부분 갱신 경로와 구분한다.
+- 호출자는 같은 DOMScope와 마지막 성공 VDOM으로 복구할 수 있다. 이 오류 경로에서는 DOM 객체 정체성이 보존되지 않을 수 있으며, 정상 부분 갱신 경로와 구분한다.
+- 렌더러는 Effect의 소유자가 아니다. Phase 2 호출자는 [런타임 복구 절차](component-runtime.md#실패-처리)에 따라 기존 Effect·이벤트를 정리하고 재구성 결과를 비활성 화면으로만 남긴다. 복구용 생성은 이벤트가 비어 있는 표시용 트리를 사용하며 마지막 성공 VDOM 자체는 수정하지 않는다.
 - 애플리케이션 외부에서 컨테이너 구조를 임의로 바꾸는 것은 지원하지 않는다.
 
 ## 확인할 사례
@@ -144,3 +168,4 @@ Phase 1에서는 실제 영역의 input/change 기본 이벤트 후 현재 appli
 - 변경 없는 계획이 DOM 쓰기를 생략하는가?
 - value/checked 변경과 이벤트 함수 교체가 DOM에 실제로 반영되는가?
 - 현재 DOM을 읽어 재생성한 뒤에도 폼 상태가 같은가?
+- 같은 논리 ID를 가진 두 영역의 label·ARIA 연결이 자기 영역에 한정되고, 읽기·직렬화·이력 이동 후 논리 ID가 보존되는가?

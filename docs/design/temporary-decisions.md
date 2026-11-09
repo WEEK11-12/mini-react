@@ -27,7 +27,7 @@ flowchart TD
 | [OPEN-05](../requirements.md#open-05) | 변경 없는 Patch도 성공 요청당 이력 한 개를 저장한다. | 과제의 Patch 후 저장 동작을 그대로 적용 | [이력](playground-history.md), [검증](verification.md) |
 | [OPEN-06](../requirements.md#open-06) | 현재 페이지 메모리에만 저장한다. 새로고침 시 초기화하며, 초기 구현에는 자동 삭제나 개수 제한을 두지 않는다. | 저장소 연동 없이 복원 기능에 집중 | [이력](playground-history.md) |
 | [OPEN-07](../requirements.md#open-07) | 직접 값·함수형 업데이트를 지원하고, 함수형 초기값도 지원한다. Object.is로 같은 상태면 갱신을 생략한다. | 이전 값 기반 변경과 초기화 동작을 명확히 함 | [Hook](hooks.md) |
-| [OPEN-08](../requirements.md#open-08) | 권장 EFF-04를 임시 채택한다. 루트에 unmount()를 추가하고 다시 mount()하면 새 상태로 시작한다. | Effect 정리를 검증할 명확한 경계 제공 | [런타임](component-runtime.md), [Hook](hooks.md) |
+| [OPEN-08](../requirements.md#open-08) | 권장 EFF-04를 임시 채택한다. 루트에 unmount()를 추가한다. idle/faulted에서만 제거를 시작하며 실행 중 재진입은 거부한다. 제거 완료 후 mount()하면 새 상태로 시작한다. | 실행 중 setup의 cleanup 소유권을 끊지 않고 제거 경계 제공 | [런타임](component-runtime.md), [Hook](hooks.md) |
 | [OPEN-09](../requirements.md#open-09) | 입력은 적용 전 검증한다. 검증 실패 시 실제 영역·적용 기준·이력을 유지하고 오류를 표시한다. 런타임 실패는 단계별로 처리한다. | 잘못된 입력이 적용 상태를 훼손하지 않도록 함 | [렌더러](renderer.md), [런타임](component-runtime.md), [웹페이지](playground-history.md) |
 | [OPEN-10](../requirements.md#open-10) | TypeScript, Vite, Vitest+jsdom, Playwright를 개발 도구 후보로 사용한다. 실행 UI에는 외부 프레임워크를 사용하지 않는다. | 타입 계약과 모듈·브라우저 검증 지원 | [전체 구조](architecture.md), [검증](verification.md) |
 | [OPEN-11](../requirements.md#open-11) | 의존성은 항목별 Object.is로 비교한다. Effect는 생략·빈 배열·배열을 지원한다. Memo는 배열을 필수로 받는다. | 비용과 실행 규칙이 예측 가능한 비교 | [Hook](hooks.md) |
@@ -42,12 +42,21 @@ flowchart TD
 
 - 노드: HTML 요소와 텍스트. 공백 텍스트는 유지한다. 주석·SVG·사용자 정의 요소는 미지원 오류로 처리한다.
 - 태그: `div`, `span`, `p`, `section`, `article`, `header`, `footer`, `main`, `h1`~`h6`, `ul`, `ol`, `li`, `strong`, `em`, `br`, `label`, `button`, `input`, `textarea`.
-- 공통 속성: `id`, `class`, `title`, `data-*`, `aria-*`.
+- 공통 속성: `id`, `class`, `title`, `data-*` 및 아래에 열거한 `aria-*` 속성.
 - 추가 속성: label의 `for`; button의 `type`, `disabled`; input의 `type`, `name`, `placeholder`, `disabled`, `value`, `checked`; textarea의 `name`, `placeholder`, `disabled`.
 - input은 `text`, `checkbox`만 지원한다. type 생략은 text로 정규화한다. button은 type=button만 지원하며 생략도 button으로 정규화한다.
 - `style`, URL 속성, `on*` HTML 속성, script·iframe·외부 리소스 태그는 입력으로 허용하지 않는다. 화면 스타일은 프로젝트 CSS와 허용된 class로 제공한다.
 
 이 목록은 영구 제한이 아니다. 지원 범위 변경 시 변환·검증·Patch·편집 테스트를 함께 수정한다.
+
+### 식별자와 ARIA 범위 보완
+
+- VDOM·HTML 입력·History에는 논리 ID를 저장하고, 연결된 DOM에는 영역별 실제 ID를 사용한다. `id`·label의 `for`·지원 ARIA ID 참조를 함께 변환한다. 읽기와 직렬화의 상세 계약은 [영역별 식별자 계약](renderer.md#영역별-식별자-계약)을 기준으로 한다.
+- 비참조 ARIA 속성은 `aria-label`, `aria-hidden`, `aria-live`, `aria-expanded`, `aria-checked`, `aria-disabled`, `aria-pressed`를 지원한다.
+- 단일 ID 참조는 `aria-activedescendant`, `aria-errormessage`; ID 목록 참조는 `aria-labelledby`, `aria-describedby`, `aria-controls`, `aria-owns`, `aria-flowto`를 지원한다. 그 외 ARIA 속성은 미지원 오류다. 새 ID 참조 속성은 읽기·쓰기 양방향 변환을 정의한 뒤 추가한다.
+- 중복·빈 ID, 공백을 포함한 ID, 같은 VRoot 안에 대상이 없는 ID 참조는 검증 오류다. 영역 밖 요소를 참조하는 입력은 지원하지 않는다.
+
+기존의 포괄적인 `aria-*` 표기를 명시적 지원 목록으로 보완한 임시 제안이다. 이는 OPEN-01의 지원 범위 구체화이며, 팀 채택 전까지 요구사항의 결정 상태를 바꾸지 않는다.
 
 ### 폼의 현재 값
 
@@ -71,6 +80,14 @@ flowchart TD
 | 갱신 시점 | 유휴 상태의 setter는 동기 갱신. Effect 처리 중 요청은 현재 Effect 처리가 끝난 뒤 순서대로 처리 | 런타임과 Hook 테스트 |
 | History 저장 | 불변 VDOM 스냅샷 배열과 cursor 사용 | History 저장·복원 |
 | 검증 브라우저 | 로컬 Chrome에서 시연하고 Playwright Chromium에서 자동 검증. 실제 버전은 검증 기록에 남김 | 재현 환경 |
+
+### 경계 정책의 선택과 대안
+
+| 결정 | 선택 이유 | 비교한 대안과 포기한 것 |
+| --- | --- | --- |
+| 영역별 실제 ID + 논리 ID 왕복 | 일반 컨테이너와 공통 렌더러를 유지하면서 label·ARIA 연결을 격리 | Shadow DOM/iframe은 트리 격리가 가능하지만 호스트·스타일·이벤트 경계를 추가한다. 단순 접두어만 적용하는 방식은 읽기·이력 비교를 오염시키므로 제외 |
+| 실행 중 unmount 진입 거부 | setup 반환 전 cleanup 회수와 제거 요청 보류 상태를 추가하지 않음 | 제거 보류 방식의 편의성은 포기. 실행 중 작업을 끝낸 뒤 호출자가 idle에서 제거해야 함 |
+| DOM 재구성 후 정리·faulted | 이전 DOM에 연결된 Effect를 정상 실행 자원으로 재사용하지 않음 | 자동 Effect 재설정은 setup 보관·재실행 실패 정책이 필요하므로 제외. 화면 복구 후 State를 유지한 자동 재개는 제공하지 않음 |
 
 메모리 이력은 상태 수와 DOM 크기에 비례해 증가한다. 자동 삭제 정책이 필요해지면 OPEN-06을 다시 결정한다.
 
