@@ -51,8 +51,8 @@ hooks[2] = { kind: "effect", deps: [count], cleanup: () => {} };
 1. `useState`의 setter는 값 또는 `prev => next` 함수를 받는다. `Object.is(prev, next)`이면 갱신을 생략한다.
 2. 값이 달라지면 루트 State 슬롯에 다음 값을 임시로 두고 `update()`를 실행한다. 이벤트 핸들러의 여러 setter는 **각각 갱신**한다. 자동 Batching은 필수 범위에서 제외한다.
 3. `update()`는 Hook 인덱스를 초기화하고 루트 함수를 실행한다. 렌더 도중 setter 호출은 오류다.
-4. 새 VNode의 검증·Diff·Patch가 성공하면 이전 VNode를 새 트리로 바꾼다. 렌더·계산·Patch가 실패하면 이전 Hook 슬롯·VNode·DOM으로 되돌리고 Effect를 실행하지 않는다. State 객체를 제자리에서 바꾸는 사용은 이 복구 계약 밖이다.
-5. 커밋 뒤 변경된 Effect의 이전 정리 함수를 먼저 실행하고 새 Effect를 실행한다. Effect 안의 setter는 재진입을 막기 위해 현재 커밋 후 microtask에 후속 update를 예약한다.
+4. State·Memo·Effect 슬롯의 다음 값은 커밋된 `hooks`와 분리한 임시 슬롯에서 계산한다. 렌더·계산·검증·Diff가 실패하면 임시 슬롯을 버리고 DOM을 바꾸지 않는다. Patch가 실패하면 임시 슬롯·새 VNode를 확정하지 않고 [Diff·Patch 복구 계약](diff-patch.md#5-경계-사례와-오류-처리)에 따라 이전 VNode의 화면 내용 복구를 시도한다. State 객체를 제자리에서 바꾸는 사용은 이 복구 계약 밖이다.
+5. DOM Patch에 성공하면 새 Hook 슬롯·VNode를 확정한다. 그 뒤 변경된 Effect의 이전 정리 함수를 먼저 실행하고 새 Effect를 실행한다. Effect 또는 정리 함수가 실패해도 이미 커밋된 State·VNode·DOM은 되돌리지 않고 오류를 표시한다. Effect 안의 setter는 재진입을 막기 위해 현재 커밋 후 microtask에 후속 update를 예약한다.
 
 `useMemo`는 렌더 중에 계산한다. 동일한 의존성이면 저장한 값을 돌려주며 DOM 변경 여부와 무관하다. `useEffect`는 외부 작업용이므로 렌더 중 실행하지 않는다.
 
@@ -68,7 +68,9 @@ hooks[2] = { kind: "effect", deps: [count], cleanup: () => {} };
 | 조건부 Hook·Hook 순서 변경·자식 Hook | 오류. 이전 커밋 화면 보존. |
 | deps 생략·빈 배열·변경·동일 | 각 규칙에 맞는 Effect·Memo 실행 횟수. |
 | Effect 재실행·unmount | 이전 정리 함수 1회 실행. 이벤트 핸들러도 남지 않음. |
-| 렌더/계산/Effect가 예외를 던짐 | 오류 표시; 렌더/계산 실패는 이전 Hook 슬롯·DOM 유지, Effect 실패는 이미 커밋된 State·DOM 유지. 다음 작업에서 복구 가능해야 함. |
+| 렌더·Memo·검증·Diff 예외 | 임시 Hook 슬롯을 버리고 이전 커밋 State·VNode·DOM 유지. Effect 실행 없음. |
+| DOM Patch 예외 | 새 State·VNode를 확정하지 않고 이전 화면 내용 복구 시도. 복구 실패 시 후속 갱신 중단. 노드 참조·포커스 복구는 보장하지 않음. |
+| Effect·정리 함수 예외 | 이미 커밋된 State·VNode·DOM 유지, 오류 표시. 외부 작업의 부작용이나 이전 정리 함수 실행을 되돌린다고 보장하지 않음. |
 | 입력창 연속 입력 | State·`domProps.value`·화면이 동기화되고 포커스가 불필요하게 교체되지 않음. |
 
 ## 6. 선택·대안·한계
