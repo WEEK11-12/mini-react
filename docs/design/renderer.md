@@ -31,6 +31,7 @@ classDiagram
   class PatchPlan {
     previous : VRoot
     next : VRoot
+    hasChanges : boolean
     children : ChildrenPlan
   }
   VRoot *-- "0..*" VNode : children
@@ -156,12 +157,21 @@ type ChildrenPlan = {
   ordered: readonly ChildPlacement[]; // 다음 children과 같은 순서
   remove: readonly number[];          // 대응되지 않은 이전 인덱스
 };
-type PatchPlan = { previous: VRoot; next: VRoot; children: ChildrenPlan };
+type PatchPlan = {
+  previous: VRoot;
+  next: VRoot;
+  hasChanges: boolean;
+  children: ChildrenPlan;
+};
 ```
 
 oldIndex는 이 부모의 변경 전 childNodes 인덱스다. ordered의 길이는 다음 children 길이와 같고 각 항목은 해당 다음 자식을 나타낸다. reuse/replace의 oldIndex는 중복되지 않으며 remove와도 겹치지 않는다. 이전 인덱스는 ordered에서 한 번 참조되거나 remove에 한 번 포함되어야 한다. create에는 이전 노드가 없다.
 
 NodePlan의 keep은 재사용 노드의 내용이 같다는 뜻이며 위치까지 같다는 뜻은 아니다. 위치 변경은 ordered가 표현한다. Diff는 key 대응 후 attrs 이름·값, 텍스트, domProps 값, 이벤트 함수 참조를 비교한다. 두 트리와 History를 수정하지 않으며 DOM에 접근하지 않는다.
+
+PatchPlan.hasChanges는 정규화된 previous와 next 사이에 의미상 변경이 있는지를 나타낸다. 노드 종류·태그·key·자식 개수/순서·공백을 포함한 텍스트·지원 attrs·domProps·이벤트 함수 참조가 모두 같을 때에만 false다. 속성 맵의 열거 순서·HTML 원문 표기·VDOM 객체 참조·영역별 실제 DOM ID는 동일성 기준이 아니다. Phase 1의 events는 비어 있으므로 비교 대상은 지원 HTML 데이터다.
+
+이 값은 실제 DOM 쓰기 유무나 계획 배열 길이를 뜻하지 않는다. 같은 내용의 노드를 이동해야 하면 true이며 ordered에 재사용 항목이 있어도 false일 수 있다. VDOM이 같아 false인 경우에도 실제 폼 프로퍼티의 값이 달라 보정이 필요할 수 있다. 컨트롤러와 HistoryStore는 무변경 이력 판정을 이 동일성 계약에 맞추며, 비교의 세부 구현과 중복 계산 방지는 구현에 위임한다.
 
 ## 계획 적용 순서
 

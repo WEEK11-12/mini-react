@@ -1,6 +1,6 @@
 # 전체 구조
 
-상태: key 기반 자식 대응 채택 / 나머지 정책은 임시 설계 · 기준: [결정 기록](temporary-decisions.md)
+상태: key 기반 자식 대응·무변경 Patch의 History 보존 채택 / 나머지 정책은 임시 설계 · 기준: [결정 기록](temporary-decisions.md)
 
 ## 시스템 경계
 
@@ -89,7 +89,9 @@ key는 VElement의 선택적 메타데이터로 유지한다. HTML 편집은 dat
 2. 실제·미리보기 컨테이너마다 다른 DOMScope를 만들고, 동일한 논리 VDOM을 각 scope로 반영한다.
 3. 사용자는 HTML 입력 또는 미리보기 폼을 편집한다.
 4. Patch 요청 시 현재 미리보기 DOM을 읽어 appliedTree와 비교한다.
-5. 실제 영역 반영 성공 후 적용 기준과 이력을 함께 갱신한다.
+5. 보정·화면 동기화까지 성공한 뒤 의미상 변경이 있으면 적용 기준과 이력을 함께 갱신한다. 변경이 없으면 기존 appliedTree·History와 앞으로가기 기록을 유지하고 '변경 없음'을 안내한다.
+
+변경 여부는 PatchPlan.hasChanges로 전달하며 [렌더러의 의미상 동일성](renderer.md#diff-전략)을 따른다. 이력 생략은 폼 값 보정·입력창 동기화의 생략을 뜻하지 않는다. [컨트롤러의 무변경 처리](playground-history.md#의미상-같은-상태와-무변경-patch)를 따른다.
 
 ## Phase 2 흐름
 
@@ -115,6 +117,7 @@ Phase 2의 DOM을 다시 읽어 State로 역변환하지 않는다. State가 UI 
 - DOM 재구성은 화면의 복구이지 Effect 수명과 컴포넌트 실행의 복구가 아니다. faulted 상태에서 기존 setter·이벤트·대기 요청은 실행되지 않는다.
 - 정상 갱신에서 같은 부모·같은 key·같은 tag의 DOM은 재정렬해도 같은 객체다. key는 형제 범위이며 ID 이름공간·루트 Hook 순서와 독립적이다. key 없는 자식은 위치 fallback만 제공한다.
 - History 스냅샷과 직렬화는 key를 보존한다. 중복 key 검증 실패는 마지막 성공 DOM·Hook·History를 변경하지 않는다.
+- 새 Phase 1 트리가 현재 적용 상태와 의미상 같으면 History의 entries·cursor·앞으로가기 기록과 appliedTree를 변경하지 않는다. 과거 전체 이력의 중복 제거와는 다르며 Phase 2의 State/Effect 정책에도 영향을 주지 않는다.
 
 ## 요구사항 연결
 

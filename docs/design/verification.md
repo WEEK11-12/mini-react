@@ -38,7 +38,7 @@ flowchart TD
 | [MEMO-01](../requirements.md#memo-01), [MEMO-02](../requirements.md#memo-02), [MEMO-03](../requirements.md#memo-03) | useMemo | 최초 계산·동일 결과 재사용·새 deps 계산 |
 | [EDIT-01](../requirements.md#edit-01), [EDIT-02](../requirements.md#edit-02) | 편집 컨트롤러 | HTML 편집·폼 현재 값 반영·적용 전 실제 영역 유지 |
 | [VIEW-01](../requirements.md#view-01), [VIEW-02](../requirements.md#view-02), [VIEW-03](../requirements.md#view-03), [VIEW-04](../requirements.md#view-04) | 브라우저 통합 | 두 영역·버튼·초기 변환·Patch·Phase 2 사례 |
-| [HIST-01](../requirements.md#hist-01), [HIST-02](../requirements.md#hist-02), [HIST-03](../requirements.md#hist-03) | HistoryStore/컨트롤러 | 스냅샷 독립·이동·동기화·분기·경계 |
+| [HIST-01](../requirements.md#hist-01), [HIST-02](../requirements.md#hist-02), [HIST-03](../requirements.md#hist-03) | HistoryStore/컨트롤러 | 스냅샷 독립·이동·동기화·실변경 분기·무변경 이력/앞으로가기 기록 보존·경계 |
 | [TECH-01](../requirements.md#tech-01), [TECH-02](../requirements.md#tech-02) | 구성 검토 | TS/Vanilla 사용, 외부 UI 프레임워크 미사용 |
 | [TECH-03](../requirements.md#tech-03), [TECH-04](../requirements.md#tech-04) | 클래스 검토 | FunctionComponent·hooks·mount·update 존재와 사용 |
 | [TECH-05](../requirements.md#tech-05), [TECH-06](../requirements.md#tech-06) | 호출 문맥·예제 검토 | 루트 Hook, 자식 순수성, 자식 Hook 오류 |
@@ -53,9 +53,10 @@ flowchart TD
   A["초기 A · 이력 A"] -->|B 편집 후 Patch| B["현재 B · 이력 A, B"]
   B -->|C 편집 후 Patch| C["현재 C · 이력 A, B, C"]
   C -->|뒤로| BACK["두 영역과 기준 모두 B"]
-  BACK -->|D 편집 후 앞으로| FORWARD["현재 C · 미적용 D 폐기"]
+  BACK -->|수정 없이 Patch| NOOP["현재 B · 이력 A, B, C 유지 · 앞으로 가능"]
+  NOOP -->|D 편집 후 앞으로| FORWARD["현재 C · 미적용 D 폐기"]
   FORWARD -->|뒤로 이동 후 E 편집과 Patch| BRANCH["현재 E · 이력 A, B, E"]
-  BRANCH -->|변경 없이 Patch| SAME["현재 E · 이력 A, B, E, E"]
+  BRANCH -->|변경 없이 Patch 반복| SAME["현재 E · 이력 A, B, E 유지"]
   SAME -->|끝에서 앞으로| EDGE["상태 · 편집 · 이력 유지"]
   EDGE -->|미지원 HTML 입력| ERROR["오류 표시 · 실제 영역과 이력 유지"]
 ```
@@ -86,6 +87,25 @@ flowchart TD
 ## 설계 검토 회귀 사례
 
 아래는 구현 후 실행할 검증 계약이며, 현재 통과한 테스트를 뜻하지 않는다. 브라우저의 label 기본 동작은 jsdom 검사만으로 대체하지 않고 Playwright Chromium에서 확인한다.
+
+### 무변경 Patch의 History 보존
+
+관련: [HIST-01](../requirements.md#hist-01), [HIST-02](../requirements.md#hist-02), [DIFF-03](../requirements.md#diff-03), 채택된 [OPEN-05](../requirements.md#open-05). 동일성 기준은 [렌더러](renderer.md#diff-전략), 처리 순서는 [컨트롤러](playground-history.md#의미상-같은-상태와-무변경-patch)를 따른다.
+
+| 조건 | 관찰할 결과 |
+| --- | --- |
+| 이력 A,B,C의 중간 B에서 수정 없이 Patch | entries·cursor·appliedTree와 기존 스냅샷 참조 유지, C 제거 없음, 앞으로가기로 C 복원 가능 |
+| 최신 상태 또는 최초 상태에서 무변경 Patch 반복 | 추가 스냅샷 없음, 현재 위치와 이력상 뒤로/앞으로 이동 가능 여부 유지, '변경 없음' 안내 |
+| B를 수정했다가 B로 되돌려 Patch | 편집 행동이 있었어도 무변경 판정. 속성 열거 순서 등 정규화 VDOM을 바꾸지 않는 HTML 원문 차이도 동일하게 처리 |
+| 서로 다른 VDOM 객체로 같은 논리 상태 구성·두 scope에서 읽기 | hasChanges=false, scope의 실제 ID나 객체 참조 차이로 이력을 추가하지 않음. ordered가 비어 있지 않아도 의미상 변경 여부는 별도 판단 |
+| 화면이 같아도 key만 변경, keyed 순서 변경, 의미 있는 공백 텍스트·폼 값 변경 | hasChanges=true. 모든 화면 반영 성공 후 새 스냅샷 추가. 무변경으로 오판하지 않음 |
+| B에서 E로 변경 후 Patch 성공 | 기존 임시 선형 분기 정책에 따라 이력 A,B,E로 변경. 반영 실패 시에는 C를 제거하지 않고 A,B,C와 현재 위치 B 유지 |
+| B에서 과거 또는 이후 기록과 같은 값으로 실제 변경 | 비교는 현재 B와만 수행. 과거 전체를 중복 제거하거나 기존 위치로 자동 이동하지 않고 새 적용으로 저장 |
+| VDOM은 B와 같지만 실제 영역 폼 프로퍼티가 일시적으로 다름 | hasChanges=false인 채 applyPlan의 프로퍼티 보정 수행, 입력창·미리보기 동기화. 실제 DOM 쓰기가 발생했어도 History는 유지 |
+| 무변경 동기화 중 오류, 잘못된 HTML·중복 key 입력 | 성공 메시지를 내지 않고 오류 처리. entries·cursor·appliedTree와 이후 이력 유지, busy 해제. 복구 실패는 기존 재시작 정책 적용 |
+| HistoryStore.push에 current()와 의미상 같은 트리 직접 전달 | entries·cursor·스냅샷 참조·이후 기록 모두 유지. 컨트롤러를 우회해도 잘라내거나 추가하지 않음 |
+
+controller 테스트에서는 무변경 요청이 push를 호출하지 않는지, HistoryStore 단위 테스트에서는 같은 상태의 직접 push가 무효 작업인지 각각 확인한다. 무변경 요청에서도 검증·폼 보정·화면 동기화가 실행되는지와 실패 후 상태 보존을 별도로 확인한다. 이 검증은 Phase 1 History에 한정하며 Phase 2의 State 갱신·Effect 실행 규칙을 바꾸지 않는다.
 
 ### key 기반 대응과 DOM 재사용
 

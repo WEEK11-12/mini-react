@@ -1,10 +1,12 @@
 # 미결정 사항의 임시 결정
 
-상태: **OPEN 정책은 임시 채택 / key 기반 자식 대응은 사용자 요청으로 채택** · 작성일: 2026-11-09
+상태: **key 기반 자식 대응·무변경 Patch의 History 보존은 사용자 요청으로 채택 / 나머지 OPEN 정책은 임시 선택** · 작성일: 2026-11-09
 
-설계를 진행하기 위해 선택한 기준이다. 아래 결정은 과제 원문의 추가 요구가 아니며, 기존 요구사항의 미결정 상태도 그대로 유지한다.
+설계를 진행하기 위해 선택한 기준이다. 사용자 요청으로 채택한 방향과 구현을 위한 임시 선택을 구분하며, 나머지 요구사항의 미결정 상태는 유지한다.
 
 key 기반 비교·DOM 재사용 방향은 후속 사용자 요청에 따라 인덱스 전용 비교에서 변경했다. key 값의 세부 정책·HTML 표현·unkeyed fallback·API는 그 방향을 구현하기 위한 설계 계약이며, 그 밖 OPEN 항목의 확정을 뜻하지 않는다.
+
+현재 적용 상태와 의미상 같은 Patch에서는 History를 변경하지 않는 방향도 사용자 요청으로 채택했다. 과제 원문의 '새로 변경된 VDOM 저장'은 변경된 상태를 저장하는 것으로 해석하고, 무변경 예외는 [HIST-01](../requirements.md#hist-01)에 명시한다. 실제 변경 시 이후 이력을 제거하는 OPEN-04의 분기 선택 자체까지 새로 확정한 것은 아니다.
 
 
 ## 한눈에 보기
@@ -25,8 +27,8 @@ flowchart TD
 | [OPEN-01](../requirements.md#open-01) | 아래의 HTML·폼·이벤트 지원 목록을 적용한다. | 샘플 편집과 상호작용에 필요한 범위를 명시 | [렌더러](renderer.md), [웹페이지](playground-history.md) |
 | [OPEN-02](../requirements.md#open-02) | 테스트 영역에 HTML 입력창과 미리보기를 둔다. | 태그·속성·텍스트 변경을 모두 표현 가능 | [웹페이지](playground-history.md) |
 | [OPEN-03](../requirements.md#open-03) | 최초 VDOM을 이력 0번으로 저장한다. | 첫 Patch를 초기 상태까지 되돌릴 수 있음 | [이력](playground-history.md) |
-| [OPEN-04](../requirements.md#open-04) | 과거에서 새 Patch가 성공하면 이후 이력을 제거하고 새 상태를 추가한다. | 단일 선형 이력으로 이동 규칙 단순화 | [이력](playground-history.md) |
-| [OPEN-05](../requirements.md#open-05) | 변경 없는 Patch도 성공 요청당 이력 한 개를 저장한다. | 과제의 Patch 후 저장 동작을 그대로 적용 | [이력](playground-history.md), [검증](verification.md) |
+| [OPEN-04](../requirements.md#open-04) | 현재와 의미상 다른 상태를 과거 위치에서 적용하는 데 성공하면 이후 이력을 제거하고 추가한다는 기존 임시 선택을 유지한다. 무변경 요청의 이후 이력 보존은 채택된 OPEN-05를 따른다. | 실변경의 선형 분기와 무변경의 기록 보존을 구분 | [이력](playground-history.md) |
+| [OPEN-05](../requirements.md#open-05) | 사용자 요청으로 채택: 새 Phase 1 VDOM이 현재 appliedTree와 의미상 같으면 새 이력을 저장하지 않고 entries·cursor·앞으로가기 기록·appliedTree를 유지한다. | 무변경 Patch로 인한 이후 기록 손실과 중복 스냅샷 방지 | [이력](playground-history.md), [검증](verification.md) |
 | [OPEN-06](../requirements.md#open-06) | 현재 페이지 메모리에만 저장한다. 새로고침 시 초기화하며, 초기 구현에는 자동 삭제나 개수 제한을 두지 않는다. | 저장소 연동 없이 복원 기능에 집중 | [이력](playground-history.md) |
 | [OPEN-07](../requirements.md#open-07) | 직접 값·함수형 업데이트를 지원하고, 함수형 초기값도 지원한다. Object.is로 같은 상태면 갱신을 생략한다. | 이전 값 기반 변경과 초기화 동작을 명확히 함 | [Hook](hooks.md) |
 | [OPEN-08](../requirements.md#open-08) | 권장 EFF-04를 임시 채택한다. 루트에 unmount()를 추가한다. idle/faulted에서만 제거를 시작하며 실행 중 재진입은 거부한다. 제거 완료 후 mount()하면 새 상태로 시작한다. | 실행 중 setup의 cleanup 소유권을 끊지 않고 제거 경계 제공 | [런타임](component-runtime.md), [Hook](hooks.md) |
@@ -92,6 +94,7 @@ flowchart TD
 | 실행 중 unmount 진입 거부 | setup 반환 전 cleanup 회수와 제거 요청 보류 상태를 추가하지 않음 | 제거 보류 방식의 편의성은 포기. 실행 중 작업을 끝낸 뒤 호출자가 idle에서 제거해야 함 |
 | DOM 재구성 후 정리·faulted | 이전 DOM에 연결된 Effect를 정상 실행 자원으로 재사용하지 않음 | 자동 Effect 재설정은 setup 보관·재실행 실패 정책이 필요하므로 제외. 화면 복구 후 State를 유지한 자동 재개는 제공하지 않음 |
 | key 기반 대응 + unkeyed 위치 fallback | 사용자 요청의 재정렬 정체성을 보장하면서 기존 key 없는 HTML·공백 텍스트도 지원 | 인덱스 전용은 재정렬 항목의 DOM 정체성을 보존하지 못하므로 대체. 모든 자식에 key를 강제하는 방식은 텍스트·일반 HTML 편집을 불필요하게 제한하므로 제외 |
+| 현재 적용 상태와 같은 Patch의 이력 생략 | 상태 복원이 목적이므로 의미 없는 중복 기록과 실수에 의한 앞으로가기 기록 손실을 방지 | 모든 성공 요청을 기록하는 방식의 단일 저장 흐름과 클릭 흔적은 포기. 별도 실행 로그나 이력 분기 구조는 추가하지 않음 |
 
 key는 비어 있지 않은 문자열만 지원하고 형제 중복은 적용 전 오류로 처리한다. HTML에는 예약 data-key로 보존한다. 최소 DOM 이동 횟수나 LIS 최적화는 요구하지 않으며 구현에 위임한다. key는 자식 DOM 정체성만 다루고 루트 Hook 슬롯·Effect 수명을 새로 정의하지 않는다.
 

@@ -2,7 +2,7 @@
 
 관련 요구사항: [EDIT](../requirements.md#edit), [VIEW](../requirements.md#view), [HIST](../requirements.md#hist)
 
-기준: [임시 결정](temporary-decisions.md). Phase 1 검증과 Phase 2 시연은 같은 페이지의 서로 다른 섹션으로 제공한다.
+기준: [결정 기록](temporary-decisions.md). 현재 적용 상태와 의미상 같은 Patch는 History를 변경하지 않는 정책을 사용자 요청으로 채택했다. 나머지 미결정 정책은 임시 설계를 유지한다. Phase 1 검증과 Phase 2 시연은 같은 페이지의 서로 다른 섹션으로 제공한다.
 
 
 ## 한눈에 보기
@@ -116,12 +116,20 @@ input/change 이벤트에서 `readDOM(previewContainer, previewScope)`로 현재
 
 1. busy·입력 오류를 확인한다.
 2. 현재 미리보기 DOM을 previewScope로 다시 읽어 논리 VDOM으로 검증한다.
-3. appliedTree와 비교 계획을 만들고, 저장할 스냅샷과 직렬화 문자열을 준비한다.
+3. appliedTree와 비교 계획을 만들고 plan.hasChanges로 의미상 변경 여부를 확인한다. 입력창 동기화 문자열은 준비하되 저장용 스냅샷은 변경이 있을 때만 준비한다.
 4. 실제 영역에는 actualScope, 미리보기에는 previewScope로 반영하고 논리 HTML로 입력창을 동기화한다.
-5. 모든 반영이 성공한 뒤 HistoryStore.push(nextTree)를 호출하고 appliedTree를 그 스냅샷으로 변경한다.
-6. 확정된 이력을 기준으로 버튼 상태를 갱신한다.
+5. 모든 반영이 성공한 뒤 변경이 있으면 HistoryStore.push(nextTree)를 호출하고 appliedTree를 새 현재 스냅샷으로 변경한다. 변경이 없으면 push를 호출하지 않고 entries·cursor·appliedTree와 이후 이력을 그대로 유지한다.
+6. 확정된 이력을 기준으로 버튼 상태를 갱신한다. 변경이 없었던 유효 요청은 오류가 아니라 '변경 없음'으로 안내한다.
 
-비교 결과가 비어 있어도 성공한 Patch 요청은 이력 한 개를 만든다. 과거 위치에서 이런 요청을 해도 이후 이력을 제거하고 새 기록을 추가한다.
+### 의미상 같은 상태와 무변경 Patch
+
+의미상 동일성은 [렌더러의 hasChanges 계약](renderer.md#diff-전략)을 따른다. 비교 대상은 새로 정규화한 Phase 1 VDOM과 **현재 appliedTree**이며 history.current()와 일치해야 한다. HTML 원문·객체 참조·DOMScope의 실제 ID·화면의 겉모습으로 비교하지 않는다. 노드 종류·태그·key·자식 순서·공백 텍스트·지원 속성·현재 폼 프로퍼티를 포함한다. Phase 1의 events는 비어 있다.
+
+- 수정 없이 Patch하거나 수정 후 현재 상태로 되돌린 경우에는 새 스냅샷을 저장하지 않는다. cursor를 이동하지 않고 앞으로가기 기록과 버튼의 이력상 이동 가능 여부도 유지한다.
+- key 변경·형제 순서 변경·폼 값 변경은 화면이 같아 보여도 의미상 변경이다. 현재 상태와 다르면 과거 어딘가에 같은 상태가 있어도 새 적용으로 처리한다. 전체 History의 중복 제거는 하지 않는다.
+- 과거 위치에서 실제 변경을 적용하는 데 성공했을 때만 기존 선형 이력 정책에 따라 이후 기록을 제거하고 새 상태를 추가한다. 이 분기 방식 자체는 OPEN-04의 기존 임시 선택이며 이번 채택 범위는 무변경 보존이다.
+- hasChanges=false여도 조기 반환해 검증·폼 프로퍼티 보정·미리보기/입력창 동기화를 건너뛰지 않는다. 실제 DOM의 폼 값이 appliedTree와 일시적으로 다르면 보정하되 이 때문에 새 이력을 만들지는 않는다. previewTree와 editorText는 유효한 정규화 결과로 동기화할 수 있지만 appliedTree는 기존 스냅샷을 유지한다.
+- 보정·동기화가 실패하면 '변경 없음' 성공으로 보고하지 않는다. 기존 오류 복구 정책을 적용하며 History는 변경하지 않는다. busy는 성공·실패 모두 작업 종료 시 해제한다.
 
 ## HistoryStore
 
@@ -139,7 +147,7 @@ class HistoryStore {
 ```
 
 - 생성 시 초기 상태를 넣고 cursor=0으로 둔다.
-- push는 현재 cursor 뒤 기록을 버리고 스냅샷을 추가한다.
+- push는 입력이 current()와 의미상 다를 때만 현재 cursor 뒤 기록을 버리고 스냅샷을 추가한다. 같으면 entries·cursor·기존 스냅샷 참조를 유지하는 무효 작업이다. 동일성은 컨트롤러와 같은 렌더러 계약을 사용하며 별도의 HTML 문자열 비교를 두지 않는다.
 - 스냅샷은 DOM 참조·함수·DOMScope·실제 ID 없이 key를 포함한 논리 VDOM을 재귀 복사한다. 이후 수정하지 않는다.
 - peek는 위치를 바꾸지 않는다. 컨트롤러가 DOM 복원에 성공한 뒤 commitMove로 cursor를 이동한다.
 - 경계 요청은 무효이며 cursor·DOM·편집 내용을 그대로 둔다.
