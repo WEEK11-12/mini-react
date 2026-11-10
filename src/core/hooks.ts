@@ -11,7 +11,12 @@ export interface EffectSlot {
   readonly deps: readonly unknown[] | undefined;
   cleanup?: () => void;
 }
-export type HookSlot = StateSlot | EffectSlot;
+export interface MemoSlot {
+  readonly kind: 'memo';
+  readonly deps: readonly unknown[];
+  readonly value: unknown;
+}
+export type HookSlot = StateSlot | EffectSlot | MemoSlot;
 export interface PendingEffect {
   readonly slotIndex: number;
   readonly setup: () => void | (() => void);
@@ -93,4 +98,32 @@ export function useEffect(setup: () => void | (() => void), deps?: readonly unkn
   }
   context.candidate[index] = changed ? { kind: 'effect', deps: deps?.slice(), cleanup: previous?.cleanup } : previous;
   if (changed) context.pendingEffects.push({ slotIndex: index, setup });
+}
+
+export function useMemo<T>(calculate: () => T, deps: readonly unknown[]): T {
+  const context = active;
+  if (!context || context.child) throw new Error('Hooks may only run in the root render');
+  if (typeof calculate !== 'function' || !Array.isArray(deps)) throw new Error('Invalid Memo arguments');
+  const index = context.index++;
+  const previous = context.previous[index];
+  if (previous && previous.kind !== 'memo' || !previous && index < context.previous.length) {
+    throw new Error('Hook kind changed');
+  }
+  if (previous && previous.deps.length !== deps.length) throw new Error('Memo dependency shape changed');
+  let changed = !previous;
+  if (previous) {
+    for (let i = 0; i < deps.length; i++) {
+      if (!Object.is(deps[i], previous.deps[i])) {
+        changed = true;
+        break;
+      }
+    }
+  }
+  if (!changed) {
+    context.candidate[index] = previous!;
+    return previous!.value as T;
+  }
+  const value = calculate();
+  context.candidate[index] = { kind: 'memo', deps: deps.slice(), value };
+  return value;
 }

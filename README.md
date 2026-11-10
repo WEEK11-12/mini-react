@@ -13,10 +13,11 @@
 - [5단계 함수형 컴포넌트·FunctionComponent 생명주기 구현 기록](docs/implementation/stage-05.md)
 - [6단계 루트 전용 useState·업데이트 예약 구현 기록](docs/implementation/stage-06.md)
 - [7단계 useEffect 의존성·정리 함수 구현 기록](docs/implementation/stage-07.md)
+- [8단계 useMemo 의존성 기반 메모이제이션 구현 기록](docs/implementation/stage-08.md)
 
 ## 단계별 개발
 
-각 단계는 구현 → 대상 테스트 통과 → 검증 에이전트 검토 후 완료한다. 1~4단계, 5단계 함수형 컴포넌트·생명주기, 6단계 루트 State·업데이트 예약 및 7단계 useEffect 범위는 검증 에이전트 승인을 받았다. useMemo와 Phase 2 시연은 아직 구현하지 않았으며 전체 suite에는 후속 미구현 및 기존 오류 포장 기대값 실패가 남아 있다.
+각 단계는 구현 → 대상 테스트 통과 → 검증 에이전트 검토 후 완료한다. 1~4단계, 5단계 함수형 컴포넌트·생명주기, 6단계 루트 State·업데이트 예약, 7단계 useEffect 및 8단계 useMemo 범위는 검증 에이전트 승인을 받았다. Phase 2 시연은 아직 구현하지 않았으며 전체 suite에는 기존 오류 포장 기대값 실패가 남아 있다.
 
 ## 앱 실행
 
