@@ -1,0 +1,26 @@
+{
+  "name": "mini-react-contract-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run renderer runtime history",
+    "test:harness": "vitest run harness",
+    "test:browser": "playwright test",
+    "test:browser:list": "playwright test --list --reporter=list",
+    "test:catalog": "node support/export-cases.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "@types/node": "26.6.6",
+    "jsdom": "29.1.1",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
+  }
+}
