@@ -1,4 +1,5 @@
 import { HTML_SPACE, ID_LISTS, ID_REFERENCES, TAGS, idTokens, isSupportedAttribute } from './dom-policy';
+import { withChildContext } from './hooks';
 
 export type EventName = 'click' | 'input' | 'change';
 export type Handler = (event: Event) => void;
@@ -42,7 +43,7 @@ export function h(type: string | StatelessComponent, props: Props | null, ...chi
   if (!Array.isArray(passedChildren)) throw new Error('Invalid children');
   if (typeof type === 'function') {
     const { key, children: _children, ...rest } = input;
-    const output = type({ ...rest, children: passedChildren });
+    const output = withChildContext(() => type({ ...rest, children: passedChildren }));
     if (key === undefined) return output;
     const nodes = normalizeChildren([output]);
     if (nodes.length !== 1 || nodes[0].kind !== 'element' ||
