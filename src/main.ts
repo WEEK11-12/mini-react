@@ -1,4 +1,5 @@
 import { startPlayground } from './playground/controller';
+import { startCartDemo } from './demo/cart';
 
 function required<T extends HTMLElement>(selector: string, type: new (...args: never[]) => T): T {
   const element = document.querySelector(selector);
@@ -15,6 +16,24 @@ const stop = startPlayground({
   forward: required('[data-testid="forward-button"]', HTMLButtonElement),
   status: required('[data-testid="status"]', HTMLElement),
 });
+const stopDemo = startCartDemo({
+  cart: required('[data-testid="component-demo"]', HTMLElement),
+  list: required('[data-testid="keyed-list-demo"]', HTMLElement),
+  unmount: required('[data-testid="unmount-component"]', HTMLButtonElement),
+  restart: required('[data-testid="restart-component"]', HTMLButtonElement),
+  reverse: required('[data-testid="reverse-list"]', HTMLButtonElement),
+  prepend: required('[data-testid="prepend-list-item"]', HTMLButtonElement),
+  remove: required('[data-testid="remove-list-item"]', HTMLButtonElement),
+  memoCount: required('[data-testid="memo-count"]', HTMLElement),
+  setupCount: required('[data-testid="effect-setup-count"]', HTMLElement),
+  cleanupCount: required('[data-testid="effect-cleanup-count"]', HTMLElement),
+  status: required('[data-testid="component-status"]', HTMLElement),
+});
 window.addEventListener('pagehide', (event) => {
-  if (!event.persisted) stop();
+  if (!event.persisted) {
+    const errors: unknown[] = [];
+    try { stopDemo(); } catch (error) { errors.push(error); }
+    try { stop(); } catch (error) { errors.push(error); }
+    if (errors.length) throw new AggregateError(errors, 'Page cleanup failed');
+  }
 });

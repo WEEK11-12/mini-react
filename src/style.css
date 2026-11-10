@@ -11,7 +11,11 @@ output { overflow-wrap: anywhere; }
 .regions { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 section { min-width: 0; background: white; border: 1px solid #d5deea; border-radius: 10px; padding: 24px; }
 h2 { margin-top: 0; }
-[data-testid$="region"] { min-height: 180px; padding: 18px; border: 1px dashed #a9b8cc; overflow-wrap: anywhere; }
+[data-testid$="region"], .demo-region { min-height: 180px; padding: 18px; border: 1px dashed #a9b8cc; overflow-wrap: anywhere; }
+.demo-section { margin-top: 24px; }
+.demo-region { min-height: 60px; }
+.demo-region input { font: inherit; padding: 8px; max-width: 100%; box-sizing: border-box; }
+.demo-region button { margin: 8px; }
 textarea[data-testid="html-editor"] { display: block; box-sizing: border-box; width: 100%; min-height: 240px; resize: vertical; margin-top: 8px; padding: 12px; font: 14px/1.6 monospace; }
 :focus-visible { outline: 3px solid #6295e9; outline-offset: 3px; }
 @media (max-width: 760px) { .regions { grid-template-columns: 1fr; } main { padding: 20px 12px; } }

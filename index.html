@@ -19,6 +19,24 @@
         <section><h2 id="actual-title">실제 영역</h2><div data-testid="actual-region" role="region" aria-labelledby="actual-title"><h3>나의 목록</h3><ul><li data-key="a">사과</li><li data-key="b">배</li><li data-key="c">귤</li></ul><label for="note">메모</label><input id="note" type="text" value="안녕하세요"><label for="agree">동의</label><input id="agree" type="checkbox"></div></section>
         <section><h2>테스트 영역</h2><label for="html-editor">HTML 입력</label><textarea id="html-editor" data-testid="html-editor" spellcheck="false"></textarea><h3 id="preview-title">테스트 영역</h3><div data-testid="preview-region" role="region" aria-labelledby="preview-title"></div></section>
       </div>
+      <section class="demo-section" aria-labelledby="demo-title">
+        <h2 id="demo-title">Phase 2 · 컴포넌트와 Hook</h2>
+        <p>수량과 메모를 바꾸고, 상품별 재고 구독과 목록 노드 재사용을 확인해 보세요.</p>
+        <div class="toolbar">
+          <button type="button" data-testid="unmount-component">제거</button>
+          <button type="button" data-testid="restart-component">다시 시작</button>
+          <output data-testid="component-status" role="status" aria-live="polite"></output>
+        </div>
+        <div data-testid="component-demo" class="demo-region"></div>
+        <p>합계 계산: <output data-testid="memo-count">0</output>회 · 구독: <output data-testid="effect-setup-count">0</output>회 · 해제: <output data-testid="effect-cleanup-count">0</output>회</p>
+        <h3>key 목록</h3>
+        <div class="toolbar">
+          <button type="button" data-testid="reverse-list">역순</button>
+          <button type="button" data-testid="prepend-list-item">앞에 추가</button>
+          <button type="button" data-testid="remove-list-item">첫 항목 삭제</button>
+        </div>
+        <div data-testid="keyed-list-demo" class="demo-region"></div>
+      </section>
     </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
