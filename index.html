@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mini React · DOM 실험실</title>
+    <link rel="stylesheet" href="/src/style.css">
+  </head>
+  <body>
+    <main>
+      <header><p>MINI REACT · PHASE 1</p><h1>DOM 실험실</h1><p>HTML을 편집하고 필요한 DOM만 갱신해 보세요.</p></header>
+      <div class="toolbar">
+        <button type="button" data-testid="patch-button">Patch</button>
+        <button type="button" data-testid="back-button">뒤로가기</button>
+        <button type="button" data-testid="forward-button">앞으로가기</button>
+        <output data-testid="status" role="status" aria-live="polite"></output>
+      </div>
+      <div class="regions">
+        <section><h2 id="actual-title">실제 영역</h2><div data-testid="actual-region" role="region" aria-labelledby="actual-title"><h3>나의 목록</h3><ul><li data-key="a">사과</li><li data-key="b">배</li><li data-key="c">귤</li></ul><label for="note">메모</label><input id="note" type="text" value="안녕하세요"><label for="agree">동의</label><input id="agree" type="checkbox"></div></section>
+        <section><h2>테스트 영역</h2><label for="html-editor">HTML 입력</label><textarea id="html-editor" data-testid="html-editor" spellcheck="false"></textarea><h3 id="preview-title">테스트 영역</h3><div data-testid="preview-region" role="region" aria-labelledby="preview-title"></div></section>
+      </div>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
