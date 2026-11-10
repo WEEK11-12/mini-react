@@ -101,6 +101,28 @@ export function releaseNodeBindings(scope: DOMScope, node: Element): void {
   }
 }
 
+export function updateNodeEvents(scope: DOMScope, node: Element, events: Readonly<Partial<Record<EventName, Handler>>>): void {
+  const data = dataFor(scope);
+  let attached = data.events.get(node);
+  if (!attached) {
+    attached = new Map();
+    data.events.set(node, attached);
+  }
+  for (const name of ['click', 'input', 'change'] as const) {
+    const previous = attached.get(name);
+    const next = Object.hasOwn(events, name) ? events[name] : undefined;
+    if (previous === next) continue;
+    if (previous !== undefined) {
+      node.removeEventListener(name, previous);
+      attached.delete(name);
+    }
+    if (next !== undefined) {
+      node.addEventListener(name, next);
+      attached.set(name, next);
+    }
+  }
+}
+
 export function releaseDOMScope(scope: DOMScope): void {
   const data = dataFor(scope);
   if (data.container.childNodes.length !== 0) throw new Error('Empty the managed DOM before releasing its scope');

@@ -1,6 +1,6 @@
 # 1단계: VNode · DOM 변환 · 초기 렌더링
 
-상태: 1단계 구현·수정 완료, 마비카 최종 검토 승인. 기존 4건과 비열거 domProps 검증 우회의 재현 조건 해소를 확인했다. 승인은 이번 단계 범위에 한정하며 후속 단계 완료를 뜻하지 않는다.
+상태: 1단계 구현·수정 완료, 검증 에이전트 최종 검토 승인. 기존 4건과 비열거 domProps 검증 우회의 재현 조건 해소를 확인했다. 승인은 이번 단계 범위에 한정하며 후속 단계 완료를 뜻하지 않는다.
 
 ## 범위
 
@@ -47,9 +47,9 @@ releaseDOMScope(scope);
 - 재검토에서 발견한 비열거 domProps 검증 우회도 수정했다. attrs·domProps 모두 own 키 전체를 검사하며 심볼·미지원 이름·잘못된 값은 거부한다. 초기 생성도 비열거 own attrs를 적용하고 폼 값·type은 own 프로퍼티만 소비한다.
 - HTML input/button의 원본 type은 ASCII 대문자만 소문자로 정규화한 뒤 기존 지원 목록을 검사한다. 네이티브 `.type` fallback으로 미지원 type을 허용하지 않는다.
 
-수정본의 `npm run typecheck`, `npm run typecheck:core`는 각각 exit 0이다. 테스트 실행·통과 확인·브라우저·회귀 검증은 마비카가 담당했으며 라이덴은 중복 실행하지 않았다. 회귀 테스트는 `tests/renderer/initial-rendering.test.ts`에 있다. 수정 전 마비카는 유효한 RED를 확인했고, 수정 후 아래 결과를 근거로 1단계를 승인했다.
+수정본의 `npm run typecheck`, `npm run typecheck:core`는 각각 exit 0이다. 테스트 실행·통과 확인·브라우저·회귀 검증은 검증 에이전트가 담당했으며 구현 에이전트는 중복 실행하지 않았다. 회귀 테스트는 `tests/renderer/initial-rendering.test.ts`에 있다. 수정 전 검증 에이전트는 유효한 RED를 확인했고, 수정 후 아래 결과를 근거로 1단계를 승인했다.
 
-마비카 최종 재실행 결과:
+검증 에이전트 최종 재실행 결과:
 
 | 검사 | 결과 |
 | --- | --- |
@@ -59,7 +59,7 @@ releaseDOMScope(scope);
 | 별도 실제 소스 Chromium 검사 | 기존 반례 해소 확인 및 추가 assertion 11개 통과 |
 | ESLint·Prettier | 로컬 미설치로 미실행 |
 
-최종 검토 보고서와 실행 JSON은 `/Users/hyeonji/.hermes/profiles/mavuika/cache/scratch/mini-react-stage-one-final-review.md` 및 같은 디렉터리의 `mini-react-stage-one-final-review-*.json`에 보존돼 있다. 저장소의 아래 최초 실행 기록·카탈로그는 과거 결과이며 최신 결과와 구분한다. 2단계는 시작하지 않았다.
+최종 검토 보고서 `mini-react-stage-one-final-review.md`와 실행 JSON `mini-react-stage-one-final-review-*.json`은 검증 에이전트의 저장소 외부 임시 작업 디렉터리에 보존돼 있으며 이 저장소에는 포함되지 않는다. 저장소의 아래 최초 실행 기록·카탈로그는 과거 결과이며 최신 결과와 구분한다. 2단계는 시작하지 않았다.
 
 ### 최초 구현 당시 기록
 
