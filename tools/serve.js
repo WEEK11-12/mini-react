@@ -16,7 +16,7 @@ const server = createServer(async (request, response) => {
     const name = pathname === '/' ? 'index.html' : pathname.slice(1);
     const path = resolve(root, name);
     const canonical = relative(root, path).split(sep).join('/');
-    const allowed = ['index.html', 'styles.css', 'phase2.html', 'phase2.css', 'test/fixtures.js'].includes(canonical)
+    const allowed = ['index.html', 'styles.css', 'phase2.html', 'phase2.css', 'ui.css', 'inspector.css', 'test/fixtures.js'].includes(canonical)
       || canonical.startsWith('src/') || canonical.startsWith('test/browser/');
     if (!path.startsWith(root.endsWith(sep) ? root : root + sep) || !allowed || !mime[extname(path)]) {
       response.writeHead(404).end('Not found');

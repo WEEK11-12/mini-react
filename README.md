@@ -38,6 +38,7 @@ flowchart LR
 | [Diff·Patch](docs/design/diff-patch.md) | 키/위치 대응, 변경 계획, DOM 반영·복구 |
 | [History](docs/design/history.md) | Patch 저장, 뒤로·앞으로, 미래 이력 삭제 |
 | [컴포넌트·Hooks](docs/design/component-hooks.md) | 루트 State, 세 Hook, 이벤트·Effect |
+| [UI·시각화](docs/design/ui-inspector.md) | 공통 화면 스타일과 Diff·Patch 관찰 기능의 구조·검증 기준 |
 | [검증 계획](docs/testing.md) | FR별 테스트 ID, 정상·실패·엣지 케이스 |
 | [AI 작업 규칙](AGENTS.md) | AI가 읽을 문서, 결정 상태 처리, 변경·검증·보고 규칙 확인 |
 | [요구사항 작성 가이드](docs/guides/requirements-specification.md) | ID별 항목 양식과 PR 검토 기준 확인 |
@@ -66,7 +67,7 @@ npm start
 
 하위 프로세스 생성이 차단되어 `npm test`가 `spawn EPERM`으로 끝나는 환경에서는 `npm run test:in-process`를 사용합니다. 파일별 격리를 끄는 실행이므로 일반 실행과 구분합니다. 기본 포트는 5173이며 `PORT` 환경변수로 변경할 수 있습니다. 파일을 직접 여는 `file://` 대신 위 HTTP 주소를 사용합니다.
 
-2026-11-10 검증: Windows / Node.js v24.14.1에서 **순수 로직 164/164**, Chromium 기반 인앱 브라우저에서 **86/86** 통과했습니다. 브라우저 사례에는 Phase 1의 목록 전이·부분 갱신·이력과 Phase 2의 Hook 슬롯·이벤트·입력·정리·실패 복구·장바구니 통합, DOM 추가 속성 호환 회귀가 포함됩니다. 실제 페이지 직접 조작도 별도로 확인했습니다. 상세 범위와 환경 제한은 [검증 계획](docs/testing.md)에 둡니다.
+2026-11-10 검증: Windows / Node.js v24.14.1에서 **순수 로직 164/164**, Chromium 기반 인앱 브라우저에서 **103/103** 통과했습니다. 브라우저 사례에는 두 Phase의 필수 동작, Chrome DOM 추가 속성 호환, Diff·Patch 시각화·노드 재사용·오류 복구 후 관찰 기준 회복이 포함됩니다. 데스크톱과 320px 폭에서 화면·가로 넘침을 확인하고 실제 페이지 조작도 별도로 검증했습니다. 상세 범위와 환경 제한은 [검증 계획](docs/testing.md)에 둡니다.
 
 ## 구현을 읽는 순서
 
@@ -80,6 +81,7 @@ npm start
 | [playground.js](src/playground.js) · [app.js](src/app.js) | 입력·버튼을 엔진에 연결하고 성공 후 이력을 확정, 실패 시 복구 |
 | [component.js](src/component.js) | 루트 인스턴스와 Hook 슬롯, State 변경·커밋·Effect 정리 |
 | [cart.js](src/cart.js) | props 기반 자식과 수량·테마·합계·문서 제목 데모 |
+| [inspector.js](src/inspector.js) | 성공한 커밋의 작업·트리·DOM 참조 재사용을 관찰하고 외부 오버레이 표시 |
 
 `HTML 편집 → 검증 → 미리보기 → Patch 클릭 → 미리보기 DOM 읽기 → Diff → 실제 DOM Patch → History 확정`
 
@@ -92,6 +94,17 @@ npm start
 3. 컴포넌트 종료·다시 시작: Effect 정리 횟수와 탭 제목 복원을 확인합니다. 다시 시작하면 초기 State로 돌아갑니다.
 
 두 데모는 같은 VNode·Diff·Patch를 사용하지만 별도 DOM 루트를 관리합니다. Phase 2 조작은 Phase 1의 HTML 입력창이나 History에 저장하지 않습니다. 루트 전용 Hook, 동기 갱신, 커밋 직후 Effect를 지원하며 실제 React의 Fiber·동시성·자동 Batching·JSX는 구현하지 않습니다.
+
+## 차별화 · Diff·Patch 시각화
+
+두 페이지 하단의 **무엇이 바뀌었을까요?**에서 최근 성공한 변경을 확인합니다.
+
+1. Phase 1에서 HTML을 수정해 Patch하거나 Phase 2에서 수량·테마를 변경합니다.
+2. 화면 변경 계획·이벤트 변경 계획·실제 요소 재사용 수를 확인합니다.
+3. 작업을 선택하면 실제 화면의 해당 위치에 파란 테두리가 표시됩니다. 삭제된 요소는 이전 트리에서 확인합니다.
+4. **변경 전·후 Virtual DOM 트리 보기**를 펼쳐 두 결과를 비교합니다. **이벤트도 보기**로 핸들러 교체를 확인합니다.
+
+예: 키를 유지한 목록 `[A,B,C]` 앞에 D를 넣으면 기존 요소가 재사용됩니다. 재사용 수는 실제 DOM 참조를 비교한 값이며 작업 건수는 속도 측정값이나 DOM API 호출 횟수가 아닙니다. 트리·목록은 최대 200개 항목을 표시하고 집계는 전체를 대상으로 합니다. UI는 외부 폰트·패키지 없이 설치된 글꼴을 사용하므로 운영체제에 따라 서체가 다를 수 있습니다.
 
 ## 협업 방식
 

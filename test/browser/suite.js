@@ -5,6 +5,7 @@ import { parseHTML } from '../../src/html-input.js';
 import { tests as phase2DomTests } from './phase2-dom.js';
 import { tests as componentTests } from './components.js';
 import { tests as cartTests } from './cart.js';
+import { tests as inspectorTests } from './inspector.js';
 import { element as e, text as t } from '../fixtures.js';
 
 const tests = [];
@@ -269,7 +270,7 @@ test('D-06 복구도 실패하면 Patch·뒤로·앞으로를 모두 차단', ()
   assert(ui.error.textContent.includes('복구에 실패'));
 });
 
-tests.push(...phase2DomTests, ...componentTests, ...cartTests);
+tests.push(...phase2DomTests, ...componentTests, ...cartTests, ...inspectorTests);
 const results = [];
 for (const { name, run } of tests) {
   const row = document.createElement('li');

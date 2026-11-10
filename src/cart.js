@@ -1,7 +1,10 @@
 import { FunctionComponent, useState, useMemo, useEffect, renderChild } from './component.js';
 import { element as e, text as t } from './vnode.js';
+import { createInspector } from './inspector.js';
 
 const container = document.querySelector('#cart-root');
+const inspectorPanel = document.querySelector('#inspector');
+const inspector = inspectorPanel ? createInspector(inspectorPanel) : null;
 const status = document.querySelector('#runtime-status');
 const lifecycle = document.querySelector('#lifecycle-toggle');
 const originalTitle = document.title;
@@ -132,6 +135,8 @@ function mount() {
   status.textContent = '';
   instance = new FunctionComponent(createCart(), container, {}, {
     onError: showError,
+    onCommit: event => inspector?.commit(event),
+    onRecovery: event => inspector?.resync(event),
   });
   try { instance.mount(); } finally {
     mounted = instance.mounted;
@@ -142,6 +147,7 @@ function mount() {
 lifecycle.addEventListener('click', handleAction(() => {
   if (mounted) {
     try { instance.unmount(); } finally {
+      inspector?.clear();
       mounted = instance.mounted;
       lifecycle.textContent = mounted ? '컴포넌트 종료' : '컴포넌트 다시 시작';
     }

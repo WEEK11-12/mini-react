@@ -25,6 +25,7 @@
 | [Diff·Patch](design/diff-patch.md) | 트리 비교, 변경 정보, 실제 DOM 반영 | FR-03~05, FR-16 |
 | [History](design/history.md) | Phase 1의 편집·적용과 이력 탐색 | FR-06~09 |
 | [컴포넌트·Hooks](design/component-hooks.md) | 함수형 컴포넌트, 루트 State, 세 Hook | FR-10~16 |
+| [UI·Diff/Patch 시각화](design/ui-inspector.md) | 공통 디자인, 커밋 관찰·트리·작업 목록·외부 강조 | EXT-01~03 |
 | [검증 계획](testing.md) | 요구 ID별 단위·브라우저 테스트와 경계 사례 | FR-01~17, Q-01~04 |
 
 ## 2. 전체 동작 흐름

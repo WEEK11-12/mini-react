@@ -4,14 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>mini-react · Phase 1 Playground</title>
+  <link rel="stylesheet" href="/ui.css">
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/inspector.css">
 </head>
 <body>
   <main class="shell">
+    <nav class="site-nav" aria-label="프로젝트 화면">
+      <a class="brand" href="/">mini <span>react.</span></a>
+      <div class="nav-links"><a href="/" aria-current="page">01 편집기</a><a href="/phase2.html">02 장바구니</a></div>
+    </nav>
     <header class="page-header">
       <div><p class="eyebrow">MINI REACT / PHASE 1</p><h1>작은 변경, 필요한 갱신.</h1>
       <p class="intro">HTML을 편집하고 두 화면을 비교해 보세요. Patch를 누를 때 실제 화면에 반영됩니다.</p></div>
-      <div class="page-links"><a class="test-link" href="/phase2.html">Phase 2 장바구니 →</a><a class="test-link" href="/test/browser/index.html" target="_blank" rel="noopener">브라우저 검증 ↗</a></div>
+      <div class="page-links"><a class="test-link" href="/test/browser/index.html" target="_blank" rel="noopener">브라우저 검증 ↗</a></div>
     </header>
 
     <section class="toolbar" aria-label="화면 적용과 이력 탐색">
@@ -46,11 +52,13 @@
         <div class="panel-heading"><div><span class="step">02 / DRAFT</span><h2 id="test-heading">테스트 영역</h2></div><span class="badge draft">편집 중인 화면</span></div>
         <p class="panel-help">유효한 HTML은 미리보기에 바로 표시됩니다.</p>
         <label for="editor" class="editor-label">HTML 코드</label>
-        <textarea id="editor" spellcheck="false" autocapitalize="off" aria-describedby="syntax-help"></textarea>
+        <p id="calculation-help" class="editor-note">이 화면은 HTML에 적힌 내용을 그대로 반영해요. 가격을 바꾸면 합계도 코드에서 함께 수정해 주세요. <a href="/phase2.html">합계가 자동 계산되는 장바구니 보기 →</a></p>
+        <textarea id="editor" spellcheck="false" autocapitalize="off" aria-describedby="syntax-help calculation-help"></textarea>
         <div class="preview-label">결과 미리보기</div>
         <div id="preview" class="canvas preview-canvas"></div>
       </section>
     </div>
+    <section id="inspector" aria-label="Diff와 Patch 시각화"></section>
     <footer id="syntax-help">
       <p><strong>지원 요소</strong> div · h2 · p · strong · ul · li · span &nbsp; <strong>속성</strong> class · title · data-*</p>
       <p>바깥 요소 하나, 닫는 태그, 따옴표로 감싼 속성값이 필요합니다. 잘못된 코드는 적용하지 않습니다.</p>

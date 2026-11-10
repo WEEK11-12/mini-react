@@ -57,7 +57,7 @@ export function renderChild(component, props = {}) {
 }
 
 export class FunctionComponent {
-  constructor(component, container, props = {}, { onError = error => console.error(error) } = {}) {
+  constructor(component, container, props = {}, { onError = error => console.error(error), onCommit, onRecovery } = {}) {
     if (typeof component !== 'function' || !container?.ownerDocument || typeof onError !== 'function') {
       fail('ERR_COMPONENT_LIFECYCLE', '컴포넌트 함수와 DOM 컨테이너가 필요합니다.');
     }
@@ -65,6 +65,8 @@ export class FunctionComponent {
     this.container = container;
     this.props = props;
     this.onError = onError;
+    this.onCommit = onCommit;
+    this.onRecovery = onRecovery;
     this.hooks = [];
     this.vnode = null;
     this.root = null;
@@ -123,9 +125,9 @@ export class FunctionComponent {
       validateDomTree(next, { phase: 2 });
     } finally { context = previousContext; rendering = previousRendering; }
 
-    let root;
+    let root, plan = null;
     if (this.mounted) {
-      const plan = diff(this.vnode, next);
+      plan = diff(this.vnode, next);
       try { root = patch(this.root, plan, { phase: 2 }); }
       catch (error) {
         try {
@@ -134,10 +136,14 @@ export class FunctionComponent {
           root = render(this.vnode, this.container.ownerDocument, { phase: 2 });
           this.container.replaceChildren(root);
           this.root = root;
+          try { this.onRecovery?.({ root, tree: this.vnode }); }
+          catch (observerError) { console.warn('시각화 복구 알림 실패', observerError); }
         } catch (recoveryError) {
           if (root) releaseDom(root);
           this.blocked = true;
           error.recoveryError = recoveryError;
+          try { this.onRecovery?.({ root: null, tree: null }); }
+          catch (observerError) { console.warn('시각화 복구 알림 실패', observerError); }
         }
         throw error;
       }
@@ -149,6 +155,8 @@ export class FunctionComponent {
     this.vnode = next;
     this.hooks = frame.hooks;
     this.mounted = true;
+    try { this.onCommit?.({ plan, root, tree: next }); }
+    catch (error) { console.warn('시각화 알림 실패', error); }
     this.flushEffects(frame.effects);
     return this.root;
   }

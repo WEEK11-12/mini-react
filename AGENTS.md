@@ -8,6 +8,7 @@
 2. [requirements.md](docs/requirements.md)의 관련 ID·인수 조건·결정 상태를 확인한다.
 3. [design.md](docs/design.md)의 확정 결정과 제안을 구분하고, 관련된 `docs/design/` 상세 설계 문서를 읽는다. Phase 1 입력 규칙은 [html-input.md](docs/design/html-input.md), 공통 트리 표현은 [virtual-dom.md](docs/design/virtual-dom.md)가 담당한다.
 4. [검증 계획](docs/testing.md)의 관련 테스트 ID와 기존 코드·테스트·Git 변경 상태를 확인한다. 문서만으로 구현·검증 상태를 단정하지 않는다.
+5. [작업 인계](WORKLOG.md)가 있으면 현재 목표·검증·남은 작업을 먼저 확인하고 실제 파일·실행 상태와 대조한다. 긴 작업의 단계 완료 시점과 중단·응답 종료 전에 이 기록을 갱신한다. 토큰·컨텍스트 소진 직전까지 기록을 미루지 않는다.
 
 | 적용 상황 | 지킬 행동 | 확인 기준 |
 | --- | --- | --- |

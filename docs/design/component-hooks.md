@@ -48,6 +48,8 @@ flowchart LR
 
 동기 호출 오류는 호출자에게 던진다. Effect에서 예약된 setter의 비동기 오류는 `onError(error)`로 전달한다. 데모는 두 경로를 화면 오류 영역에 표시한다. 종료된 인스턴스는 재사용하지 않고 새 인스턴스를 만든다.
 
+시각화에는 선택적 `onCommit({plan,root,tree})`·`onRecovery({root,tree})` 알림을 제공한다. DOM·Hook 확정 후 Effect 전에 커밋을 알리며 첫 mount의 plan은 null이다. 복구 불가 상태는 root/tree가 null이다. 알림 예외가 엔진의 커밋·복구 결과를 취소하지 않는다. [시각화 계약](ui-inspector.md)을 따른다.
+
 ## 3. 데이터 표현과 불변 조건
 
 Hook은 호출 순서의 슬롯으로 찾는다. 렌더 시작에 `hookIndex = 0`으로 되돌리고 각 Hook 호출이 하나씩 증가시킨다.

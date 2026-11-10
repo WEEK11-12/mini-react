@@ -6,7 +6,11 @@ import { sameTree } from './vnode.js';
 import { isWhitespace } from './html-policy.js';
 
 export function createPlayground(ui) {
-  const { actual, preview, editor, patchButton, backButton, forwardButton, error, status } = ui;
+  const { actual, preview, editor, patchButton, backButton, forwardButton, error, status, onCommit, onRecovery } = ui;
+  function notify(plan, tree, recovered = false) {
+    try { (recovered ? onRecovery : onCommit)?.({ plan, tree, root: actual.firstElementChild }); }
+    catch (caught) { console.warn('시각화 알림 실패', caught); }
+  }
   let history, valid = false, blocked = false;
   const snapshot = () => history.entries[history.index];
   function buttons() {
@@ -28,6 +32,7 @@ export function createPlayground(ui) {
     const initialPreview = render(tree, actual.ownerDocument);
     history = createHistory({ tree, source });
     editor.value = source; preview.replaceChildren(initialPreview); valid = true; error.textContent = '';
+    notify(null, tree);
   } catch (caught) { blocked = true; report(caught); }
   buttons();
 
@@ -55,13 +60,16 @@ export function createPlayground(ui) {
         try {
           actual.replaceChildren(render(previous.tree, actual.ownerDocument));
           if (navigate) { preview.replaceChildren(...oldPreview); editor.value = oldSource; valid = oldValid; }
+          notify(null, previous.tree, true);
         } catch (recoveryError) {
           blocked = true;
+          notify(null, null, true);
           throw new Error(`복구에 실패했습니다. 새로고침이 필요합니다. (${recoveryError.message})`);
         }
         throw new Error(`화면 적용에 실패해 이전 상태로 복구했습니다. (${caught.message})`);
       }
       history = candidate; error.textContent = ''; buttons();
+      notify(plan, target.tree);
     } catch (caught) { report(caught); }
   }
   patchButton.addEventListener('click', () => {
