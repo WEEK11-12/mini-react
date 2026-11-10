@@ -9,6 +9,7 @@
 | 대상 | 규칙 | 예시 |
 | --- | --- | --- |
 | 디렉터리·파일 | 소문자 kebab-case | `dom-reader.ts`, `temporary-decisions.md` |
+| 단계별 구현 기록 | `docs/implementation/stage-NN.md`. `NN`은 앞자리를 0으로 채운 두 자리 아라비아 숫자이며, 영문 숫자 단어는 사용하지 않는다. | `stage-01.md`, `stage-02.md`, `stage-10.md` |
 | 클래스 | PascalCase | `FunctionComponent`, `HistoryStore` |
 | 타입·인터페이스 | PascalCase | `VNode`, `PatchPlan`, `Props` |
 | 일반 함수·메서드·변수 | camelCase | `readDOM`, `applyPlan`, `currentTree` |
@@ -79,6 +80,7 @@ export function diff(previous: VRoot, next: VRoot): PatchPlan {
 | `design/`의 시스템별 문서 | 책임, 데이터, 인터페이스, 처리 흐름, 오류 처리 |
 | [design/temporary-decisions.md](design/temporary-decisions.md) | 미결정 사항에 대한 임시 선택·이유·영향 |
 | [design/verification.md](design/verification.md) | 요구사항별 검증 계획과 구현 순서 |
+| `implementation/stage-NN.md` | 단계별 구현 범위·변경·검증 결과·남은 작업. 파일명은 ‘이름과 파일’의 단계별 구현 기록 규칙을 따른다. |
 
 정의는 한 문서를 기준으로 관리하고 다른 문서에서는 링크로 참조한다. 임시 설계 선택을 확정된 요구사항처럼 표현하지 않는다.
 

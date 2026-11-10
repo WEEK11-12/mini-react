@@ -4,7 +4,7 @@
 
 ## 범위
 
-[3단계](stage-three.md)의 공통 렌더러를 재사용하여 Phase 1의 [EDIT](../requirements.md#edit), [VIEW-01~03](../requirements.md#view), [HIST](../requirements.md#hist)를 구현한다. [실습·이력 설계](../design/playground-history.md)를 따른다. HTML 지원 범위·초기 이력·선형 분기·메모리 저장·이동 시 편집 폐기·오류 복구는 기존 OPEN 임시 선택을 전제로 하며 확정하지 않는다. Component·Hook·Phase 2 시연은 이번 범위가 아니다.
+[3단계](stage-03.md)의 공통 렌더러를 재사용하여 Phase 1의 [EDIT](../requirements.md#edit), [VIEW-01~03](../requirements.md#view), [HIST](../requirements.md#hist)를 구현한다. [실습·이력 설계](../design/playground-history.md)를 따른다. HTML 지원 범위·초기 이력·선형 분기·메모리 저장·이동 시 편집 폐기·오류 복구는 기존 OPEN 임시 선택을 전제로 하며 확정하지 않는다. Component·Hook·Phase 2 시연은 이번 범위가 아니다.
 
 ## 변경
 

@@ -2,7 +2,7 @@
 
 ## 현재 구현 단계
 
-1단계의 reader·validator·초기 렌더링 대상 81개와 실제 Chromium 초기 생성 테스트 1개가 통과했다. 자세한 결과와 후속 미구현 구분은 [1단계 기록](../docs/implementation/stage-one.md)에 있다. 전체 테스트를 모두 통과한 상태는 아니다.
+1단계의 reader·validator·초기 렌더링 대상 81개와 실제 Chromium 초기 생성 테스트 1개가 통과했다. 자세한 결과와 후속 미구현 구분은 [1단계 기록](../docs/implementation/stage-01.md)에 있다. 전체 테스트를 모두 통과한 상태는 아니다.
 
 ```sh
 npm run typecheck:core

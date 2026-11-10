@@ -4,7 +4,7 @@
 
 ## 범위
 
-[DIFF-01](../requirements.md#diff-01), [DIFF-02](../requirements.md#diff-02), [DIFF-03](../requirements.md#diff-03)의 비교·계획 생성을 `src/core/diff.ts`에 구현했다. 단계 구분은 [1단계 기록](stage-one.md)을 따르며, 증분 `applyPlan`은 3단계에 남긴다. [검증 계획](../design/verification.md#구현-순서)의 큰 구현 묶음과 달리 이번 2단계는 Diff만 포함한다.
+[DIFF-01](../requirements.md#diff-01), [DIFF-02](../requirements.md#diff-02), [DIFF-03](../requirements.md#diff-03)의 비교·계획 생성을 `src/core/diff.ts`에 구현했다. 단계 구분은 [1단계 기록](stage-01.md)을 따르며, 증분 `applyPlan`은 3단계에 남긴다. [검증 계획](../design/verification.md#구현-순서)의 큰 구현 묶음과 달리 이번 2단계는 Diff만 포함한다.
 
 [렌더러 계약](../design/renderer.md#diff-전략)의 `NodePlan`, `ChildPlacement`, `ChildrenPlan`, `PatchPlan`을 named export한다. `diff(previous, next)`는 기존 `validateRoot`의 component 모드로 양쪽 전체 트리를 검증하고, 논리 VDOM만 비교한다. [OPEN-01](../requirements.md#open-01)·[OPEN-09](../requirements.md#open-09)의 지원 범위·오류 정책은 기존 임시 선택을 전제로 하며 결정 상태를 바꾸지 않았다.
 

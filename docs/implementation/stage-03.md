@@ -4,7 +4,7 @@
 
 ## 범위
 
-[2단계 기록](stage-two.md)의 후속 증분 `applyPlan`을 구현한다. [PATCH-01](../requirements.md#patch-01), [PATCH-02](../requirements.md#patch-02), [PATCH-03](../requirements.md#patch-03) 및 [렌더러 계약](../design/renderer.md#계획-적용-순서)을 따른다. 검증 계획의 큰 묶음과 달리 이번 범위에는 UI·History·Component·Hook을 포함하지 않는다. OPEN-01·OPEN-09의 지원 범위와 오류 정책은 기존 임시 선택이며 확정 상태로 바꾸지 않는다.
+[2단계 기록](stage-02.md)의 후속 증분 `applyPlan`을 구현한다. [PATCH-01](../requirements.md#patch-01), [PATCH-02](../requirements.md#patch-02), [PATCH-03](../requirements.md#patch-03) 및 [렌더러 계약](../design/renderer.md#계획-적용-순서)을 따른다. 검증 계획의 큰 묶음과 달리 이번 범위에는 UI·History·Component·Hook을 포함하지 않는다. OPEN-01·OPEN-09의 지원 범위와 오류 정책은 기존 임시 선택이며 확정 상태로 바꾸지 않는다.
 
 ## 변경
 

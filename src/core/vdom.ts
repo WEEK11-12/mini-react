@@ -14,6 +14,48 @@ export interface VElement {
 }
 export type VNode = VText | VElement;
 export interface VRoot { readonly kind: 'root'; readonly children: readonly VNode[] }
+export type Child = VNode | string | number | null | boolean | readonly Child[];
+export type Props = Readonly<Record<string, unknown>> & { readonly children?: readonly Child[]; readonly key?: string };
+export type StatelessComponent = (props: Props) => Child;
+
+export function normalizeChildren(children: readonly Child[]): VNode[] {
+  const result: VNode[] = [];
+  function append(child: Child): void {
+    if (Array.isArray(child)) {
+      for (const entry of child) append(entry);
+    } else if (child === null || typeof child === 'boolean') {
+      return;
+    } else if (typeof child === 'string' || typeof child === 'number') {
+      result.push(text(child));
+    } else {
+      result.push(child as VNode);
+    }
+  }
+  for (const child of children) append(child);
+  return result;
+}
+
+export function h(type: string | StatelessComponent, props: Props | null, ...children: Child[]): Child {
+  const input = props ?? {};
+  if (Object.hasOwn(input, 'children') && children.length) throw new Error('Children specified twice');
+  const passedChildren = children.length ? children : input.children ?? [];
+  if (!Array.isArray(passedChildren)) throw new Error('Invalid children');
+  if (typeof type === 'function') {
+    const { key, children: _children, ...rest } = input;
+    const output = type({ ...rest, children: passedChildren });
+    if (key === undefined) return output;
+    const nodes = normalizeChildren([output]);
+    if (nodes.length !== 1 || nodes[0].kind !== 'element' ||
+      (nodes[0].key !== undefined && nodes[0].key !== key)) throw new Error('Keyed child must return one matching element');
+    return { ...nodes[0], key };
+  }
+  const { key, attrs = {}, domProps = {}, events = {}, children: _children, ...other } = input;
+  if (Object.keys(other).length !== 0 || attrs === null || typeof attrs !== 'object' ||
+    Object.hasOwn(attrs, 'key') || Object.hasOwn(attrs, 'data-key')) {
+    throw new Error('Unsupported host props');
+  }
+  return { kind: 'element', tag: type, key, attrs, domProps, events, children: normalizeChildren(passedChildren) } as VElement;
+}
 
 export function text(value: string | number): VText {
   if (typeof value !== 'string' && typeof value !== 'number') throw new Error('Text requires a string or number');

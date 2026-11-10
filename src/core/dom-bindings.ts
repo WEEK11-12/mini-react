@@ -126,8 +126,12 @@ export function updateNodeEvents(scope: DOMScope, node: Element, events: Readonl
 export function releaseDOMScope(scope: DOMScope): void {
   const data = dataFor(scope);
   if (data.container.childNodes.length !== 0) throw new Error('Empty the managed DOM before releasing its scope');
-  for (const node of data.events.keys()) releaseNodeBindings(scope, node);
+  releaseDOMEvents(scope);
   data.forward.clear();
   data.reverse.clear();
   scopes.delete(scope);
+}
+
+export function releaseDOMEvents(scope: DOMScope): void {
+  for (const node of dataFor(scope).events.keys()) releaseNodeBindings(scope, node);
 }
