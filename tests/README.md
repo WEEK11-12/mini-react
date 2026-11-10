@@ -1,6 +1,16 @@
-# 구현 전 계약 테스트
+# 계약 테스트
 
-이 폴더는 `docs/requirements.md`와 `docs/design/`을 기준으로 작성한 **테스트 전용 작업 공간**이다. `src/`, 앱 화면, VDOM·Diff·Patch·Hook의 대체 구현은 만들지 않는다. 원본 요구사항과 설계의 확정 상태도 변경하지 않는다.
+## 현재 구현 단계
+
+1단계의 reader·validator·초기 렌더링 대상 81개와 실제 Chromium 초기 생성 테스트 1개가 통과했다. 자세한 결과와 후속 미구현 구분은 [1단계 기록](../docs/implementation/stage-one.md)에 있다. 전체 테스트를 모두 통과한 상태는 아니다.
+
+```sh
+npm run typecheck:core
+npm run test:stage-one
+npm run test:stage-one:browser
+```
+
+이 폴더는 `docs/requirements.md`와 `docs/design/`을 기준으로 작성한 **테스트 전용 작업 공간**이며 프로젝트의 실제 `src/`를 검증한다. 테스트를 통과시키기 위한 대체 구현은 두지 않는다. 원본 요구사항과 설계의 확정 상태도 변경하지 않는다.
 
 ## 실행
 
@@ -17,7 +27,7 @@ npm run test:browser:list
 MINI_REACT_BASE_URL=http://127.0.0.1:5173 npm run test:browser
 ```
 
-- `npm test`: renderer·runtime·History 계약과 검증환경 자체 검사. 구현 전에는 `[IMPLEMENTATION_MISSING]`로 **실패하는 것이 정상**이며 완료/통과로 취급하지 않는다.
+- `npm test`: renderer·runtime·History 계약과 검증환경 자체 검사. 아직 구현하지 않은 단계는 `[IMPLEMENTATION_MISSING]`로 실패하며 완료/통과로 취급하지 않는다.
 - `npm run test:harness`: 모듈 로더와 테스트 관찰 로직을 검사한다. 실제 DOM 복제·no-op·삭제 반례로 정체성/앞 삽입 assertion의 검출력을 확인하며, 제품 기능 통과를 뜻하지 않는다.
 - `npm run test:browser:list`: `--reporter=list`로 목록만 수집한다. `reports/browser.json` 실행 증거를 덮어쓰지 않는다.
 - `npm run typecheck`: 테스트 코드의 타입과 설정을 검사한다. 제품 코드의 동작 검증과 다르다.

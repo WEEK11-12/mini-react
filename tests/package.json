@@ -11,7 +11,10 @@
     "test:browser": "playwright test",
     "test:browser:list": "playwright test --list --reporter=list",
     "test:catalog": "node support/export-cases.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "typecheck:core": "tsc --noEmit -p ../tsconfig.json",
+    "test:stage-one": "vitest run renderer/dom-reader.test.ts renderer/validation.test.ts renderer/initial-rendering.test.ts",
+    "test:stage-one:browser": "playwright test browser/stage-one.spec.ts"
   },
   "engines": {
     "node": ">=24.0.0"

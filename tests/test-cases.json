@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-11-09T13:35:02.058Z",
+  "generatedAt": "2026-11-10T02:23:48.635Z",
   "note": "실제 runner JSON에서 생성. 구현 누락/앱 부재는 인수조건 통과가 아니다. 정책 표시는 파일 README의 공통 임시 전제도 함께 적용한다.",
   "summary": {
-    "collected": 266,
-    "productCases": 257,
+    "collected": 279,
+    "productCases": 270,
     "harnessPassed": 9,
-    "implementationMissing": 229,
+    "implementationMissing": 160,
     "appUnavailable": 28
   },
   "cases": [
@@ -452,6 +452,22 @@
     },
     {
       "id": "TC-029",
+      "layer": "browser",
+      "file": "browser/stage-one.spec.ts",
+      "line": 27,
+      "title": "[VDOM-02, PATCH-01][임시 OPEN-01] 실제 Chromium에서 초기 렌더링한 두 scope의 label 클릭을 격리한다",
+      "requirements": [
+        "VDOM-02",
+        "PATCH-01"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "expected",
+      "outcome": "expected"
+    },
+    {
+      "id": "TC-030",
       "layer": "harness",
       "file": "harness/observations.test.ts",
       "title": "검증환경: 실제 DOM matcher와 목록 관찰 반례 [검증환경] 구조가 같은 두 노드를 뒤바꾸거나 길이를 바꿔도 정체성 검사는 놓치지 않는다",
@@ -461,7 +477,7 @@
       "outcome": "passed"
     },
     {
-      "id": "TC-030",
+      "id": "TC-031",
       "layer": "harness",
       "file": "harness/observations.test.ts",
       "title": "검증환경: 실제 DOM matcher와 목록 관찰 반례 [검증환경] 구조가 같은 복제 노드는 toEqual을 통과하지만 정체성 assertion은 실패한다",
@@ -471,7 +487,7 @@
       "outcome": "passed"
     },
     {
-      "id": "TC-031",
+      "id": "TC-032",
       "layer": "harness",
       "file": "harness/observations.test.ts",
       "title": "검증환경: 실제 DOM matcher와 목록 관찰 반례 [검증환경] 새 첫 항목과 기존 전원의 순서·참조를 유지한 앞 삽입만 허용한다",
@@ -481,7 +497,7 @@
       "outcome": "passed"
     },
     {
-      "id": "TC-032",
+      "id": "TC-033",
       "layer": "harness",
       "file": "harness/observations.test.ts",
       "title": "검증환경: 실제 DOM matcher와 목록 관찰 반례 [검증환경] 앞 삽입 assertion은 clone-old 반례를 거부한다",
@@ -491,7 +507,7 @@
       "outcome": "passed"
     },
     {
-      "id": "TC-033",
+      "id": "TC-034",
       "layer": "harness",
       "file": "harness/observations.test.ts",
       "title": "검증환경: 실제 DOM matcher와 목록 관찰 반례 [검증환경] 앞 삽입 assertion은 delete-all 반례를 거부한다",
@@ -501,7 +517,7 @@
       "outcome": "passed"
     },
     {
-      "id": "TC-034",
+      "id": "TC-035",
       "layer": "harness",
       "file": "harness/observations.test.ts",
       "title": "검증환경: 실제 DOM matcher와 목록 관찰 반례 [검증환경] 앞 삽입 assertion은 no-op 반례를 거부한다",
@@ -511,7 +527,7 @@
       "outcome": "passed"
     },
     {
-      "id": "TC-035",
+      "id": "TC-036",
       "layer": "harness",
       "file": "harness/observations.test.ts",
       "title": "검증환경: 실제 DOM matcher와 목록 관찰 반례 [검증환경] 앞 삽입 assertion은 reorder-old 반례를 거부한다",
@@ -521,7 +537,7 @@
       "outcome": "passed"
     },
     {
-      "id": "TC-036",
+      "id": "TC-037",
       "layer": "harness",
       "file": "harness/observations.test.ts",
       "title": "검증환경: 실제 DOM matcher와 목록 관찰 반례 [검증환경] 앞 삽입 assertion은 reuse-first-key 반례를 거부한다",
@@ -531,7 +547,7 @@
       "outcome": "passed"
     },
     {
-      "id": "TC-037",
+      "id": "TC-038",
       "layer": "harness",
       "file": "harness/project-loader.test.ts",
       "title": "[검증환경] 미구현 모듈은 통과나 skip 대신 원인이 명시된 오류로 보고한다",
@@ -541,7 +557,7 @@
       "outcome": "passed"
     },
     {
-      "id": "TC-038",
+      "id": "TC-039",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01, DIFF-03] key 변경을 새 이력으로 구별한다",
@@ -554,7 +570,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-039",
+      "id": "TC-040",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01, DIFF-03] 같은 자식 집합의 순서만 달라져도 새 이력을 저장한다",
@@ -567,7 +583,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-040",
+      "id": "TC-041",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01, DIFF-03] 공백 텍스트 변경을 새 이력으로 구별한다",
@@ -580,7 +596,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-041",
+      "id": "TC-042",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01, DIFF-03] 속성 열거 순서는 의미상 동일성에 영향을 주지 않는다",
@@ -593,7 +609,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-042",
+      "id": "TC-043",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01, HIST-02] 새 상태 저장은 이전 스냅샷을 변경하지 않는다",
@@ -606,7 +622,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-043",
+      "id": "TC-044",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01, HIST-02][임시 OPEN-03·14] 초기 상태를 보존하고 양쪽 경계를 닫는다",
@@ -621,7 +637,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-044",
+      "id": "TC-045",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01, HIST-02][임시 OPEN-04] 과거 위치의 실변경 성공은 이후 분기만 제거한다",
@@ -636,7 +652,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-045",
+      "id": "TC-046",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01] A→B→A 실변경은 전역 중복 제거가 아니라 세 번째 적용으로 저장한다",
@@ -648,7 +664,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-046",
+      "id": "TC-047",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01] push 입력은 복사하며 key·속성·중첩 텍스트를 독립 보존한다",
@@ -660,7 +676,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-047",
+      "id": "TC-048",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01] 과거 B에서 의미상 같은 별도 객체를 push해도 앞으로 C와 현재 참조를 보존한다",
@@ -672,7 +688,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-048",
+      "id": "TC-049",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01] 최초·최신 상태에서 반복 무변경 push는 새 이력을 만들지 않는다",
@@ -684,7 +700,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-049",
+      "id": "TC-050",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01][임시 OPEN-01] 현재 폼 프로퍼티 checked 변경을 저장한다",
@@ -698,7 +714,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-050",
+      "id": "TC-051",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01][임시 OPEN-01] 현재 폼 프로퍼티 disabled 변경을 저장한다",
@@ -712,7 +728,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-051",
+      "id": "TC-052",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01][임시 OPEN-01] 현재 폼 프로퍼티 value 변경을 저장한다",
@@ -726,7 +742,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-052",
+      "id": "TC-053",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01][임시 OPEN-03] 생성 시 입력을 재귀 복사해 이후 원본 변경으로부터 보호한다",
@@ -740,7 +756,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-053",
+      "id": "TC-054",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-01][임시 OPEN-06] 임의의 작은 고정 개수로 오래된 이력을 잘라내지 않는다",
@@ -754,7 +770,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-054",
+      "id": "TC-055",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-02, QA-03][임시 OPEN-14] 단일 이력의 -1 방향 경계 요청은 무효다",
@@ -769,7 +785,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-055",
+      "id": "TC-056",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-02, QA-03][임시 OPEN-14] 단일 이력의 1 방향 경계 요청은 무효다",
@@ -784,7 +800,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-056",
+      "id": "TC-057",
       "layer": "unit",
       "file": "history/history.test.ts",
       "title": "HistoryStore 공개 API 계약 [HIST-02][임시 OPEN-14] peek는 현재 위치를 이동하지 않고 commitMove만 한 단계 이동한다",
@@ -798,7 +814,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-057",
+      "id": "TC-058",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01] unkeyed가 다른 전체 인덱스로 밀리면 그 이전 unkeyed를 검색해 재사용하지 않는다",
@@ -810,7 +826,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-058",
+      "id": "TC-059",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01] 삽입·삭제·태그 교체 계획은 변경 전 인덱스를 중복 소비하지 않는다",
@@ -822,7 +838,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-059",
+      "id": "TC-060",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01] 혼합 자식은 keyed 부분목록이 아닌 공백을 포함한 전체 인덱스로 unkeyed를 대응한다",
@@ -834,7 +850,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-060",
+      "id": "TC-061",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] add는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -848,7 +864,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-061",
+      "id": "TC-062",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] attr add는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -862,7 +878,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-062",
+      "id": "TC-063",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] attr change는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -876,7 +892,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-063",
+      "id": "TC-064",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] attr remove는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -890,7 +906,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-064",
+      "id": "TC-065",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] empty text는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -904,7 +920,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-065",
+      "id": "TC-066",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] key added는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -918,7 +934,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-066",
+      "id": "TC-067",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] key removed는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -932,7 +948,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-067",
+      "id": "TC-068",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] key는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -946,7 +962,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-068",
+      "id": "TC-069",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] kind는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -960,7 +976,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-069",
+      "id": "TC-070",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] remove는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -974,7 +990,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-070",
+      "id": "TC-071",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] tag는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -988,7 +1004,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-071",
+      "id": "TC-072",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-02][DIFF-03] whitespace는 의미상 변경이며 두 입력을 수정하지 않는다",
@@ -1002,7 +1018,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-072",
+      "id": "TC-073",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][DIFF-03] key 재정렬은 내용이 같아도 hasChanges=true이고 원래 인덱스로 대응한다",
@@ -1015,7 +1031,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-073",
+      "id": "TC-074",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-01][임시 OPEN-09] 다음 또는 이전 형제 key 중복을 계획 생성 전에 거부한다",
@@ -1029,7 +1045,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-074",
+      "id": "TC-075",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-02][DIFF-03][임시 OPEN-01] checked만 달라지면 변경이며 같은 값은 무변경이다",
@@ -1044,7 +1060,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-075",
+      "id": "TC-076",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-02][DIFF-03][임시 OPEN-01] disabled만 달라지면 변경이며 같은 값은 무변경이다",
@@ -1059,7 +1075,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-076",
+      "id": "TC-077",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-02][DIFF-03][임시 OPEN-01] 현재 폼 값과 이벤트 함수 참조를 비교한다",
@@ -1074,7 +1090,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-077",
+      "id": "TC-078",
       "layer": "unit",
       "file": "renderer/diff.test.ts",
       "title": "diff [DIFF-03] 새 객체·속성 열거 순서만 다르면 hasChanges=false이고 ordered는 다음 자식에 대응한다",
@@ -1086,7 +1102,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-078",
+      "id": "TC-079",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-01] 빈 Element와 분리된 DocumentFragment는 가상 root만 반환한다",
@@ -1094,11 +1110,11 @@
         "VDOM-01"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-079",
+      "id": "TC-080",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-01][VDOM-02] 중첩, 빈 요소, 공백과 인접 빈 텍스트까지 childNodes 순서대로 읽는다",
@@ -1107,11 +1123,11 @@
         "VDOM-02"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-080",
+      "id": "TC-081",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02] data-key \" 01 \"는 trim·변환 없이 읽고 attrs에 중복 저장하지 않는다",
@@ -1119,11 +1135,11 @@
         "VDOM-02"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-081",
+      "id": "TC-082",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02] data-key \"__proto__\"는 trim·변환 없이 읽고 attrs에 중복 저장하지 않는다",
@@ -1131,11 +1147,11 @@
         "VDOM-02"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-082",
+      "id": "TC-083",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02] data-key \"🔑\"는 trim·변환 없이 읽고 attrs에 중복 저장하지 않는다",
@@ -1143,11 +1159,11 @@
         "VDOM-02"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-083",
+      "id": "TC-084",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02] data-key \"a\\\"&\\nb\"는 trim·변환 없이 읽고 attrs에 중복 저장하지 않는다",
@@ -1155,11 +1171,11 @@
         "VDOM-02"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-084",
+      "id": "TC-085",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02] data-key \"constructor\"는 trim·변환 없이 읽고 attrs에 중복 저장하지 않는다",
@@ -1167,11 +1183,11 @@
         "VDOM-02"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-085",
+      "id": "TC-086",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <!--comment-->를 조용히 제거하지 않고 거부한다",
@@ -1183,11 +1199,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-086",
+      "id": "TC-087",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <a href=\"/\">link</a>를 조용히 제거하지 않고 거부한다",
@@ -1199,11 +1215,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-087",
+      "id": "TC-088",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <button type=\"submit\">x</button>를 조용히 제거하지 않고 거부한다",
@@ -1215,11 +1231,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-088",
+      "id": "TC-089",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <custom-node></custom-node>를 조용히 제거하지 않고 거부한다",
@@ -1231,11 +1247,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-089",
+      "id": "TC-090",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <iframe></iframe>를 조용히 제거하지 않고 거부한다",
@@ -1247,11 +1263,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-090",
+      "id": "TC-091",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <input type=\"number\">를 조용히 제거하지 않고 거부한다",
@@ -1263,11 +1279,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-091",
+      "id": "TC-092",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <input type=\"radio\">를 조용히 제거하지 않고 거부한다",
@@ -1279,11 +1295,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-092",
+      "id": "TC-093",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <p aria-roledescription=\"x\"></p>를 조용히 제거하지 않고 거부한다",
@@ -1295,11 +1311,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-093",
+      "id": "TC-094",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <p data-key=\"\"></p>를 조용히 제거하지 않고 거부한다",
@@ -1311,11 +1327,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-094",
+      "id": "TC-095",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <p data-key=\"a\"></p><p data-key=\"a\"></p>를 조용히 제거하지 않고 거부한다",
@@ -1327,11 +1343,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-095",
+      "id": "TC-096",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <p key=\"a\"></p>를 조용히 제거하지 않고 거부한다",
@@ -1343,11 +1359,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-096",
+      "id": "TC-097",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <p onclick=\"alert(1)\">x</p>를 조용히 제거하지 않고 거부한다",
@@ -1359,11 +1375,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-097",
+      "id": "TC-098",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <p style=\"color:red\">x</p>를 조용히 제거하지 않고 거부한다",
@@ -1375,11 +1391,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-098",
+      "id": "TC-099",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <script>0</script>를 조용히 제거하지 않고 거부한다",
@@ -1391,11 +1407,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-099",
+      "id": "TC-100",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] 미지원·잘못된 DOM <svg></svg>를 조용히 제거하지 않고 거부한다",
@@ -1407,11 +1423,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-100",
+      "id": "TC-101",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][임시 OPEN-01] text input·checkbox·textarea는 초기 HTML보다 현재 프로퍼티를 읽는다",
@@ -1421,11 +1437,11 @@
       "policies": [
         "OPEN-01"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-101",
+      "id": "TC-102",
       "layer": "unit",
       "file": "renderer/dom-reader.test.ts",
       "title": "readDOM [VDOM-02][임시 OPEN-01] 폼 기본값과 boolean 존재 여부를 정규화하고 events는 비운다",
@@ -1435,11 +1451,11 @@
       "policies": [
         "OPEN-01"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-102",
+      "id": "TC-103",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [PATCH-01][임시 OPEN-01][임시 OPEN-09] 동일·중첩 컨테이너의 중복 scope를 거부한다: child-first",
@@ -1454,7 +1470,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-103",
+      "id": "TC-104",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [PATCH-01][임시 OPEN-01][임시 OPEN-09] 동일·중첩 컨테이너의 중복 scope를 거부한다: parent-first",
@@ -1469,7 +1485,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-104",
+      "id": "TC-105",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [PATCH-01][임시 OPEN-01][임시 OPEN-09] 동일·중첩 컨테이너의 중복 scope를 거부한다: same",
@@ -1484,7 +1500,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-105",
+      "id": "TC-106",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [PATCH-02][PATCH-03][임시 OPEN-01] ID와 for·ARIA를 함께 바꿔 왕복해도 scope 매핑이 안정적이고 DOM은 유지된다",
@@ -1499,7 +1515,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-106",
+      "id": "TC-107",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][PATCH-01][PATCH-02][임시 OPEN-01][임시 OPEN-09] DOM·바인딩 정리 후 scope를 해제하면 모든 재사용을 거부하고 컨테이너를 재등록할 수 있다",
@@ -1516,7 +1532,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-107",
+      "id": "TC-108",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][PATCH-01][PATCH-02][임시 OPEN-01][임시 OPEN-09] 다른 컨테이너의 scope로 읽기·생성·적용하면 양쪽을 변경하지 않는다",
@@ -1533,7 +1549,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-108",
+      "id": "TC-109",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][PATCH-01][임시 OPEN-01] 같은 논리 ID·key의 두 영역은 실제 ID가 다르고 label.control은 자기 input만 가리킨다",
@@ -1548,7 +1564,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-109",
+      "id": "TC-110",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][PATCH-01][임시 OPEN-01] 인코딩 충돌 가능 논리 ID도 일대일·안정적으로 왕복한다",
@@ -1563,7 +1579,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-110",
+      "id": "TC-111",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][PATCH-01][임시 OPEN-01] 지원 단일·목록 ARIA 참조를 모두 변환하고 일반 문자열은 그대로 둔다",
@@ -1578,7 +1594,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-111",
+      "id": "TC-112",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][임시 OPEN-01] 원본 HTML의 ID 목록은 HTML 공백을 한 칸으로 정규화한다",
@@ -1592,7 +1608,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-112",
+      "id": "TC-113",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][임시 OPEN-01][임시 OPEN-09] aria-activedescendant 참조의 외부 실제 ID를 논리 ID로 그대로 통과시키지 않는다",
@@ -1607,7 +1623,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-113",
+      "id": "TC-114",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][임시 OPEN-01][임시 OPEN-09] aria-labelledby 참조의 외부 실제 ID를 논리 ID로 그대로 통과시키지 않는다",
@@ -1622,7 +1638,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-114",
+      "id": "TC-115",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][임시 OPEN-01][임시 OPEN-09] for 참조의 외부 실제 ID를 논리 ID로 그대로 통과시키지 않는다",
@@ -1637,7 +1653,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-115",
+      "id": "TC-116",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][임시 OPEN-01][임시 OPEN-09] 참조 없는 단독 id의 foreign 실제 ID 역변환을 거부한다",
@@ -1652,7 +1668,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-116",
+      "id": "TC-117",
       "layer": "unit",
       "file": "renderer/dom-scope.test.ts",
       "title": "DOMScope [VDOM-02][임시 OPEN-01][임시 OPEN-09] 참조 없는 단독 id의 unissued 실제 ID 역변환을 거부한다",
@@ -1667,7 +1683,180 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-117",
+      "id": "TC-118",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [PATCH-01] 빈 VRoot는 호스트를 유지하고 자식 노드를 추가하지 않는다",
+      "requirements": [
+        "PATCH-01"
+      ],
+      "policies": [],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-119",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [PATCH-01][임시 OPEN-01·09] 준비 중 예외는 앞서 연결한 이벤트를 회수하고 같은 scope로 재시도할 수 있다",
+      "requirements": [
+        "PATCH-01"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-120",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [PATCH-01][임시 OPEN-09] 전체 검증 실패와 비어 있지 않은 호스트는 기존 DOM을 변경하지 않는다",
+      "requirements": [
+        "PATCH-01"
+      ],
+      "policies": [
+        "OPEN-09"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-121",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [VDOM-01, PATCH-01][임시 OPEN-01·09] 잘못된 자료형·void children을 적용 전에 거부한다 0",
+      "requirements": [
+        "VDOM-01",
+        "PATCH-01"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-122",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [VDOM-01, PATCH-01][임시 OPEN-01·09] 잘못된 자료형·void children을 적용 전에 거부한다 1",
+      "requirements": [
+        "VDOM-01",
+        "PATCH-01"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-123",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [VDOM-01, PATCH-01][임시 OPEN-01·09] 잘못된 자료형·void children을 적용 전에 거부한다 2",
+      "requirements": [
+        "VDOM-01",
+        "PATCH-01"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-124",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [VDOM-01, VDOM-02, PATCH-01][임시 OPEN-01] 빈 텍스트·다중 루트·현재 폼 값·key·ID 참조를 두 scope로 왕복한다",
+      "requirements": [
+        "VDOM-01",
+        "VDOM-02",
+        "PATCH-01"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-125",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [VDOM-02, PATCH-01][임시 OPEN-01] scope 소유권과 중첩·중복 등록, 해제 후 재사용을 검사한다",
+      "requirements": [
+        "VDOM-02",
+        "PATCH-01"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-126",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [VDOM-02, PATCH-01][임시 OPEN-01] 모든 지원 ID 참조와 일반 문자열을 구별하고 목록 공백만 정규화한다",
+      "requirements": [
+        "VDOM-02",
+        "PATCH-01"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-127",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [VDOM-02][임시 OPEN-01·09] 관리 DOM을 scope 없이 읽거나 살아 있는 DOM의 scope를 해제하지 않는다",
+      "requirements": [
+        "VDOM-02"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-128",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [VDOM-02][임시 OPEN-01·09] 참조 없는 id의 foreign 값은 역변환하지 않는다",
+      "requirements": [
+        "VDOM-02"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-129",
+      "layer": "unit",
+      "file": "renderer/initial-rendering.test.ts",
+      "title": "1단계: Diff/Patch 갱신에 의존하지 않는 초기 렌더링 [VDOM-02][임시 OPEN-01·09] 참조 없는 id의 unissued 값은 역변환하지 않는다",
+      "requirements": [
+        "VDOM-02"
+      ],
+      "policies": [
+        "OPEN-01"
+      ],
+      "runnerStatus": "passed",
+      "outcome": "passed"
+    },
+    {
+      "id": "TC-130",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-02][PATCH-03] keyed end delete에서 살아 있는 노드 정체성과 최종 순서를 유지한다",
@@ -1681,7 +1870,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-118",
+      "id": "TC-131",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-02][PATCH-03] keyed end insert에서 살아 있는 노드 정체성과 최종 순서를 유지한다",
@@ -1695,7 +1884,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-119",
+      "id": "TC-132",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-02][PATCH-03] keyed front delete에서 살아 있는 노드 정체성과 최종 순서를 유지한다",
@@ -1709,7 +1898,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-120",
+      "id": "TC-133",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-02][PATCH-03] keyed front insert에서 살아 있는 노드 정체성과 최종 순서를 유지한다",
@@ -1723,7 +1912,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-121",
+      "id": "TC-134",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-02][PATCH-03] keyed middle delete에서 살아 있는 노드 정체성과 최종 순서를 유지한다",
@@ -1737,7 +1926,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-122",
+      "id": "TC-135",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-02][PATCH-03] keyed middle insert에서 살아 있는 노드 정체성과 최종 순서를 유지한다",
@@ -1751,7 +1940,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-123",
+      "id": "TC-136",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-02][PATCH-03] keyed mixed에서 살아 있는 노드 정체성과 최종 순서를 유지한다",
@@ -1765,7 +1954,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-124",
+      "id": "TC-137",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-02][PATCH-03] keyed reverse에서 살아 있는 노드 정체성과 최종 순서를 유지한다",
@@ -1779,7 +1968,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-125",
+      "id": "TC-138",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-02][PATCH-03] keyed rotate에서 살아 있는 노드 정체성과 최종 순서를 유지한다",
@@ -1793,7 +1982,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-126",
+      "id": "TC-139",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-03] key 변경·추가·제거 또는 같은 key의 tag 변경이면 해당 하위 트리를 교체한다 0",
@@ -1806,7 +1995,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-127",
+      "id": "TC-140",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-03] key 변경·추가·제거 또는 같은 key의 tag 변경이면 해당 하위 트리를 교체한다 1",
@@ -1819,7 +2008,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-128",
+      "id": "TC-141",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-03] key 변경·추가·제거 또는 같은 key의 tag 변경이면 해당 하위 트리를 교체한다 2",
@@ -1832,7 +2021,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-129",
+      "id": "TC-142",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-03] key 변경·추가·제거 또는 같은 key의 tag 변경이면 해당 하위 트리를 교체한다 3",
@@ -1845,7 +2034,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-130",
+      "id": "TC-143",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-03] 같은 key가 부모를 바꾸면 전역 검색·이동 대신 제거 후 생성한다",
@@ -1858,7 +2047,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-131",
+      "id": "TC-144",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-03] 부모 교체는 같은 하위 key를 재사용하지 않는다",
@@ -1871,7 +2060,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-132",
+      "id": "TC-145",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-01][PATCH-03] 혼합 keyed·공백·unkeyed는 전체 인덱스가 같은 경우만 재사용한다",
@@ -1884,7 +2073,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-133",
+      "id": "TC-146",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-03][PATCH-02][PATCH-03][임시 OPEN-01] hasChanges=false여도 실제 폼 값·checked·disabled를 보정한다",
@@ -1900,7 +2089,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-134",
+      "id": "TC-147",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-03][PATCH-03][QA-04] equivalent-object 무변경이면 DOM mutation·이동·속성·프로퍼티·리스너 쓰기가 없다",
@@ -1914,7 +2103,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-135",
+      "id": "TC-148",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [DIFF-03][PATCH-03][QA-04] same-object 무변경이면 DOM mutation·이동·속성·프로퍼티·리스너 쓰기가 없다",
@@ -1928,7 +2117,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-136",
+      "id": "TC-149",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [PATCH-01][VDOM-01][VDOM-02] 빈 root와 중첩 구조·속성·빈 텍스트를 별도 root 요소 없이 생성한다",
@@ -1942,7 +2131,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-137",
+      "id": "TC-150",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [PATCH-02][PATCH-03] 재정렬·추가·삭제·같은 key 태그교체·내용변경을 한 번에 적용한다",
@@ -1955,7 +2144,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-138",
+      "id": "TC-151",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [PATCH-02][PATCH-03] 텍스트·속성만 변경하면 Text·부모·비대상 형제를 유지한다",
@@ -1968,7 +2157,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-139",
+      "id": "TC-152",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [PATCH-02][PATCH-03][임시 OPEN-01] keyed 폼 이동과 목표 value·checked·disabled·이벤트 변경을 함께 반영한다",
@@ -1983,7 +2172,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-140",
+      "id": "TC-153",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [PATCH-02][임시 OPEN-01] change 핸들러를 교체·해제하고 이동만으로 중복 바인딩하지 않는다",
@@ -1997,7 +2186,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-141",
+      "id": "TC-154",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [PATCH-02][임시 OPEN-01] click 핸들러를 교체·해제하고 이동만으로 중복 바인딩하지 않는다",
@@ -2011,7 +2200,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-142",
+      "id": "TC-155",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [PATCH-02][임시 OPEN-01] input 핸들러를 교체·해제하고 이동만으로 중복 바인딩하지 않는다",
@@ -2025,7 +2214,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-143",
+      "id": "TC-156",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [PATCH-02][임시 OPEN-01] remove 시 분리된 이전 하위 노드에서도 이벤트를 해제한다",
@@ -2039,7 +2228,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-144",
+      "id": "TC-157",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [PATCH-02][임시 OPEN-01] replace 시 분리된 이전 하위 노드에서도 이벤트를 해제한다",
@@ -2053,7 +2242,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-145",
+      "id": "TC-158",
       "layer": "unit",
       "file": "renderer/patch.test.ts",
       "title": "mountTree/applyPlan [PATCH-03] 삭제 후 재등장한 key는 부활하지 않으며 계속 살아 있는 key만 왕복 재사용한다",
@@ -2065,7 +2254,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-146",
+      "id": "TC-159",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan duplicate oldIndex는 DOM을 바꾸기 전에 거부한다",
@@ -2081,7 +2270,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-147",
+      "id": "TC-160",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan duplicate remove는 DOM을 바꾸기 전에 거부한다",
@@ -2097,7 +2286,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-148",
+      "id": "TC-161",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan fractional oldIndex는 DOM을 바꾸기 전에 거부한다",
@@ -2113,7 +2302,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-149",
+      "id": "TC-162",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan missing old index는 DOM을 바꾸기 전에 거부한다",
@@ -2129,7 +2318,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-150",
+      "id": "TC-163",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan NaN oldIndex는 DOM을 바꾸기 전에 거부한다",
@@ -2145,7 +2334,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-151",
+      "id": "TC-164",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan negative oldIndex는 DOM을 바꾸기 전에 거부한다",
@@ -2161,7 +2350,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-152",
+      "id": "TC-165",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan ordered too long는 DOM을 바꾸기 전에 거부한다",
@@ -2177,7 +2366,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-153",
+      "id": "TC-166",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan ordered too short는 DOM을 바꾸기 전에 거부한다",
@@ -2193,7 +2382,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-154",
+      "id": "TC-167",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan out of range oldIndex는 DOM을 바꾸기 전에 거부한다",
@@ -2209,7 +2398,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-155",
+      "id": "TC-168",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan remove negative는 DOM을 바꾸기 전에 거부한다",
@@ -2225,7 +2414,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-156",
+      "id": "TC-169",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan remove out of range는 DOM을 바꾸기 전에 거부한다",
@@ -2241,7 +2430,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-157",
+      "id": "TC-170",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [DIFF-01][PATCH-02][QA-03][임시 OPEN-09] invalid plan remove overlaps ordered는 DOM을 바꾸기 전에 거부한다",
@@ -2257,7 +2446,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-158",
+      "id": "TC-171",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [PATCH-01][PATCH-02][임시 OPEN-01][임시 OPEN-09] duplicate ID를 포함한 전체 다음 트리는 연결·변경 전에 거부한다",
@@ -2273,7 +2462,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-159",
+      "id": "TC-172",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [PATCH-01][PATCH-02][임시 OPEN-01][임시 OPEN-09] duplicate key를 포함한 전체 다음 트리는 연결·변경 전에 거부한다",
@@ -2289,7 +2478,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-160",
+      "id": "TC-173",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [PATCH-01][PATCH-02][임시 OPEN-01][임시 OPEN-09] empty key를 포함한 전체 다음 트리는 연결·변경 전에 거부한다",
@@ -2305,7 +2494,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-161",
+      "id": "TC-174",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [PATCH-01][PATCH-02][임시 OPEN-01][임시 OPEN-09] missing reference를 포함한 전체 다음 트리는 연결·변경 전에 거부한다",
@@ -2321,7 +2510,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-162",
+      "id": "TC-175",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [PATCH-01][PATCH-02][임시 OPEN-01][임시 OPEN-09] reserved data-key를 포함한 전체 다음 트리는 연결·변경 전에 거부한다",
@@ -2337,7 +2526,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-163",
+      "id": "TC-176",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [PATCH-01][PATCH-02][임시 OPEN-01][임시 OPEN-09] unsupported attribute를 포함한 전체 다음 트리는 연결·변경 전에 거부한다",
@@ -2353,7 +2542,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-164",
+      "id": "TC-177",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [PATCH-02][QA-03][임시 OPEN-09] 뒤쪽 하위 계획 오류를 앞쪽 텍스트·속성 쓰기 전에 발견한다",
@@ -2368,7 +2557,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-165",
+      "id": "TC-178",
       "layer": "unit",
       "file": "renderer/prevalidation.test.ts",
       "title": "prevalidation [PATCH-02][임시 OPEN-01][임시 OPEN-09] 검증 실패로 기존 이벤트 바인딩을 해제하거나 새 핸들러를 활성화하지 않는다",
@@ -2383,7 +2572,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-166",
+      "id": "TC-179",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01] 유효 key \" \"와 서로 다른 부모의 같은 key를 허용한다",
@@ -2392,11 +2581,11 @@
         "DIFF-01"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-167",
+      "id": "TC-180",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01] 유효 key \"__proto__\"와 서로 다른 부모의 같은 key를 허용한다",
@@ -2405,11 +2594,11 @@
         "DIFF-01"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-168",
+      "id": "TC-181",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01] 유효 key \"\\\"&\"와 서로 다른 부모의 같은 key를 허용한다",
@@ -2418,11 +2607,11 @@
         "DIFF-01"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-169",
+      "id": "TC-182",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01] 유효 key \"🔑\"와 서로 다른 부모의 같은 key를 허용한다",
@@ -2431,11 +2620,11 @@
         "DIFF-01"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-170",
+      "id": "TC-183",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01] 유효 key \"01\"와 서로 다른 부모의 같은 key를 허용한다",
@@ -2444,11 +2633,11 @@
         "DIFF-01"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-171",
+      "id": "TC-184",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01] 유효 key \"1\"와 서로 다른 부모의 같은 key를 허용한다",
@@ -2457,11 +2646,11 @@
         "DIFF-01"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-172",
+      "id": "TC-185",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01] 유효 key \"a\\nb\"와 서로 다른 부모의 같은 key를 허용한다",
@@ -2470,11 +2659,11 @@
         "DIFF-01"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-173",
+      "id": "TC-186",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01] 유효 key undefined와 서로 다른 부모의 같은 key를 허용한다",
@@ -2483,11 +2672,11 @@
         "DIFF-01"
       ],
       "policies": [],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-174",
+      "id": "TC-187",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 잘못된 key \"\"를 정규화로 숨기지 않고 거부한다",
@@ -2498,11 +2687,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-175",
+      "id": "TC-188",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 잘못된 key \"\\u0000\"를 정규화로 숨기지 않고 거부한다",
@@ -2513,11 +2702,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-176",
+      "id": "TC-189",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 잘못된 key \"\\ud800\"를 정규화로 숨기지 않고 거부한다",
@@ -2528,11 +2717,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-177",
+      "id": "TC-190",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 잘못된 key \"\\udfff\"를 정규화로 숨기지 않고 거부한다",
@@ -2543,11 +2732,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-178",
+      "id": "TC-191",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 잘못된 key \"a\\u0000b\"를 정규화로 숨기지 않고 거부한다",
@@ -2558,11 +2747,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-179",
+      "id": "TC-192",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 잘못된 key {}를 정규화로 숨기지 않고 거부한다",
@@ -2573,11 +2762,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-180",
+      "id": "TC-193",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 잘못된 key 0를 정규화로 숨기지 않고 거부한다",
@@ -2588,11 +2777,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-181",
+      "id": "TC-194",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 잘못된 key 1를 정규화로 숨기지 않고 거부한다",
@@ -2603,11 +2792,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-182",
+      "id": "TC-195",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 잘못된 key null를 정규화로 숨기지 않고 거부한다",
@@ -2618,11 +2807,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-183",
+      "id": "TC-196",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 잘못된 key undefined를 정규화로 숨기지 않고 거부한다",
@@ -2633,11 +2822,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-184",
+      "id": "TC-197",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 중복 key·예약 속성 중복·텍스트 key를 거부한다 0",
@@ -2648,11 +2837,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-185",
+      "id": "TC-198",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 중복 key·예약 속성 중복·텍스트 key를 거부한다 1",
@@ -2663,11 +2852,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-186",
+      "id": "TC-199",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 중복 key·예약 속성 중복·텍스트 key를 거부한다 2",
@@ -2678,11 +2867,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-187",
+      "id": "TC-200",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 중복 key·예약 속성 중복·텍스트 key를 거부한다 3",
@@ -2693,11 +2882,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-188",
+      "id": "TC-201",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][DIFF-01][임시 OPEN-09] 중복 key·예약 속성 중복·텍스트 key를 거부한다 4",
@@ -2708,11 +2897,11 @@
       "policies": [
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-189",
+      "id": "TC-202",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: duplicate",
@@ -2724,11 +2913,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-190",
+      "id": "TC-203",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: empty",
@@ -2740,11 +2929,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-191",
+      "id": "TC-204",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: empty aria list",
@@ -2756,11 +2945,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-192",
+      "id": "TC-205",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: empty for",
@@ -2772,11 +2961,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-193",
+      "id": "TC-206",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: missing aria",
@@ -2788,11 +2977,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-194",
+      "id": "TC-207",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: missing for",
@@ -2804,11 +2993,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-195",
+      "id": "TC-208",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: multiple for",
@@ -2820,11 +3009,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-196",
+      "id": "TC-209",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: multiple single aria",
@@ -2836,11 +3025,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-197",
+      "id": "TC-210",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: newline",
@@ -2852,11 +3041,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-198",
+      "id": "TC-211",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: nonlabelable",
@@ -2868,11 +3057,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-199",
+      "id": "TC-212",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: space",
@@ -2884,11 +3073,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-200",
+      "id": "TC-213",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: tab",
@@ -2900,11 +3089,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-201",
+      "id": "TC-214",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][PATCH-01][임시 OPEN-01][임시 OPEN-09] ID/참조 전체 검증: unsupported aria",
@@ -2916,11 +3105,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-202",
+      "id": "TC-215",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] host의 미지원 속성·프로퍼티·이벤트와 textarea 중복값을 거부한다 0",
@@ -2932,11 +3121,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-203",
+      "id": "TC-216",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] host의 미지원 속성·프로퍼티·이벤트와 textarea 중복값을 거부한다 1",
@@ -2948,11 +3137,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-204",
+      "id": "TC-217",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] host의 미지원 속성·프로퍼티·이벤트와 textarea 중복값을 거부한다 2",
@@ -2964,11 +3153,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-205",
+      "id": "TC-218",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] host의 미지원 속성·프로퍼티·이벤트와 textarea 중복값을 거부한다 3",
@@ -2980,11 +3169,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-206",
+      "id": "TC-219",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] host의 미지원 속성·프로퍼티·이벤트와 textarea 중복값을 거부한다 4",
@@ -2996,11 +3185,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-207",
+      "id": "TC-220",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] host의 미지원 속성·프로퍼티·이벤트와 textarea 중복값을 거부한다 5",
@@ -3012,11 +3201,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-208",
+      "id": "TC-221",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][QA-03][임시 OPEN-01][임시 OPEN-09] host의 미지원 속성·프로퍼티·이벤트와 textarea 중복값을 거부한다 6",
@@ -3028,11 +3217,11 @@
         "OPEN-01",
         "OPEN-09"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-209",
+      "id": "TC-222",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][임시 OPEN-01] html 모드는 함수 이벤트를 거부하고 component 모드는 지원 이벤트를 허용한다",
@@ -3042,11 +3231,11 @@
       "policies": [
         "OPEN-01"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-210",
+      "id": "TC-223",
       "layer": "unit",
       "file": "renderer/validation.test.ts",
       "title": "validateRoot [VDOM-02][임시 OPEN-01] 숫자처럼 보이는 key와 공백 key는 정확한 문자열로 구별한다",
@@ -3056,11 +3245,11 @@
       "policies": [
         "OPEN-01"
       ],
-      "runnerStatus": "failed",
-      "outcome": "implementation-missing"
+      "runnerStatus": "passed",
+      "outcome": "passed"
     },
     {
-      "id": "TC-211",
+      "id": "TC-224",
       "layer": "unit",
       "file": "runtime/edge-contracts.test.ts",
       "title": "명시적 오용과 오류 수명 경계 [EFF-01][임시 OPEN-09] setup의 잘못된 Promise 반환은 오류를 보고하고 다른 Effect를 계속한다",
@@ -3074,7 +3263,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-212",
+      "id": "TC-225",
       "layer": "unit",
       "file": "runtime/edge-contracts.test.ts",
       "title": "명시적 오용과 오류 수명 경계 [EFF-01][임시 OPEN-09] setup의 잘못된 숫자 반환은 오류를 보고하고 다른 Effect를 계속한다",
@@ -3088,7 +3277,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-213",
+      "id": "TC-226",
       "layer": "unit",
       "file": "runtime/edge-contracts.test.ts",
       "title": "명시적 오용과 오류 수명 경계 [EFF-04, COMP-03][임시 OPEN-08·09] 렌더 중 제거는 DOM·슬롯을 변경하기 전에 거부한다",
@@ -3103,7 +3292,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-214",
+      "id": "TC-227",
       "layer": "unit",
       "file": "runtime/edge-contracts.test.ts",
       "title": "명시적 오용과 오류 수명 경계 [MEMO-01][임시 OPEN-11·09] Memo deps 생략은 최초 렌더 오류이며 다른 유효 mount를 막지 않는다",
@@ -3117,7 +3306,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-215",
+      "id": "TC-228",
       "layer": "unit",
       "file": "runtime/edge-contracts.test.ts",
       "title": "명시적 오용과 오류 수명 경계 [PATCH-02, EFF-04][임시 OPEN-08·09] 복구 생성도 실패하면 cleanup을 중복하지 않고 faulted에서 명시적 제거를 기다린다",
@@ -3132,7 +3321,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-216",
+      "id": "TC-229",
       "layer": "unit",
       "file": "runtime/edge-contracts.test.ts",
       "title": "명시적 오용과 오류 수명 경계 [STA-01, STA-03][임시 OPEN-07] 함수를 반환하는 초기화·updater로 함수 자체를 State에 보존한다",
@@ -3147,7 +3336,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-217",
+      "id": "TC-230",
       "layer": "unit",
       "file": "runtime/edge-contracts.test.ts",
       "title": "명시적 오용과 오류 수명 경계 [STA-02, TECH-04] 서로 다른 두 루트는 Hook 슬롯과 setter 소유권을 공유하지 않는다",
@@ -3160,7 +3349,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-218",
+      "id": "TC-231",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-01 EFF-02 EFF-03 EFF-04] [임시 OPEN-08 OPEN-11] effects see committed DOM; omitted deps run each time and [] runs only once",
@@ -3178,7 +3367,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-219",
+      "id": "TC-232",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-01 EFF-02] [임시 OPEN-09] failed setup does not stop later effects or retry until its deps change",
@@ -3193,7 +3382,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-220",
+      "id": "TC-233",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-01 EFF-03 EFF-04] [임시 OPEN-08] returning no cleanup is valid on update and removal",
@@ -3209,7 +3398,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-221",
+      "id": "TC-234",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-02 EFF-03] [임시 OPEN-11] Object.is dependencies distinguish signed zero and compare object references",
@@ -3224,7 +3413,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-222",
+      "id": "TC-235",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-02] [임시 OPEN-11 OPEN-09] deps contract change [ 1 ] -> [ 1, 2 ] rolls back",
@@ -3239,7 +3428,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-223",
+      "id": "TC-236",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-02] [임시 OPEN-11 OPEN-09] deps contract change [ 1, 2 ] -> [ 1 ] rolls back",
@@ -3254,7 +3443,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-224",
+      "id": "TC-237",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-02] [임시 OPEN-11 OPEN-09] deps contract change [] -> undefined rolls back",
@@ -3269,7 +3458,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-225",
+      "id": "TC-238",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-02] [임시 OPEN-11 OPEN-09] deps contract change undefined -> [] rolls back",
@@ -3284,7 +3473,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-226",
+      "id": "TC-239",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-02] [임시 OPEN-11] dependency arrays are snapshotted instead of retained by reference",
@@ -3298,7 +3487,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-227",
+      "id": "TC-240",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-03 EFF-04] [임시 OPEN-08 OPEN-09] deps-cleanup unmount is rejected and new setups continue",
@@ -3314,7 +3503,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-228",
+      "id": "TC-241",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-03 EFF-04] [임시 OPEN-08] cleanup precedes its new setup in slot order and removal cleans once",
@@ -3329,7 +3518,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-229",
+      "id": "TC-242",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-03] [임시 OPEN-09] cleanup exceptions report failure but do not stop later setup or roll back committed DOM",
@@ -3343,7 +3532,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-230",
+      "id": "TC-243",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-04 STA-03] [임시 OPEN-08 OPEN-09] removal rejects reentry, ignores setters and continues cleanup after exceptions",
@@ -3359,7 +3548,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-231",
+      "id": "TC-244",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [EFF-04] [임시 OPEN-08 OPEN-09] setup-time unmount is rejected before changing ownership; returned cleanup is retained",
@@ -3374,7 +3563,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-232",
+      "id": "TC-245",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [STA-03 EFF-01] [임시 OPEN-07 OPEN-09] effect setters queue until all current effects finish and receive latest successful state",
@@ -3390,7 +3579,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-233",
+      "id": "TC-246",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Effect dependencies and lifecycle [STA-03 EFF-01] [임시 OPEN-09] an endless effect update chain is blocked after at most 50 consecutive updates",
@@ -3405,7 +3594,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-234",
+      "id": "TC-247",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "FunctionComponent mount, props and state [COMP-01 COMP-02 TECH-03 TECH-04] mount executes the root and forwards props to a pure child",
@@ -3420,7 +3609,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-235",
+      "id": "TC-248",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "FunctionComponent mount, props and state [COMP-01 COMP-03] [임시 OPEN-08 OPEN-09] duplicate mount and update after unmount are rejected",
@@ -3436,7 +3625,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-236",
+      "id": "TC-249",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "FunctionComponent mount, props and state [COMP-01] empty and multiple root results normalize without a wrapper element",
@@ -3448,7 +3637,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-237",
+      "id": "TC-250",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "FunctionComponent mount, props and state [STA-01 STA-02 STA-03 COMP-03] independent state slots update synchronously and preserve reusable DOM",
@@ -3463,7 +3652,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-238",
+      "id": "TC-251",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "FunctionComponent mount, props and state [STA-01 STA-03] [임시 OPEN-07] lazy initialization runs once per mount and setters remain stable",
@@ -3478,7 +3667,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-239",
+      "id": "TC-252",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "FunctionComponent mount, props and state [STA-03 EFF-04] [임시 OPEN-07 OPEN-08] old generation setters cannot update an unmounted or remounted root",
@@ -3494,7 +3683,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-240",
+      "id": "TC-253",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "FunctionComponent mount, props and state [STA-03] [임시 OPEN-07] Object.is skips NaN but distinguishes positive and negative zero",
@@ -3508,7 +3697,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-241",
+      "id": "TC-254",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [COMP-03 STA-03 MEMO-02 EFF-02] [임시 OPEN-09] invalid VDOM rejects new props and releases context before retry",
@@ -3525,7 +3714,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-242",
+      "id": "TC-255",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [STA-02 MEMO-02 EFF-02] [임시 OPEN-09 OPEN-15] fewer hook mismatch preserves committed state, memo, effects and props",
@@ -3542,7 +3731,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-243",
+      "id": "TC-256",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [STA-02 MEMO-02 EFF-02] [임시 OPEN-09 OPEN-15] kind hook mismatch preserves committed state, memo, effects and props",
@@ -3559,7 +3748,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-244",
+      "id": "TC-257",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [STA-02 MEMO-02 EFF-02] [임시 OPEN-09 OPEN-15] more hook mismatch preserves committed state, memo, effects and props",
@@ -3576,7 +3765,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-245",
+      "id": "TC-258",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [STA-03] [임시 OPEN-09 OPEN-15] render-time setter is rejected and retry uses the last successful state",
@@ -3591,7 +3780,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-246",
+      "id": "TC-259",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [TECH-05 STA-01] [임시 OPEN-15] root hooks evaluated as h arguments retain root context",
@@ -3606,7 +3795,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-247",
+      "id": "TC-260",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [TECH-05 TECH-06] [임시 OPEN-15] child effect invocation fails and the parent may retry",
@@ -3621,7 +3810,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-248",
+      "id": "TC-261",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [TECH-05 TECH-06] [임시 OPEN-15] child memo invocation fails and the parent may retry",
@@ -3636,7 +3825,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-249",
+      "id": "TC-262",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [TECH-05 TECH-06] [임시 OPEN-15] child state invocation fails and the parent may retry",
@@ -3651,7 +3840,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-250",
+      "id": "TC-263",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [TECH-05] [임시 OPEN-15] effect outside render fails without leaving an active context",
@@ -3665,7 +3854,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-251",
+      "id": "TC-264",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [TECH-05] [임시 OPEN-15] memo outside render fails without leaving an active context",
@@ -3679,7 +3868,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-252",
+      "id": "TC-265",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Hook context and candidate rollback [TECH-05] [임시 OPEN-15] state outside render fails without leaving an active context",
@@ -3693,7 +3882,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-253",
+      "id": "TC-266",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "keyed child boundaries and root lifetime [COMP-02 DIFF-01 PATCH-03] keyed child receives no reserved key and its original VNode remains unchanged",
@@ -3707,7 +3896,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-254",
+      "id": "TC-267",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "keyed child boundaries and root lifetime [COMP-02 DIFF-01] [임시 OPEN-09] keyed child returning conflicting-key rejects before DOM changes and remains retryable",
@@ -3722,7 +3911,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-255",
+      "id": "TC-268",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "keyed child boundaries and root lifetime [COMP-02 DIFF-01] [임시 OPEN-09] keyed child returning empty rejects before DOM changes and remains retryable",
@@ -3737,7 +3926,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-256",
+      "id": "TC-269",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "keyed child boundaries and root lifetime [COMP-02 DIFF-01] [임시 OPEN-09] keyed child returning multiple rejects before DOM changes and remains retryable",
@@ -3752,7 +3941,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-257",
+      "id": "TC-270",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "keyed child boundaries and root lifetime [COMP-02 DIFF-01] [임시 OPEN-09] keyed child returning text rejects before DOM changes and remains retryable",
@@ -3767,7 +3956,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-258",
+      "id": "TC-271",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "keyed child boundaries and root lifetime [COMP-02 DIFF-01] same inner and outer keys are allowed without modifying the returned element",
@@ -3780,7 +3969,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-259",
+      "id": "TC-272",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "keyed child boundaries and root lifetime [COMP-02] unkeyed children may return empty, text or multiple nodes",
@@ -3792,7 +3981,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-260",
+      "id": "TC-273",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "keyed child boundaries and root lifetime [COMP-03 STA-02 EFF-02 PATCH-03] [임시 OPEN-11] keyed reorder and key replacement preserve root state and same-deps effect lifetime",
@@ -3809,7 +3998,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-261",
+      "id": "TC-274",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Memo candidate semantics [MEMO-01 MEMO-02 MEMO-03] [임시 OPEN-11 OPEN-13] equal deps reuse the exact reference but A B A recalculates A",
@@ -3826,7 +4015,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-262",
+      "id": "TC-275",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Memo candidate semantics [MEMO-02 MEMO-03] [임시 OPEN-09 OPEN-11] changing memo dependency length rejects candidate and preserves the cache",
@@ -3842,7 +4031,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-263",
+      "id": "TC-276",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Memo candidate semantics [MEMO-02 MEMO-03] [임시 OPEN-11] dependencies use Object.is, retain inner object references and snapshot the outer array",
@@ -3857,7 +4046,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-264",
+      "id": "TC-277",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "Memo candidate semantics [STA-03 MEMO-02 EFF-02] [임시 OPEN-09 OPEN-13] render failure discards candidate state, memo and effects, then retries from committed cache",
@@ -3874,7 +4063,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-265",
+      "id": "TC-278",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "partial DOM failure recovery [PATCH-02 EFF-04] [임시 OPEN-08 OPEN-09] recovering cleanup 오류 뒤에도 나머지 자원을 한 번씩 정리하고 표시를 재구성한다",
@@ -3890,7 +4079,7 @@
       "outcome": "implementation-missing"
     },
     {
-      "id": "TC-266",
+      "id": "TC-279",
       "layer": "unit",
       "file": "runtime/function-component.test.ts",
       "title": "partial DOM failure recovery [PATCH-02 STA-03 MEMO-02 EFF-04] [임시 OPEN-08 OPEN-09] partial native write faults the root, cleans captured old nodes and discards candidates and queue",
