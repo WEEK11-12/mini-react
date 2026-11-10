@@ -1,6 +1,6 @@
 # Virtual DOM 상세 설계
 
-> **상태:** 구현 전 설계 초안. 사용자 결정과 추가 세부 제안을 구분한다.
+> **상태:** 두 Phase의 VNode 렌더링·이벤트·DOM 프로퍼티를 로컬 구현. 실행 결과는 [검증 계획](../testing.md)에 둔다.
 > **관련 요구:** FR-01~02, FR-05, FR-16 · [요구사항](../requirements.md) · [전체 설계](../design.md)
 
 ## 1. 범위와 책임
@@ -64,7 +64,9 @@ HTML 문자열은 미리보기에 반영하기 전에 검증한다. 최상위 �
 
 ## 8. 공통 VNode 구현 계약
 
-VNode는 실제 DOM 참조를 담지 않는 JavaScript 객체다. Phase 1 History에는 데이터만 담긴 트리를 저장한다. Phase 2 이벤트 핸들러는 함수이므로 Phase 2 VNode 전체를 JSON 직렬화할 수 있다고 가정하지 않는다.
+**DOM 호환 경계:** 실제 DOM에 추가된 `bis_skin_checked`만 DOM 읽기와 Patch 속성 비교에서 제외한다. DOM에서 삭제하거나 VNode·History에 저장하지 않는다. 사용자 HTML·VNode의 허용 속성 목록은 유지하고 다른 외부 속성 변경도 계속 검사한다.
+
+VNode는 실제 DOM 참조를 담지 않는 JavaScript 객체다. Phase 1 History에는 데이터만 담긴 트리를 저장한다. 기본 렌더러·Patch는 Phase 1 지원 목록을 적용하고 비어 있지 않은 `events`·`domProps`를 거부한다. Phase 2는 `{phase: 2}`로 명시해 두 필드를 DOM에 적용한다. 이벤트 핸들러는 함수이므로 Phase 2 VNode 전체를 JSON 직렬화할 수 있다고 가정하지 않는다.
 
 ```js
 { kind: "text", value: "상품 2개" }
@@ -83,10 +85,14 @@ VNode는 실제 DOM 참조를 담지 않는 JavaScript 객체다. Phase 1 Histor
 | `kind`·`tag` | 요소/텍스트를 구분하고 요소 태그명은 소문자로 표현한다. |
 | `attrs`·`children` | HTML 속성은 문자열 맵, 자식은 순서 있는 배열이다. 속성 순서는 비교하지 않는다. |
 | `events`·`domProps` | Phase 2 전용이다. 이벤트 함수와 `input.value` 같은 현재 프로퍼티를 담는다. |
-| `data-key` | 형제 목록의 식별자다. 형제 간 중복은 오류, 다른 부모 간 중복은 허용한다. |
+| `data-key` | 형제 목록의 식별자다. 빈 문자열·형제 간 중복은 오류, 다른 부모 간 중복은 허용한다. 공백을 trim하지 않는다. |
 | Phase 1 HTML 입력 | 지원 문법·오류·공백 규칙은 [HTML 입력 설계](html-input.md)가 소유한다. |
 
-`readDom(root)`는 최초 실제 영역과 Patch 시점의 미리보기에 **같은** 주석·공백 규칙을 적용한다. `render(vnode)`는 새 DOM 노드를 반환한다. 실제 DOM의 들여쓰기 텍스트 노드와 VNode 자식 인덱스 차이는 [Diff·Patch](diff-patch.md)가 같은 정규화 규칙으로 대응시킨다. Phase 2의 `button`·`input`은 컴포넌트가 VNode로 생성하며 Phase 1 HTML 입력 허용 목록에 추가하지 않는다.
+`readDom(root)`는 최초 실제 영역과 Patch 시점의 미리보기에 **같은** 주석·공백 규칙을 적용한다. `render(vnode)`는 새 DOM 노드를 반환한다. 실제 DOM의 들여쓰기 텍스트 노드와 VNode 자식 인덱스 차이는 [Diff·Patch](diff-patch.md)가 이전 VNode에 대응하지 않는 노드만 건너뛰며 해결한다. Phase 2의 `button`·`input`은 컴포넌트가 VNode로 생성하며 Phase 1 HTML 입력 허용 목록에 추가하지 않는다.
+
+Phase 2의 `render(tree, document, {phase: 2})`와 `patch(root, plan, {phase: 2})`는 기본 요소에 `button`·`input`·`label`을 더한다. 속성은 기본 목록과 `id/type/min/max/step/name/for/placeholder/role/tabindex/disabled`, `aria-*`만 허용한다. 이벤트는 소문자 이름과 함수로 연결한다. 현재 프로퍼티는 `input`의 문자열 `value`·불리언 `checked`만 지원하며 `innerHTML`·`onclick` 속성은 거부한다. `validateDomTree`가 DOM 쓰기 전에 지원 범위까지 검사한다.
+
+주석 노드는 읽기에서 제외하되 양옆 텍스트 노드는 합치지 않는다. 예를 들어 `<p>사과<!-- 메모 -->배</p>`의 `children`은 텍스트 둘이고 `<p>사과배</p>`는 하나다. Patch도 주석을 건너뛰면서 이 텍스트 노드 경계를 유지한다. 입력 검사기가 만든 미리보기와 최초 실제 DOM에 같은 기준을 적용한다.
 
 ```mermaid
 flowchart LR

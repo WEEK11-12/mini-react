@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mini-react · Phase 2 장바구니</title>
+  <link rel="stylesheet" href="/phase2.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="page-header">
+      <div>
+        <p class="eyebrow">MINI REACT / PHASE 2</p>
+        <h1>데이터가 바뀌면, 화면도 함께.</h1>
+        <p class="intro">상품 수량과 테마를 바꿔 보세요. HTML 편집이나 Patch 버튼 없이 화면이 갱신됩니다.</p>
+      </div>
+      <a href="/">Phase 1 편집기로 ←</a>
+    </header>
+    <div class="flow" aria-label="화면 갱신 흐름">
+      <span>사용자 조작</span><span aria-hidden="true">→</span><span>State</span><span aria-hidden="true">→</span><span>Component</span><span aria-hidden="true">→</span><span>Virtual DOM</span><span aria-hidden="true">→</span><span>Diff · Patch</span>
+    </div>
+    <div class="layout">
+      <section class="demo-panel" aria-label="상태 기반 장바구니 데모">
+        <div id="cart-root"></div>
+        <p id="runtime-status" role="alert"></p>
+      </section>
+      <aside class="guide">
+        <p class="eyebrow">직접 확인할 것</p>
+        <h2>세 Hook을 눈으로 확인하세요.</h2>
+        <ol>
+          <li><strong>useState</strong><p>수량을 바꾸면 상품 개수와 합계가 함께 바뀝니다. 입력창에 연속 입력해도 포커스가 유지됩니다.</p></li>
+          <li><strong>useMemo</strong><p>테마만 바꾸면 합계 계산 횟수는 그대로입니다. 상품 수량을 바꾸면 다시 계산합니다.</p></li>
+          <li><strong>useEffect</strong><p>상품 총수량에 따라 브라우저 탭 제목이 바뀝니다. 아래 버튼으로 종료하면 원래 제목을 복원합니다.</p></li>
+        </ol>
+        <div class="lifecycle">
+          <button id="lifecycle-toggle" type="button">컴포넌트 종료</button>
+          <p role="status">Effect 실행 <output id="effect-runs">0</output>회 · 정리 <output id="effect-cleanups">0</output>회</p>
+        </div>
+        <p class="note">이 데모의 State는 Phase 1 편집기·History와 독립적입니다. 새로 시작하거나 페이지를 새로고침하면 초기 장바구니로 돌아갑니다.</p>
+      </aside>
+    </div>
+  </main>
+  <script type="module" src="/src/cart.js"></script>
+</body>
+</html>

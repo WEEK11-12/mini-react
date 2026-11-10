@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>mini-react · Phase 1 Playground</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="page-header">
+      <div><p class="eyebrow">MINI REACT / PHASE 1</p><h1>작은 변경, 필요한 갱신.</h1>
+      <p class="intro">HTML을 편집하고 두 화면을 비교해 보세요. Patch를 누를 때 실제 화면에 반영됩니다.</p></div>
+      <div class="page-links"><a class="test-link" href="/phase2.html">Phase 2 장바구니 →</a><a class="test-link" href="/test/browser/index.html" target="_blank" rel="noopener">브라우저 검증 ↗</a></div>
+    </header>
+
+    <section class="toolbar" aria-label="화면 적용과 이력 탐색">
+      <div class="history-actions">
+        <button type="button" id="back" title="미적용 편집 초안을 버리고 이전 이력으로 이동">← 뒤로가기</button>
+        <button type="button" id="forward" title="미적용 편집 초안을 버리고 다음 이력으로 이동">앞으로가기 →</button>
+        <span id="status" role="status"></span>
+      </div>
+      <button type="button" id="patch" class="primary">변경 적용 · Patch</button>
+    </section>
+    <p class="error" id="error" role="alert" aria-live="assertive"></p>
+
+    <div class="workbench">
+      <section class="panel actual-panel" aria-labelledby="actual-heading">
+        <div class="panel-heading"><div><span class="step">01 / COMMITTED</span><h2 id="actual-heading">실제 영역</h2></div><span class="badge">적용된 화면</span></div>
+        <p class="panel-help">Patch 전에는 이 화면이 바뀌지 않습니다.</p>
+        <div id="actual" class="canvas">
+          <div class="cart">
+            <h2>장바구니</h2>
+            <p class="count">상품 2개</p>
+            <ul>
+              <li data-key="apple"><strong>사과</strong><span> 1개 · 2,000원</span></li>
+              <li data-key="pear"><strong>배</strong><span> 1개 · 3,000원</span></li>
+            </ul>
+            <p class="total">합계 <strong>5,000원</strong></p>
+          </div>
+        </div>
+        <div class="try-note"><strong>이렇게 바꿔 보세요</strong><p>상품명이나 class 바꾸기 · li 추가/삭제 · p를 strong으로 교체하기</p><p>목록의 data-key를 유지한 채 순서를 바꾸면 기존 요소를 재사용합니다.</p><p>이 단계에서는 상품 수와 합계도 HTML에서 각각 편집합니다.</p></div>
+      </section>
+
+      <section class="panel" aria-labelledby="test-heading">
+        <div class="panel-heading"><div><span class="step">02 / DRAFT</span><h2 id="test-heading">테스트 영역</h2></div><span class="badge draft">편집 중인 화면</span></div>
+        <p class="panel-help">유효한 HTML은 미리보기에 바로 표시됩니다.</p>
+        <label for="editor" class="editor-label">HTML 코드</label>
+        <textarea id="editor" spellcheck="false" autocapitalize="off" aria-describedby="syntax-help"></textarea>
+        <div class="preview-label">결과 미리보기</div>
+        <div id="preview" class="canvas preview-canvas"></div>
+      </section>
+    </div>
+    <footer id="syntax-help">
+      <p><strong>지원 요소</strong> div · h2 · p · strong · ul · li · span &nbsp; <strong>속성</strong> class · title · data-*</p>
+      <p>바깥 요소 하나, 닫는 태그, 따옴표로 감싼 속성값이 필요합니다. 잘못된 코드는 적용하지 않습니다.</p>
+      <p>뒤로·앞으로 이동하면 아직 적용하지 않은 편집 초안은 사라집니다. 이력은 현재 페이지에서만 유지됩니다.</p>
+    </footer>
+  </main>
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>
