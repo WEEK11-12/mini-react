@@ -8,34 +8,71 @@
   </head>
   <body>
     <main>
-      <header><p>MINI REACT · PHASE 1</p><h1>DOM 실험실</h1><p>HTML을 편집하고 필요한 DOM만 갱신해 보세요.</p></header>
-      <div class="toolbar">
-        <button type="button" data-testid="patch-button">Patch</button>
-        <button type="button" data-testid="back-button">뒤로가기</button>
-        <button type="button" data-testid="forward-button">앞으로가기</button>
-        <output data-testid="status" role="status" aria-live="polite"></output>
-      </div>
-      <div class="regions">
-        <section><h2 id="actual-title">실제 영역</h2><div data-testid="actual-region" role="region" aria-labelledby="actual-title"><h3>나의 목록</h3><ul><li data-key="a">사과</li><li data-key="b">배</li><li data-key="c">귤</li></ul><label for="note">메모</label><input id="note" type="text" value="안녕하세요"><label for="agree">동의</label><input id="agree" type="checkbox"></div></section>
-        <section><h2>테스트 영역</h2><label for="html-editor">HTML 입력</label><textarea id="html-editor" data-testid="html-editor" spellcheck="false"></textarea><h3 id="preview-title">테스트 영역</h3><div data-testid="preview-region" role="region" aria-labelledby="preview-title"></div></section>
-      </div>
-      <section class="demo-section" aria-labelledby="demo-title">
-        <h2 id="demo-title">Phase 2 · 컴포넌트와 Hook</h2>
-        <p>수량과 메모를 바꾸고, 상품별 재고 구독과 목록 노드 재사용을 확인해 보세요.</p>
-        <div class="toolbar">
-          <button type="button" data-testid="unmount-component">제거</button>
-          <button type="button" data-testid="restart-component">다시 시작</button>
-          <output data-testid="component-status" role="status" aria-live="polite"></output>
+      <header class="site-header">
+        <p class="eyebrow">MINI REACT / PLAYGROUND</p>
+        <h1>DOM·컴포넌트 실험실</h1>
+        <p class="intro">직접 바꾸고, 적용하고, 달라진 부분을 확인하세요.</p>
+      </header>
+
+      <section class="phase" aria-labelledby="phase-one-title">
+        <div class="phase-heading">
+          <span class="phase-number">01 / DOM &amp; HISTORY</span>
+          <h2 id="phase-one-title">HTML을 바꿔 보세요</h2>
+          <p>HTML 입력에서 <strong>‘나의 목록’</strong>을 수정하세요. 미리보기를 확인한 뒤 실제 영역에 적용합니다.</p>
         </div>
-        <div data-testid="component-demo" class="demo-region"></div>
-        <p>합계 계산: <output data-testid="memo-count">0</output>회 · 구독: <output data-testid="effect-setup-count">0</output>회 · 해제: <output data-testid="effect-cleanup-count">0</output>회</p>
-        <h3>key 목록</h3>
-        <div class="toolbar">
-          <button type="button" data-testid="reverse-list">역순</button>
-          <button type="button" data-testid="prepend-list-item">앞에 추가</button>
-          <button type="button" data-testid="remove-list-item">첫 항목 삭제</button>
+        <div class="regions">
+          <section class="panel actual-panel" aria-labelledby="actual-title">
+            <div class="panel-heading"><div><span class="eyebrow">RESULT</span><h3 id="actual-title">실제 영역</h3></div><span class="tag">마지막 적용 결과</span></div>
+            <div data-testid="actual-region" class="canvas" role="region" aria-labelledby="actual-title"><h3>나의 목록</h3>
+<ul>
+  <li data-key="a">사과</li>
+  <li data-key="b">배</li>
+  <li data-key="c">귤</li>
+</ul>
+<label for="note">메모</label>
+<input id="note" type="text" value="안녕하세요">
+<label for="agree">동의</label>
+<input id="agree" type="checkbox"></div>
+          </section>
+          <section class="panel editor-panel" aria-labelledby="test-title">
+            <div class="panel-heading"><div><span class="eyebrow">EDIT &amp; PREVIEW</span><h3 id="test-title">테스트 영역</h3></div><span class="tag">적용 전</span></div>
+            <label class="field-label" for="html-editor">HTML 입력</label>
+            <textarea id="html-editor" data-testid="html-editor" spellcheck="false"></textarea>
+            <div class="preview-heading"><h4>미리보기</h4><span>폼 값은 여기에서 바꿔 보세요</span></div>
+            <div class="edit-actions"><button type="button" class="primary" data-testid="patch-button">실제 영역에 적용 (Patch)</button><output data-testid="status" role="status" aria-live="polite"></output></div>
+            <div data-testid="preview-region" class="canvas" role="region" aria-labelledby="test-title"></div>
+          </section>
         </div>
-        <div data-testid="keyed-list-demo" class="demo-region"></div>
+        <div class="toolbar history-controls"><span class="eyebrow">적용 이력</span><button type="button" data-testid="back-button">이전 적용 상태</button><button type="button" data-testid="forward-button">다음 적용 상태</button></div>
+        <p class="boundary-note">이전·다음은 저장된 이력이 있을 때만 열립니다. 이동하면 미적용 편집은 버리고, Phase 2는 그대로 둡니다.</p>
+        <details class="help"><summary>편집과 이력은 어떻게 동작하나요?</summary><p>실제 영역은 마지막 적용 결과로, 편집 위치가 아닙니다. HTML 입력과 미리보기의 변경은 Patch 전까지 실제 영역에 반영되지 않습니다. 입력 오류가 나면 마지막 유효 미리보기를 유지하므로 HTML을 수정하세요.</p></details>
+      </section>
+
+      <section class="phase demo-section" aria-labelledby="demo-title">
+        <div class="phase-heading"><span class="phase-number">02 / COMPONENTS &amp; HOOKS</span><h2 id="demo-title">상태와 수명을 살펴보세요</h2><p>먼저 장바구니의 <strong>수량 증가</strong>를 눌러 합계와 계산 횟수를 비교하세요.</p></div>
+        <div class="demo-cards">
+          <section class="panel" aria-labelledby="cart-title">
+            <div class="panel-heading"><div><span class="eyebrow">STATE / MEMO / EFFECT</span><h3 id="cart-title">장바구니</h3></div><span class="state-badge">상태 <output data-testid="cart-state" role="status">실행 중</output></span></div>
+            <p data-testid="cart-error" class="error-message"></p>
+            <div data-testid="component-demo" class="demo-region canvas"></div>
+            <p data-testid="cart-empty" class="empty-message" hidden>장바구니가 종료되었습니다. 초기화·시작으로 다시 열 수 있습니다.</p>
+            <div class="metrics" aria-label="누적 실행 시도 횟수"><span>합계 계산 <output data-testid="memo-count">0</output>회</span><span>구독 설정 <output data-testid="effect-setup-count">0</output>회</span><span>구독 정리 <output data-testid="effect-cleanup-count">0</output>회</span></div>
+            <div class="toolbar card-actions"><button type="button" data-testid="unmount-component">장바구니 종료 (unmount)</button><button type="button" data-testid="restart-component">장바구니 초기화·시작</button></div>
+            <details class="help"><summary>메모·상품 변경과 초기화는?</summary><p>메모 입력은 메모만 바꾸고 합계 계산을 재사용합니다. 상품 변경은 로컬 모의 재고 구독을 교체합니다. 종료는 상품 삭제가 아니라 장바구니 UI와 구독을 정리합니다. 초기화는 실행 중이면 종료 후 사과·수량 1·빈 메모로 새로 시작하며 이전 입력은 복원하지 않습니다. 목록과 Phase 1은 그대로 둡니다.</p></details>
+            <details class="help"><summary>계측 수치는 무엇을 뜻하나요?</summary><p>페이지를 연 뒤 누적된 실행 시도 횟수입니다. 실패 시도도 포함될 수 있고 초기화해도 0으로 돌아가지 않습니다. 성공 횟수나 자원 해제 완료의 증거는 아닙니다.</p></details>
+          </section>
+          <section class="panel" aria-labelledby="list-title">
+            <div class="panel-heading"><div><span class="eyebrow">KEYED DIFF</span><h3 id="list-title">key 목록</h3></div><span class="state-badge">상태 <output data-testid="list-state" role="status">실행 중</output></span></div>
+            <p data-testid="list-error" class="error-message"></p>
+            <div class="list-overview"><span>현재 순서 <output data-testid="list-order">a → b → c</output></span><span><output data-testid="list-count">3</output>개 항목</span></div>
+            <div data-testid="keyed-list-demo" class="demo-region canvas"></div>
+            <p data-testid="list-empty" class="empty-message" hidden>목록이 비었습니다. ‘맨 앞에 추가’로 다시 채우세요.</p>
+            <div class="toolbar card-actions"><button type="button" data-testid="reverse-list">순서 뒤집기</button><button type="button" data-testid="prepend-list-item">맨 앞에 추가</button><button type="button" data-testid="remove-list-item">첫 항목 삭제</button><button type="button" data-testid="restart-list" hidden>목록 초기화·시작</button></div>
+            <p class="hint">목록 초기화·시작은 기존 목록을 버리고 a·b·c로 시작합니다. 장바구니는 그대로 둡니다.</p>
+            <details class="help"><summary>같은 key의 DOM은 어떻게 되나요?</summary><p>순서를 뒤집거나 앞에 추가해도 남은 같은 key의 DOM을 재사용합니다. 화면의 순서만으로는 참조 동일성을 증명할 수 없어 브라우저 테스트에서 확인합니다.</p></details>
+          </section>
+        </div>
+        <output data-testid="component-status" class="sr-only" role="alert" aria-live="assertive"></output>
       </section>
     </main>
     <script type="module" src="/src/main.ts"></script>

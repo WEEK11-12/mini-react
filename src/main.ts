@@ -21,6 +21,7 @@ const stopDemo = startCartDemo({
   list: required('[data-testid="keyed-list-demo"]', HTMLElement),
   unmount: required('[data-testid="unmount-component"]', HTMLButtonElement),
   restart: required('[data-testid="restart-component"]', HTMLButtonElement),
+  restartList: required('[data-testid="restart-list"]', HTMLButtonElement),
   reverse: required('[data-testid="reverse-list"]', HTMLButtonElement),
   prepend: required('[data-testid="prepend-list-item"]', HTMLButtonElement),
   remove: required('[data-testid="remove-list-item"]', HTMLButtonElement),
@@ -28,6 +29,14 @@ const stopDemo = startCartDemo({
   setupCount: required('[data-testid="effect-setup-count"]', HTMLElement),
   cleanupCount: required('[data-testid="effect-cleanup-count"]', HTMLElement),
   status: required('[data-testid="component-status"]', HTMLElement),
+  cartState: required('[data-testid="cart-state"]', HTMLElement),
+  listState: required('[data-testid="list-state"]', HTMLElement),
+  cartEmpty: required('[data-testid="cart-empty"]', HTMLElement),
+  listEmpty: required('[data-testid="list-empty"]', HTMLElement),
+  listOrder: required('[data-testid="list-order"]', HTMLElement),
+  listCount: required('[data-testid="list-count"]', HTMLElement),
+  cartError: required('[data-testid="cart-error"]', HTMLElement),
+  listError: required('[data-testid="list-error"]', HTMLElement),
 });
 window.addEventListener('pagehide', (event) => {
   if (!event.persisted) {

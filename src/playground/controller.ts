@@ -44,7 +44,7 @@ export function startPlayground(view: PlaygroundElements): () => void {
     view.forward.disabled = busy || stopped || !history.canForward();
     view.preview.inert = invalid || stopped;
     view.editor.disabled = stopped;
-    view.status.textContent = `${history.position()} / ${history.count()} · ${message}`;
+    view.status.textContent = `적용 이력 ${history.position()} / ${history.count()} · ${message}`;
   }
   function message(error: unknown): string {
     return error instanceof Error ? error.message : String(error);
@@ -82,7 +82,7 @@ export function startPlayground(view: PlaygroundElements): () => void {
     if (busy || stopped) return;
     let next: VRoot;
     try { next = parseHTML(view.editor.value, view.editor.ownerDocument); }
-    catch (error) { invalid = true; controls(`입력 오류: ${message(error)}`); return; }
+    catch (error) { invalid = true; controls(`입력 오류: ${message(error)} · 마지막 유효 미리보기를 유지합니다. HTML 입력을 수정하세요.`); return; }
     const previous = previewTree;
     busy = true;
     try {
@@ -104,7 +104,7 @@ export function startPlayground(view: PlaygroundElements): () => void {
       previewTree = next;
       view.editor.value = html;
       controls('미적용 편집');
-    } catch (error) { invalid = true; controls(`입력 오류: ${message(error)}`); }
+    } catch (error) { invalid = true; controls(`입력 오류: ${message(error)} · 마지막 유효 미리보기를 유지합니다. HTML 입력을 수정하세요.`); }
   };
   const restoreActual: EventListener = () => {
     if (busy || stopped) return;
@@ -123,6 +123,7 @@ export function startPlayground(view: PlaygroundElements): () => void {
     const previousPreview = previewTree;
     const previousEditor = view.editor.value;
     const previousInvalid = invalid;
+    const discardEdit = offset !== undefined && (previousInvalid || statusMessage === '미적용 편집');
     busy = true;
     let result = '';
     try {
@@ -138,7 +139,7 @@ export function startPlayground(view: PlaygroundElements): () => void {
       appliedTree = history.current();
       previewTree = next;
       invalid = false;
-      result = offset !== undefined ? '이력 이동' : plan.hasChanges ? '적용 완료' : '변경 없음';
+      result = offset !== undefined ? `이력 이동${discardEdit ? ' · 미적용 편집 폐기' : ''}` : plan.hasChanges ? '적용 완료' : '변경 없음';
     } catch (error) {
       invalid = previousInvalid;
       recover(appliedTree, previousPreview, previousEditor, error);
