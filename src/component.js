@@ -176,7 +176,7 @@ export class FunctionComponent {
         } catch (error) { firstError ??= error; }
       }
     } finally { this.flushing = false; }
-    if (firstError) throw Object.assign(new Error(firstError?.message ?? String(firstError), { cause: firstError }), { code: 'ERR_EFFECT' });
+    if (firstError) throw firstError;
   }
 
   unmount() {

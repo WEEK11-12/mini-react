@@ -75,7 +75,7 @@ test('17 deps와 callback 인자의 잘못된 타입 거부', () => fixture((hos
   for (const hook of [() => useMemo(() => 1, null), () => useEffect(() => {}, 1), () => useMemo(1, []), () => useEffect(1, [])]) { const app = create(() => { hook(); return view('bad'); }); throws(() => app.mount(), 'ERR_INVALID_HOOK'); } equal(host.childNodes.length, 0);
 }));
 test('18 Effect 오류 후에도 다른 Effect 실행, DOM은 커밋 유지', () => fixture((host, create) => {
-  let set, calls = 0; const app = create(() => { const [n, setter] = useState(0); set = setter; useEffect(() => { if (n) throw Error('effect'); }, [n]); useEffect(() => { calls++; }, [n]); return view(n); }); app.mount(); throws(() => set(1), 'ERR_EFFECT'); equal(host.textContent, '1'); equal(app.hooks[0].value, 1); equal(calls, 2);
+  let set, calls = 0; const app = create(() => { const [n, setter] = useState(0); set = setter; useEffect(() => { if (n) throw Error('effect'); }, [n]); useEffect(() => { calls++; }, [n]); return view(n); }); app.mount(); throws(() => set(1)); equal(host.textContent, '1'); equal(app.hooks[0].value, 1); equal(calls, 2);
 }));
 test('19 cleanup 오류에도 새 Effect 및 나머지 정리 시도', () => fixture((host, create) => {
   let set; const log = []; const app = create(() => { const [n, setter] = useState(0); set = setter; useEffect(() => { log.push(`run${n}`); return () => { log.push(`clean${n}`); throw Error('cleanup'); }; }, [n]); useEffect(() => () => log.push('other'), []); return view(n); }); app.mount(); throws(() => set(1)); equal(log.join(','), 'run0,clean0,run1'); throws(() => app.unmount()); assert(log.includes('other')); equal(host.childNodes.length, 0); assert(!app.mounted);

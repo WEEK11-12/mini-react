@@ -36,33 +36,14 @@ test('테마 변경은 Memo·Effect 횟수를 늘리지 않고 입력 노드도 
   assert(get('[data-testid="cart"]').classList.contains('dark'));
   equal(memo(get), beforeMemo); equal(get('#effect-runs').value, beforeEffect); equal(get('#quantity-apple'), input);
 }));
-test('빈 수량을 지우고 다른 숫자를 입력하거나 포커스를 떠나면 정리', () => demo(({ doc, get, input }) => {
+test('입력은 자동 반영하고 무효 입력은 이전 값·포커스 복원', () => demo(({ doc, get, input }) => {
   const node = input('3'); equal(total(get), '9,000원'); equal(doc.activeElement, node);
   const calculations = memo(get);
-  input(''); equal(node.value, ''); equal(total(get), '9,000원'); equal(memo(get), calculations);
-  equal(get('#runtime-status').textContent, ''); assert(get('#validation-status').textContent);
-  input('5'); equal(node.value, '5'); equal(total(get), '13,000원');
-  input(''); node.blur(); equal(node.value, '5'); equal(get('#validation-status').textContent, '');
-  for (const invalid of ['x', '-1', '1.5', '100']) {
-    input(invalid); equal(node.value, '5'); equal(total(get), '13,000원');
-    assert(get('#validation-status').textContent); equal(get('#runtime-status').textContent, ''); equal(doc.activeElement, node);
+  for (const invalid of ['', 'x', '-1', '1.5', '100']) {
+    input(invalid); equal(node.value, '3'); equal(total(get), '9,000원'); equal(memo(get), calculations);
+    assert(get('#runtime-status').textContent); equal(doc.activeElement, node);
   }
-  input('4'); equal(total(get), '11,000원'); equal(get('#validation-status').textContent, '');
-}));
-test('입력 안내는 polite, 실행 오류는 alert 영역에 구분 표시', () => demo(({ get, input }) => {
-  equal(get('#validation-status').getAttribute('role'), 'status');
-  equal(get('#runtime-status').getAttribute('role'), 'alert');
-  input('x'); assert(get('#validation-status').textContent);
-  equal(get('#runtime-status').textContent, '');
-  get('#cart-root h2').textContent = '외부 변조';
-  get('[aria-label="사과 수량 증가"]').click();
-  assert(get('#runtime-status').textContent.startsWith('화면 갱신 실패:'));
-}));
-test('Effect 오류는 이미 적용된 화면을 실패로 표시하지 않음', () => demo(({ doc, get }) => {
-  Object.defineProperty(doc, 'title', { configurable: true, get: () => '테스트', set: () => { throw Error('제목 변경 실패'); } });
-  get('[aria-label="사과 수량 증가"]').click();
-  equal(total(get), '7,000원');
-  assert(get('#runtime-status').textContent.startsWith('Effect 실행 중 오류:'));
+  input('4'); equal(total(get), '11,000원'); equal(get('#runtime-status').textContent, '');
 }));
 test('수량 경계·모든 상품 삭제·초기화가 작동', () => demo(({ get, input }) => {
   input('0'); assert(get('[aria-label="사과 수량 감소"]').disabled);

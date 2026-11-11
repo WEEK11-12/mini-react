@@ -76,7 +76,7 @@ hooks[2] = { kind: "effect", deps: [count], cleanup: () => {} };
 
 `useMemo`는 렌더 중에 계산한다. 동일한 의존성이면 저장한 값을 돌려주며 DOM 변경 여부와 무관하다. `useEffect`는 외부 작업용이므로 렌더 중 실행하지 않는다.
 
-이벤트 핸들러는 Phase 2 VNode의 `events`에 넣고 Patch가 실제 DOM에 연결·교체·해제한다. 입력창의 현재 값은 `domProps.value`로 맞춘다. 이벤트 핸들러에서 입력 값을 읽어 루트 State에 저장한 뒤 새 props를 자식에 전달한다. 브라우저가 먼저 바꾼 현재 입력값은 [Patch의 사전 구조 검사](diff-patch.md#2-입력출력-계약)에서 오류로 보지 않는다. 장바구니 데모에서는 빈 문자열을 숫자를 다시 입력하는 중간 상태로 허용하고 State는 바꾸지 않는다. 빈 상태로 포커스를 떠나면 `update()`로 이전 수량을 복원한다. 그 밖의 잘못된 입력은 즉시 `update()`로 이전 값을 복원한다. 입력 검증 안내는 `role="status"`, 갱신·Effect 오류는 `role="alert"` 영역에 구분한다. 일반적인 같은 값 setter는 재렌더하지 않는다. Phase 1 HTML 편집기의 허용 태그·속성 정책과 별개다.
+이벤트 핸들러는 Phase 2 VNode의 `events`에 넣고 Patch가 실제 DOM에 연결·교체·해제한다. 입력창의 현재 값은 `domProps.value`로 맞춘다. 이벤트 핸들러에서 입력 값을 읽어 루트 State에 저장한 뒤 새 props를 자식에 전달한다. 브라우저가 먼저 바꾼 현재 입력값은 [Patch의 사전 구조 검사](diff-patch.md#2-입력출력-계약)에서 오류로 보지 않는다. 입력을 거부해 State가 그대로일 때는 `update()`로 현재 VNode의 목표 `value`를 다시 반영한다. 일반적인 같은 값 setter는 재렌더하지 않는다. Phase 1 HTML 편집기의 허용 태그·속성 정책과 별개다.
 
 ## 5. 경계 사례와 오류 처리
 

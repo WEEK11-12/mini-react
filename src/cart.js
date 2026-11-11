@@ -6,13 +6,9 @@ const container = document.querySelector('#cart-root');
 const inspectorPanel = document.querySelector('#inspector');
 const inspector = inspectorPanel ? createInspector(inspectorPanel) : null;
 const status = document.querySelector('#runtime-status');
-const validation = document.querySelector('#validation-status');
 const lifecycle = document.querySelector('#lifecycle-toggle');
 const originalTitle = document.title;
-const showError = error => {
-  validation.textContent = '';
-  status.textContent = `${error.code === 'ERR_EFFECT' ? 'Effect 실행 중 오류' : '화면 갱신 실패'}: ${error.message}`;
-};
+const showError = error => { status.textContent = `화면 갱신 실패: ${error.message}`; };
 const handleAction = action => event => {
   try { action(event); } catch (error) { showError(error); }
 };
@@ -48,13 +44,7 @@ function Product({ item, changeQuantity, remove }) {
           'aria-label': `${item.name} 수량`, 'aria-describedby': 'quantity-help',
         }),
         domProps: { value: String(item.quantity) },
-        events: {
-          input: handleAction(event => changeQuantity(item.id, event.target.value)),
-          blur: handleAction(event => {
-            if (event.target.value === '') instance.update();
-            validation.textContent = '';
-          }),
-        },
+        events: { input: handleAction(event => changeQuantity(item.id, event.target.value)) },
       },
       button('+', () => changeQuantity(item.id, item.quantity + 1), {
         'data-action': 'increment', 'aria-label': `${item.name} 수량 증가`,
@@ -102,12 +92,11 @@ function createCart() {
     const changeQuantity = (id, raw) => {
       const value = String(raw);
       if (!/^\d+$/.test(value) || Number(value) > 99) {
-        validation.textContent = '수량은 0부터 99까지의 정수로 입력해 주세요.';
-        if (value !== '') instance.update();
+        status.textContent = '수량은 0부터 99까지의 정수로 입력해 주세요.';
+        instance.update();
         return;
       }
       status.textContent = '';
-      validation.textContent = '';
       const quantity = Number(value);
       const current = items.find(item => item.id === id);
       if (current.quantity === quantity) {
@@ -128,7 +117,7 @@ function createCart() {
           setDark(previous => !previous);
         }, { 'data-action': 'theme' }),
       ], { class: 'cart-header' }),
-      e('p', [t('수량은 0~99개입니다. 빈 값은 입력 중 유지하고, 입력을 마치면 이전 수량으로 돌아갑니다.')], {
+      e('p', [t('수량은 0~99개입니다. 빈 값·문자·소수는 이전 수량으로 돌아갑니다.')], {
         id: 'quantity-help', class: 'muted',
       }),
       e('ul', items.map(item => renderChild(Product, { item, changeQuantity, remove })), { class: 'cart-list' }),
@@ -144,7 +133,6 @@ function createCart() {
 
 function mount() {
   status.textContent = '';
-  validation.textContent = '';
   instance = new FunctionComponent(createCart(), container, {}, {
     onError: showError,
     onCommit: event => inspector?.commit(event),

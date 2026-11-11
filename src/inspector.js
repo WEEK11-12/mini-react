@@ -77,7 +77,7 @@ export function createInspector(panel) {
   details.append(trees);
   panel.classList.add('inspector');
   panel.replaceChildren(heading, metrics, toolbar, operations, selection, details,
-    make('p', 'inspector-footnote', '이동 건수에는 위치 번호 변경이 포함되며, 실제 DOM 이동 횟수와 다릅니다. 계획 건수는 DOM API 호출 횟수나 속도 측정값이 아니에요. 재사용은 실제 요소 참조로 확인해요. 자식 번호는 0부터 시작해요.'));
+    make('p', 'inspector-footnote', '계획 건수는 DOM API 호출 횟수나 속도 측정값이 아니에요. 재사용은 실제 요소 참조로 확인해요. 자식 번호는 0부터 시작해요.'));
   let previousNodes = new Map(), nextNodes = new Map(), latest = null, overlay = null, target = null, recovered = false;
 
   function unhighlight() { overlay?.remove(); overlay = null; target = null; }
