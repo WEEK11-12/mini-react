@@ -4,10 +4,12 @@ React 없이 Virtual DOM과 Hook을 구현하고, 상태 변경이 DOM 갱신으
 
 ## 기본 스펙
 
-- 언어·화면: TypeScript, Vanilla HTML/CSS
-- 구현: VDOM·Diff·Patch, 함수형 컴포넌트, `useState`·`useEffect`·`useMemo`
-- 시연: HTML 편집·적용·이력 이동, 장바구니와 key 기반 목록 갱신
-- 도구: Vite, Vitest/jsdom, Playwright
+| 구분 | 상세 |
+| --- | --- |
+| 언어·화면 | TypeScript, Vanilla HTML/CSS |
+| 구현 | VDOM·Diff·Patch, 함수형 컴포넌트, `useState`·`useEffect`·`useMemo` |
+| 시연 | HTML 편집·적용·이력 이동, 장바구니와 key 기반 목록 갱신 |
+| 도구 | Vite, Vitest/jsdom, Playwright |
 
 ## 서비스 프리뷰
 
