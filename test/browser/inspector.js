@@ -26,6 +26,7 @@ test('키 앞 삽입은 기존 요소 재사용 수와 이전·다음 트리 표
   assert(panel.querySelector('[data-tree="before"]').textContent.includes('A'));
   assert(panel.querySelector('[data-tree="after"]').textContent.includes('D'));
   assert(panel.textContent.includes('추가') && panel.textContent.includes('이동'));
+  assert(panel.textContent.includes('위치 번호 변경이 포함되며, 실제 DOM 이동 횟수와 다릅니다'));
 }));
 test('강조 선택은 관리 DOM·속성·포커스를 변경하지 않음', () => fixture((host, panel, inspector) => {
   const before = e('div', [e('p', [t('사과')])]), after = e('div', [e('p', [t('배')])]);

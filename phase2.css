@@ -36,6 +36,8 @@
 .lifecycle p, .note { color: var(--muted); font-size: 12px; line-height: 1.8; }
 .lifecycle p { margin-bottom: 0; font-variant-numeric: tabular-nums; }
 .note { margin: 20px 0 0; }
+#validation-status { padding: 12px 14px; margin: 18px 0 0; border-radius: 12px; background: #edf5ff; color: #315b8c; font-size: 14px; }
+#validation-status:empty { display: none; }
 #runtime-status { padding: 14px; margin: 18px 0 0; border-radius: 12px; background: #fff0f0; }
 .cart.dark { padding: 22px; background: #191f28; color: #f9fafb; }
 .cart.dark .muted, .cart.dark .quantity-controls label, .cart.dark .cart-summary > p:first-child { color: #b0b8c1; }
