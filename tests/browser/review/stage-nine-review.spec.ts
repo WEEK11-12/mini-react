@@ -81,9 +81,10 @@ test('S09-02 [PATCH-03] keyed 삭제·빈 목록·재삽입에서 잔존 노드 
   expect(await refs.evaluate(nodes => [...document.querySelectorAll('[data-testid="list-item"]')].every(node => nodes.get(node.getAttribute('data-key')) === node))).toBe(true);
   await by(page, 'prepend-list-item').click();
   expect(await by(page, 'list-item').allTextContents()).toEqual(['new-1', 'b', 'a']);
-  for (let i = 0; i < 4; i++) await by(page, 'remove-list-item').click();
+  for (let i = 0; i < 3; i++) await by(page, 'remove-list-item').click();
   await expect(by(page, 'list-item')).toHaveCount(0);
-  await by(page, 'reverse-list').click();
+  await expect(by(page, 'remove-list-item')).toBeDisabled();
+  await expect(by(page, 'reverse-list')).toBeDisabled();
   await by(page, 'prepend-list-item').click();
   await expect(by(page, 'list-item')).toHaveText('new-2');
   await expect(by(page, 'component-status')).toBeEmpty();
@@ -145,7 +146,7 @@ test('S09-05 [VIEW-04] keyed 목록 부분 이동 실패 뒤 제공된 다시 �
   await expect(by(page, 'component-status')).toContainText('stage-nine-list-move-failed');
   await expect(by(page, 'keyed-list-demo')).toHaveJSProperty('inert', true);
   await evidence(page, 'list-faulted-before-restart');
-  await by(page, 'restart-component').click();
+  await by(page, 'restart-list').click();
   await by(page, 'reverse-list').click();
   const result = await evidence(page, 'list-after-restart-and-reverse');
   expect.soft(result.listInert).toBe(false);
@@ -192,7 +193,7 @@ test('S09-08 [EFF-04] Cart DOM 제거 오류가 나도 목록과 Phase 1 종료�
 
 test('S09-09 [VIEW-04 EFF] 실제 BFCache 왕복이 Cart State·구독·목록 DOM을 유지한다', async ({ playwright }, info) => {
   test.setTimeout(30000);
-  const baseURL = process.env.MINI_REACT_NAVIGATION_BASE_URL!;
+  const baseURL = process.env.MINI_REACT_NAVIGATION_BASE_URL ?? process.env.MINI_REACT_BASE_URL ?? 'http://127.0.0.1:5173';
   const browser = await playwright.chromium.launch({ channel: 'chrome', headless: true, ignoreDefaultArgs: ['--disable-back-forward-cache'] });
   const context = await browser.newContext();
   try {
