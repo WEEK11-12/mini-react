@@ -60,7 +60,7 @@ const summary = {
   implementationMissing: cases.filter((test) => test.outcome === 'implementation-missing').length,
   appUnavailable: cases.filter((test) => test.outcome === 'app-unavailable').length,
 };
-await writeFile(path.join(workspace, 'test-cases.json'), JSON.stringify({
+await writeFile(path.join(workspace, 'reports/test-cases.json'), JSON.stringify({
   generatedAt: new Date().toISOString(),
   note: '실제 runner JSON에서 생성. 구현 누락/앱 부재는 인수조건 통과가 아니다. 정책 표시는 파일 README의 공통 임시 전제도 함께 적용한다.',
   summary,

@@ -6,6 +6,7 @@
 - [프로젝트 요구사항](docs/requirements.md)
 - [설계 문서](docs/design/README.md)
 - [코드·문서 작성 규칙](docs/conventions.md)
+- [테스트 실행·컨벤션](tests/README.md)
 - [1단계 구현·검증 기록](docs/implementation/stage-01.md)
 - [2단계 Diff 구현·검증 기록](docs/implementation/stage-02.md)
 - [3단계 Patch 구현·검증 기록](docs/implementation/stage-03.md)
@@ -27,7 +28,7 @@
 ```sh
 cd tests
 npm ci
-npm run typecheck
+npm run check
 npm run typecheck:core
 npm run test:stage-one
 npm run test:stage-one:browser

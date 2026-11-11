@@ -5,16 +5,25 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
+    "pretest": "npm run check:conventions",
     "test:watch": "vitest",
+    "pretest:watch": "npm run check:conventions",
     "test:unit": "vitest run renderer runtime history",
+    "pretest:unit": "npm run check:conventions",
     "test:harness": "vitest run harness",
+    "pretest:harness": "npm run check:conventions",
     "test:browser": "playwright test",
+    "pretest:browser": "npm run check:conventions",
     "test:browser:list": "playwright test --list --reporter=list",
     "test:catalog": "node support/export-cases.mjs",
+    "check:conventions": "node support/check-conventions.mjs",
+    "check": "npm run check:conventions && npm run typecheck",
     "typecheck": "tsc --noEmit",
     "typecheck:core": "tsc --noEmit -p ../tsconfig.json",
     "test:stage-one": "vitest run renderer/dom-reader.test.ts renderer/validation.test.ts renderer/initial-rendering.test.ts",
-    "test:stage-one:browser": "playwright test browser/stage-one.spec.ts"
+    "pretest:stage-one": "npm run check:conventions",
+    "test:stage-one:browser": "playwright test browser/stage-one.spec.ts",
+    "pretest:stage-one:browser": "npm run check:conventions"
   },
   "engines": {
     "node": ">=24.0.0"
@@ -24,6 +33,7 @@
     "@types/node": "26.6.6",
     "jsdom": "29.1.1",
     "typescript": "7.0.2",
+    "vite": "8.3.7",
     "vitest": "5.1.0"
   }
 }
