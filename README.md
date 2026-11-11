@@ -1,116 +1,153 @@
 # mini-react
 
-Virtual DOM부터 Hooks까지 직접 구현하며, **데이터 변경 → 새 UI 계산 → 차이 확인 → 필요한 DOM 갱신**의 흐름을 탐구하는 프로젝트입니다. 최종 결과물은 사용자의 입력·클릭에 따라 부분적으로 갱신되는 웹 페이지입니다.
+**화면이 바뀌는 과정을 직접 만들고, 눈으로 확인하는 미니 React.**
 
-이 저장소는 과제의 필수 동작을 먼저 충족하고, 구현 선택의 이유와 검증 근거를 함께 남깁니다. 실제 React의 전체 API나 내부 구현을 복제하는 것이 목표는 아닙니다.
+Vanilla JavaScript로 Virtual DOM·Diff·Patch와 함수형 컴포넌트·Hooks를 구현했습니다. HTML 편집기와 장바구니가 **하나의 갱신 엔진**을 공유하고, Diff·Patch Inspector로 변경 계획과 DOM 재사용을 관찰합니다.
 
-## 구현 범위
+`JavaScript (ES Modules)` · `HTML / CSS` · `Node.js 24+` · 외부 UI 프레임워크·런타임 패키지 없음
 
-| 단계 | 필수 내용 |
+[실행 방법](#실행-방법) · [핵심 설계](#핵심-설계) · [검증](#검증) · [상세 문서](#상세-문서)
+
+## 실행 화면
+
+### Phase 1 · HTML을 편집하고 변경 사항 적용하기
+
+코드를 수정하면 **테스트 미리보기만 갱신**됩니다. Patch를 누르면 이전·다음 트리를 비교해 실제 영역에 변경을 반영하고, 성공한 결과를 이력에 저장합니다. 뒤로가기·앞으로가기로 적용한 화면과 편집 코드를 함께 복원합니다.
+
+![Phase 1: 실제 영역과 HTML 코드 편집기·미리보기](docs/images/phase1-editor.png)
+
+> 이 단계의 상품 가격·합계는 HTML에 작성한 값입니다. 수량에 따른 자동 계산은 Phase 2에서 확인합니다.
+
+### Phase 2 · State가 바뀌면 화면도 함께 갱신하기
+
+수량·테마를 조작하면 루트 컴포넌트가 새 Virtual DOM을 반환하고, 같은 Diff·Patch 엔진이 필요한 DOM을 갱신합니다.
+
+| 조작 | 확인할 동작 |
 | --- | --- |
-| Phase 1 | DOM 읽기·Virtual DOM·Diff·Patch, 실제/테스트 영역 편집 데모, Patch와 State History 이동 |
-| Phase 2 | 함수형 컴포넌트, 루트 State, `useState`·`useEffect`·`useMemo`, Phase 1 갱신 경로 재사용 |
-| 검증 | 핵심 모듈의 단위 테스트와 브라우저 기능 테스트 |
+| 상품 수량 변경 | `useState`로 값을 유지하고 개수·합계를 갱신 |
+| 화면 테마 변경 | `useMemo`가 의존성이 같은 합계 계산 결과를 재사용 |
+| 컴포넌트 종료·다시 시작 | `useEffect` 정리와 탭 제목 복원, 초기 State로 재시작 |
 
-기본 Diff 검증 사례는 **텍스트 변경·속성 변경·자식 추가·자식 삭제·요소 교체**입니다. Batching과 다른 차별화 기능은 필수 범위를 완료한 뒤 검토할 선택 후보입니다.
+![Phase 2: 수량·합계·테마와 세 Hook을 확인하는 장바구니](docs/images/phase2-cart.png)
 
-**기술 제약:** HTML·CSS·Vanilla JavaScript를 사용합니다. React·Vue 같은 외부 UI 프레임워크는 사용하지 않습니다. State와 Hook은 루트 컴포넌트에서만 관리하고, 자식 컴포넌트는 props를 받는 순수 함수로 둡니다.
+## 핵심 설계
+
+### 다른 입력, 하나의 갱신 엔진
 
 ```mermaid
 flowchart LR
-  A["Phase 1: HTML 편집·미리보기"] --> B["공통 VNode"]
-  C["Phase 2: State·컴포넌트"] --> B
-  B --> D["Diff: 변화 계산"]
-  D --> E["Patch: 실제 DOM 갱신"]
-  E --> F["브라우저 화면"]
-  E --> G["Phase 1 성공 시 History"]
+  H["Phase 1 · HTML 편집"] --> V["검증·미리보기"]
+  V -->|"Patch 클릭 · DOM 읽기"| N["새 Virtual DOM"]
+  S["Phase 2 · State 변경"] --> C["컴포넌트 실행"]
+  C --> N
+  O["이전 Virtual DOM"] --> D["Diff · 차이 찾기"]
+  N --> D
+  D --> P["Patch · 실제 DOM에 적용"]
+  P --> R["성공한 결과 확정"]
+  R -.-> I["Inspector · 변경 관찰"]
 ```
 
-## 문서 읽는 순서
+**Diff는 차이를 찾는 단계, Patch는 찾은 차이를 실제 DOM에 적용하는 단계입니다.** Diff는 DOM을 직접 다루지 않고 두 VNode 트리를 비교해 작업 목록을 반환합니다. Patch가 그 계획을 실제 DOM에 적용합니다.
 
-| 문서 | 읽는 이유 |
-| --- | --- |
-| [과제 원문](https://github.com/WEEK11-12/mini-react/blob/main/docs/assignment.md) | 출발점이 되는 필수 기능과 기술 제약 확인 |
-| [요구사항 명세서](docs/requirements.md) | **무엇을 구현하고 어떤 결과면 완료인지** 확인. 이 Markdown 파일이 SRS 본문 |
-| [설계 문서](docs/design.md) | 전체 흐름·모듈 경계·선택 이유 확인 |
-| [HTML 입력](docs/design/html-input.md) | Phase 1 코드 문법, 검증, 오류·미리보기 경계 |
-| [Virtual DOM](docs/design/virtual-dom.md) | DOM과 VNode의 변환·표현·렌더링 |
-| [Diff·Patch](docs/design/diff-patch.md) | 키/위치 대응, 변경 계획, DOM 반영·복구 |
-| [History](docs/design/history.md) | Patch 저장, 뒤로·앞으로, 미래 이력 삭제 |
-| [컴포넌트·Hooks](docs/design/component-hooks.md) | 루트 State, 세 Hook, 이벤트·Effect |
-| [UI·시각화](docs/design/ui-inspector.md) | 공통 화면 스타일과 Diff·Patch 관찰 기능의 구조·검증 기준 |
-| [검증 계획](docs/testing.md) | FR별 테스트 ID, 정상·실패·엣지 케이스 |
-| [AI 작업 규칙](AGENTS.md) | AI가 읽을 문서, 결정 상태 처리, 변경·검증·보고 규칙 확인 |
-| [요구사항 작성 가이드](docs/guides/requirements-specification.md) | ID별 항목 양식과 PR 검토 기준 확인 |
-| [팀 Wiki](https://github.com/WEEK11-12/mini-react/wiki) | React 개념 학습 자료 확인 |
+### 무엇을 선택했고, 왜 그렇게 만들었는가
 
-요구사항은 **기대 동작**, 설계는 **해결 방법**, 검증 계획은 **그 동작을 확인할 사례**를 기록합니다. 요구사항의 기본 양식은 **ID · 요구 동작 · 출처 · 우선순위 · 인수 조건**입니다. 과제 조건·사용자가 정한 방향은 “확정”, 설계 초안이 채운 세부 정책은 “제안”으로 구분합니다. 제안은 팀 리뷰 대상입니다.
+| 설계 선택 | 이유와 동작 | 구현 |
+| --- | --- | --- |
+| **비교와 DOM 적용 분리** | 순수한 트리 비교를 브라우저 없이 검증하고, 두 데모가 동일한 엔진을 사용 | [diff.js](src/diff.js) · [dom.js](src/dom.js) |
+| **키 우선, 키가 없으면 위치 비교** | 목록 앞에 항목을 추가해도 같은 키·태그의 기존 DOM 요소를 재사용 | [diff.js](src/diff.js) |
+| **성공 후 History 확정** | 적용에 실패한 화면을 이력으로 남기지 않음. 전체 트리·HTML 소스와 현재 인덱스로 이동 관리 | [playground.js](src/playground.js) · [history.js](src/history.js) |
+| **루트 인스턴스의 Hook 배열** | 함수가 다시 실행되어도 호출 순서별 State·Memo·Effect 정보를 유지. Hook 순서·종류·개수 위반 검사 | [component.js](src/component.js) |
+| **선택적 콜백으로 시각화 연결** | 엔진이 Inspector를 직접 가져오지 않으며, 관찰 기능의 오류가 성공한 갱신을 취소하지 않음 | [inspector.js](src/inspector.js) |
 
-## 현재 상태와 실행
+키가 `A·B·C`인 목록 앞에 `D`를 추가할 때, 기존 `A·B·C`를 모두 새로 만들 필요는 없습니다. 키로 이전 항목과 대응시키고 기존 DOM 참조를 유지합니다. 위치 차이에 대한 이동 계획이 생길 수 있으며, 전역 최소 이동 횟수를 보장하는 알고리즘은 아닙니다.
 
-| 범위 | 현재 상태 |
-| --- | --- |
-| Phase 1 · FR-01~09 | DOM 변환·렌더링, Diff·부분 Patch, HTML 편집과 오류 보존, 선형 Undo/Redo 구현 |
-| Phase 2 · FR-10~17 | FunctionComponent·루트 State·세 Hook, 공통 Diff/Patch와 연결한 장바구니 데모 구현 |
+## 차별화 · Diff·Patch Inspector
 
-Node.js 24 이상이 필요합니다. 외부 패키지 설치 없이 실행합니다.
+결과 화면뿐 아니라 **무엇이 바뀌었고 어떤 요소가 유지됐는지** 확인할 수 있도록 두 데모 하단에 관찰 도구를 구현했습니다.
+
+- **변경 계획:** 텍스트·속성·삽입·삭제·교체·이동 작업과 이벤트 변경을 확인합니다.
+- **요소 재사용:** 이전·다음 실제 DOM 참조를 비교해 유지된 요소 수를 표시합니다.
+- **작업 위치 강조:** 목록에서 작업을 선택하면 실제 화면의 해당 위치를 표시합니다.
+- **트리 비교:** 변경 전·후 Virtual DOM을 펼쳐 결과를 확인합니다.
+
+![Diff·Patch Inspector: 변경 계획·요소 재사용·트리 비교 영역의 초기 상태](docs/images/diff-patch-inspector.png)
+
+> 위 캡처는 변경 적용 전 초기 상태입니다. 수량을 바꾸거나 HTML을 Patch하면 작업 목록이 나타납니다. 작업 건수는 DOM API 호출 횟수나 성능 측정값이 아닙니다.
+
+강조 표시는 관리 DOM 밖의 오버레이로 그려, 관찰을 위해 화면 트리 자체를 수정하지 않습니다. [상세 설계](docs/design/ui-inspector.md)
+
+## 검증
+
+**화면이 맞게 보이는지와 기존 DOM이 유지되는지를 구분해 검증했습니다.**
+
+| 범위 | 주요 확인 사항 | 기록된 결과 |
+| --- | --- | --- |
+| 순수 로직 | Diff의 변경 종류·위치·목표값, 키 대응, History 전이, HTML 입력·직렬화 | **164/164** — 2026-11-11 재실행 |
+| 브라우저 | DOM 변환·부분 Patch·참조 유지, Hooks·이벤트·포커스, 컨트롤러·시각화·실패 복구 | **103/103** — 2026-11-10 검증 기록 |
+| 화면 확인 | 데스크톱·320px 폭 레이아웃과 실제 데모 조작 | 2026-11-10 검증 기록 |
+
+대표적인 경계 사례는 다음과 같습니다.
+
+- **앞 삽입·재정렬:** 키가 같은 기존 항목의 DOM 참조 유지.
+- **이력 분기:** 과거로 이동한 뒤 새 변경을 적용하면 앞으로가기 이력 제거.
+- **잘못된 HTML·적용 실패:** 잘못된 입력은 Patch 차단, 적용 실패 시 복구하고 이력 오염 방지.
+- **Hook 호출 규칙 위반:** 조건부 호출 등으로 순서·종류·개수가 달라지면 오류 처리.
+- **관찰 중 복구:** DOM 재생성 후 Inspector가 새 참조를 기준으로 다시 관찰.
+
+검증 환경은 Windows / Node.js v24.14.1 / Chromium 기반 인앱 브라우저입니다. 브라우저 결과는 위 날짜의 기록이며 모든 브라우저 호환성을 의미하지 않습니다. 요구사항별 사례와 검증 한계는 [검증 계획](docs/testing.md)에 정리했습니다.
+
+## 실행 방법
+
+Node.js **24 이상**이 필요합니다. 프로젝트 루트에서 실행합니다. 외부 패키지 설치는 필요하지 않습니다.
 
 ```sh
-npm test
 npm start
 ```
 
-- 데모: [http://localhost:5173](http://localhost:5173)
-- Phase 2 장바구니: [http://localhost:5173/phase2.html](http://localhost:5173/phase2.html)
-- 브라우저 테스트: [http://localhost:5173/test/browser/index.html](http://localhost:5173/test/browser/index.html) — 페이지를 열면 실제 DOM·컨트롤러 테스트가 실행되고 결과를 표시합니다.
-- 서버 종료: 실행 중인 터미널에서 `Ctrl+C`.
-
-하위 프로세스 생성이 차단되어 `npm test`가 `spawn EPERM`으로 끝나는 환경에서는 `npm run test:in-process`를 사용합니다. 파일별 격리를 끄는 실행이므로 일반 실행과 구분합니다. 기본 포트는 5173이며 `PORT` 환경변수로 변경할 수 있습니다. 파일을 직접 여는 `file://` 대신 위 HTTP 주소를 사용합니다.
-
-2026-11-10 검증: Windows / Node.js v24.14.1에서 **순수 로직 164/164**, Chromium 기반 인앱 브라우저에서 **103/103** 통과했습니다. 브라우저 사례에는 두 Phase의 필수 동작, Chrome DOM 추가 속성 호환, Diff·Patch 시각화·노드 재사용·오류 복구 후 관찰 기준 회복이 포함됩니다. 데스크톱과 320px 폭에서 화면·가로 넘침을 확인하고 실제 페이지 조작도 별도로 검증했습니다. 상세 범위와 환경 제한은 [검증 계획](docs/testing.md)에 둡니다.
-
-## 구현을 읽는 순서
-
-| 파일 | 책임 |
+| 페이지 | 주소 |
 | --- | --- |
-| [vnode.js](src/vnode.js) | DOM 없이 UI를 표현하는 객체, 검증·트리 동등성·키 |
-| [html-policy.js](src/html-policy.js) · [html-input.js](src/html-input.js) | 허용 문법을 공유하고 HTML 문자열을 VNode로 변환, 최초 편집 소스 생성 |
-| [diff.js](src/diff.js) | 이전·다음 VNode를 읽어 변경 종류·이전 경로·목표 위치 계산 |
-| [dom.js](src/dom.js) | DOM 읽기·생성, 기존 노드를 재사용하는 Patch |
-| [history.js](src/history.js) | 전체 트리·소스 스냅샷과 현재 인덱스. DOM 의존성 없음 |
-| [playground.js](src/playground.js) · [app.js](src/app.js) | 입력·버튼을 엔진에 연결하고 성공 후 이력을 확정, 실패 시 복구 |
-| [component.js](src/component.js) | 루트 인스턴스와 Hook 슬롯, State 변경·커밋·Effect 정리 |
-| [cart.js](src/cart.js) | props 기반 자식과 수량·테마·합계·문서 제목 데모 |
-| [inspector.js](src/inspector.js) | 성공한 커밋의 작업·트리·DOM 참조 재사용을 관찰하고 외부 오버레이 표시 |
+| Phase 1 · HTML 편집기 | http://localhost:5173/ |
+| Phase 2 · 장바구니 | http://localhost:5173/phase2.html |
+| 브라우저 테스트 | http://localhost:5173/test/browser/index.html |
 
-`HTML 편집 → 검증 → 미리보기 → Patch 클릭 → 미리보기 DOM 읽기 → Diff → 실제 DOM Patch → History 확정`
+브라우저 테스트 페이지를 열면 테스트가 실행되고 결과가 표시됩니다. 서버 종료는 실행한 터미널에서 `Ctrl+C`입니다. HTML 파일을 직접 여는 대신 위 HTTP 주소로 접속합니다.
 
-지원 HTML은 설계의 제한 문법을 따릅니다. 입력 코드를 `innerHTML`로 실행하지 않으며, 이력은 메모리에만 있어 새로고침 시 초기화됩니다. 키 없는 목록은 위치를 기준으로 비교하므로 항목의 정체성은 보장하지 않습니다.
+```sh
+npm test
+```
 
-### Phase 2 확인 방법
+하위 프로세스 생성이 차단되어 `spawn EPERM`이 발생하는 환경에서는 `npm run test:in-process`를 사용합니다. 이 명령은 파일별 테스트 격리를 끄므로 일반 실행과 구분합니다.
 
-1. 수량 입력·증감 버튼: State가 바뀌면 합계와 화면이 자동 갱신됩니다.
-2. 테마 버튼: 합계 계산 횟수가 그대로면 `useMemo`의 재사용을 확인한 것입니다.
-3. 컴포넌트 종료·다시 시작: Effect 정리 횟수와 탭 제목 복원을 확인합니다. 다시 시작하면 초기 State로 돌아갑니다.
+## 구현 범위와 한계
 
-두 데모는 같은 VNode·Diff·Patch를 사용하지만 별도 DOM 루트를 관리합니다. Phase 2 조작은 Phase 1의 HTML 입력창이나 History에 저장하지 않습니다. 루트 전용 Hook, 동기 갱신, 커밋 직후 Effect를 지원하며 실제 React의 Fiber·동시성·자동 Batching·JSX는 구현하지 않습니다.
+- 지원하는 Diff 사례는 텍스트·속성 변경, 자식 추가·삭제, 요소 교체와 키 기반 대응·이동입니다.
+- State와 Hook은 **루트 컴포넌트에서만** 관리합니다. 자식은 props를 받아 VNode를 반환하는 순수 함수입니다.
+- 두 데모는 별도 DOM 루트를 사용합니다. Phase 2의 State는 Phase 1 편집 코드·History와 독립적입니다.
+- Phase 1 HTML은 제한 문법을 따르며, 입력 코드를 `innerHTML`로 실행하지 않습니다. 이력은 메모리에만 저장되어 새로고침하면 초기화됩니다.
+- 실제 React의 전체 API를 복제하지 않습니다. JSX·Fiber·동시 렌더링·자동 Batching은 구현 범위에 포함하지 않았습니다.
+- 부분 갱신과 노드 재사용을 검증했으며, 실제 React 대비 성능 우위는 측정하지 않았습니다.
 
-## 차별화 · Diff·Patch 시각화
+## 문서와 AI 협업
 
-두 페이지 하단의 **무엇이 바뀌었을까요?**에서 최근 성공한 변경을 확인합니다.
+**요구사항 → 설계 → 테스트 → 구현 → 실행 검증**을 연결해, AI가 생성한 결과를 설명하고 검토할 수 있도록 문서를 구성했습니다.
 
-1. Phase 1에서 HTML을 수정해 Patch하거나 Phase 2에서 수량·테마를 변경합니다.
-2. 화면 변경 계획·이벤트 변경 계획·실제 요소 재사용 수를 확인합니다.
-3. 작업을 선택하면 실제 화면의 해당 위치에 파란 테두리가 표시됩니다. 삭제된 요소는 이전 트리에서 확인합니다.
-4. **변경 전·후 Virtual DOM 트리 보기**를 펼쳐 두 결과를 비교합니다. **이벤트도 보기**로 핸들러 교체를 확인합니다.
+팀원 각자가 문서와 구현을 작성하고 PR로 서로 비교·리뷰했습니다. 이 저장소는 그중 개인 구현 결과입니다. 사용자는 기대 동작·주요 설계 선택·결과 채택을 판단했고, AI는 문서·코드·테스트 작성과 검토를 지원했습니다. AI의 검토 의견과 실제 실행 결과는 구분해 기록했습니다.
 
-예: 키를 유지한 목록 `[A,B,C]` 앞에 D를 넣으면 기존 요소가 재사용됩니다. 재사용 수는 실제 DOM 참조를 비교한 값이며 작업 건수는 속도 측정값이나 DOM API 호출 횟수가 아닙니다. 트리·목록은 최대 200개 항목을 표시하고 집계는 전체를 대상으로 합니다. UI는 외부 폰트·패키지 없이 설치된 글꼴을 사용하므로 운영체제에 따라 서체가 다를 수 있습니다.
+### 상세 문서
 
-## 협업 방식
+| 문서 | 확인할 내용 |
+| --- | --- |
+| [요구사항 명세서](docs/requirements.md) | 기능 ID별 기대 동작·인수 조건·제약 |
+| [전체 설계](docs/design.md) | 모듈 책임·의존성·데이터 흐름 |
+| [HTML 입력](docs/design/html-input.md) · [Virtual DOM](docs/design/virtual-dom.md) | 입력 검증·트리 표현·변환 |
+| [Diff·Patch](docs/design/diff-patch.md) · [History](docs/design/history.md) | 키 대응·변경 적용·복구·이력 정책 |
+| [컴포넌트·Hooks](docs/design/component-hooks.md) | State 소유권·Hook 저장·갱신·정리 |
+| [UI·시각화](docs/design/ui-inspector.md) | 관찰 콜백·참조 재사용·오버레이 |
+| [검증 계획](docs/testing.md) | 요구사항별 정상·경계·실패 사례와 실행 기록 |
+| [AI 작업 규칙](AGENTS.md) | 작업 경계·문서 책임·검증·보고 규칙 |
+| [요구사항 작성 가이드](docs/guides/requirements-specification.md) | 명세 항목 양식과 검토 기준 |
 
-팀원 각자가 요구사항·설계 문서의 구조와 내용을 작성해 PR로 제안하고, 서로 검토해 채택합니다. [이슈](https://github.com/WEEK11-12/mini-react/issues)와 [프로젝트 보드](https://github.com/orgs/WEEK11-12/projects/1)는 작업 현황을, [Discussion](https://github.com/orgs/WEEK11-12/discussions)은 학습·결정 공유를 다룹니다.
-
-AI는 문서·코드·테스트 작성과 검토를 도울 수 있습니다. 기대 동작, 설계 선택, 결과 채택은 팀이 판단하며, 실행 결과와 AI 검토 의견은 구분해 기록합니다.
+[과제 원문](https://github.com/WEEK11-12/mini-react/blob/main/docs/assignment.md) · [팀 Discussion](https://github.com/orgs/WEEK11-12/discussions) · [팀 Wiki](https://github.com/WEEK11-12/mini-react/wiki)
 
 ## 라이선스
 
