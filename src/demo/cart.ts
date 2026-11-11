@@ -118,22 +118,7 @@ export function startCartDemo(view: DemoElements): () => void {
       throw error;
     }
   }
-  function run(action: () => void, owner: 'cart' | 'list', recovery = false): void {
-    const focusedCart = view.cart.contains(view.cart.ownerDocument.activeElement);
-    const focusedList = view.list.contains(view.list.ownerDocument.activeElement);
-    const focusedUnmount = view.unmount === view.unmount.ownerDocument.activeElement;
-    const focusedRestartList = view.restartList === view.restartList.ownerDocument.activeElement;
-    let errorMessage = '';
-    try {
-      action();
-      if (recovery) failures[owner] = '';
-    } catch (error) {
-      errorMessage = describe(error);
-      if (owner === 'cart' && error instanceof AggregateError && error.message === 'Effect execution failed') {
-        warnings.cart ||= `Effect 오류: 자원 정리 완료는 확인되지 않았습니다. 새 시작도 과거 정리 완료를 보증하지 않습니다.`;
-      }
-      failures[owner] = `${owner === 'cart' ? '장바구니' : '목록'} 작업 오류: ${errorMessage} · ${recovery && (owner === 'cart' ? cart : list).phase === 'unmounted' ? '새 시작 미실행. 다시 시작을 누르세요.' : '해당 카드 초기화·시작으로 복구하세요.'}`;
-    }
+  function showStatus(): void {
     showCounts();
     if (cart.phase === 'faulted') {
       failures.cart ||= '장바구니 중단됨 · 초기화·시작으로 복구하세요.';
@@ -161,6 +146,23 @@ export function startCartDemo(view: DemoElements): () => void {
     view.listError.textContent = [failures.list, warnings.list].filter(Boolean).join(' · ');
     const pending = [view.cartError.textContent && `장바구니: ${view.cartError.textContent}`, view.listError.textContent && `목록: ${view.listError.textContent}`].filter(Boolean);
     view.status.textContent = pending.join(' · ');
+  }
+  function run(action: () => void, owner: 'cart' | 'list', recovery = false): void {
+    const focusedCart = view.cart.contains(view.cart.ownerDocument.activeElement);
+    const focusedList = view.list.contains(view.list.ownerDocument.activeElement);
+    const focusedUnmount = view.unmount === view.unmount.ownerDocument.activeElement;
+    const focusedRestartList = view.restartList === view.restartList.ownerDocument.activeElement;
+    try {
+      action();
+      if (recovery) failures[owner] = '';
+    } catch (error) {
+      const errorMessage = describe(error);
+      if (owner === 'cart' && error instanceof AggregateError && error.message === 'Effect execution failed') {
+        warnings.cart ||= `Effect 오류: 자원 정리 완료는 확인되지 않았습니다. 새 시작도 과거 정리 완료를 보증하지 않습니다.`;
+      }
+      failures[owner] = `${owner === 'cart' ? '장바구니' : '목록'} 작업 오류: ${errorMessage} · ${recovery && (owner === 'cart' ? cart : list).phase === 'unmounted' ? '새 시작 미실행. 다시 시작을 누르세요.' : '해당 카드 초기화·시작으로 복구하세요.'}`;
+    }
+    showStatus();
     if ((focusedCart && cart.phase !== 'idle') || (focusedUnmount && view.unmount.disabled)) view.restart.focus();
     if (focusedList && list.phase !== 'idle') view.restartList.focus();
     if (focusedRestartList && view.restartList.hidden) view.prepend.focus();
