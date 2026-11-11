@@ -1,6 +1,6 @@
 # 전체 구조
 
-상태: key 기반 자식 대응·무변경 Patch의 History 보존 채택 / 나머지 정책은 임시 설계 · 기준: [결정 기록](temporary-decisions.md)
+상태: key 기반 자식 대응·무변경 Patch의 History 보존 채택 / 나머지 정책은 구현에 사용됐으나 정식 채택 전 · 기준: [결정 기록](temporary-decisions.md)
 
 ## 시스템 경계
 
@@ -29,7 +29,7 @@ flowchart TD
 | HistoryStore | 스냅샷 배열·cursor | Phase 1 저장과 탐색. DOM 접근 없음 |
 | PlaygroundController | draft HTML, previewTree, appliedTree, 오류·busy 상태, 두 영역의 DOMScope | 화면의 편집·적용·복원 흐름과 식별자 격리 조율 |
 
-## 계획하는 소스 구성
+## 구현된 소스 구성
 
 ```mermaid
 flowchart TD
@@ -50,7 +50,7 @@ flowchart TD
   DEMO --> CART["cart.ts"]
 ```
 
-위 파일들은 계획이며 아직 생성하지 않는다. 테스트 도구의 버전과 설치 명령은 구현 환경을 만들 때 확정한다.
+위 소스 파일은 현재 저장소에 존재한다. 정책의 채택 여부와 별개로, 정확한 설치 버전·실행 명령은 [앱 설정](../../package.json), [테스트 설정](../../tests/package.json), [테스트 안내](../../tests/README.md)를 따른다. 이 구성도는 주요 책임을 요약한 것으로 모든 보조 파일을 열거하지 않는다.
 
 ## 주요 인터페이스
 

@@ -1,8 +1,8 @@
 # 미결정 사항의 임시 결정
 
-상태: **key 기반 자식 대응·무변경 Patch의 History 보존은 사용자 요청으로 채택 / 나머지 OPEN 정책은 임시 선택** · 작성일: 2026-11-09
+상태: **OPEN-05와 key 기반 자식 대응은 채택 / 나머지 OPEN 정책은 구현에 사용된 임시 선택이며 정식 채택 전** · 최초 작성: 2026-11-09
 
-설계를 진행하기 위해 선택한 기준이다. 사용자 요청으로 채택한 방향과 구현을 위한 임시 선택을 구분하며, 나머지 요구사항의 미결정 상태는 유지한다.
+설계 당시 미결정 항목에 대해 선택한 기준이다. 현재 소스에는 이 선택을 전제로 한 Phase 1·2 구현이 존재한다([구현·검증 기록](../implementation/stage-09.md)). **구현에 반영됨**과 **요구사항으로 채택됨**은 다르다. 아래 표의 OPEN-05 및 key 방향 외에는 사용자의 정식 정책 채택으로 간주하지 않으며, 요구사항의 미결정 상태도 유지한다. 개별 세부 조항의 구현 적합성은 코드·테스트 검증으로 별도 판단한다.
 
 key 기반 비교·DOM 재사용 방향은 후속 사용자 요청에 따라 인덱스 전용 비교에서 변경했다. key 값의 세부 정책·HTML 표현·unkeyed fallback·API는 그 방향을 구현하기 위한 설계 계약이며, 그 밖 OPEN 항목의 확정을 뜻하지 않는다.
 
@@ -22,7 +22,7 @@ flowchart TD
   R -->|채택| I["내부 구조는 설계에 유지"]
 ```
 
-| 원문 | 임시 결정 | 선택 이유 | 영향 문서 |
+| 원문 | 구현에 사용된 선택(채택 여부는 본문 상단 참조) | 선택 이유 | 영향 문서 |
 | --- | --- | --- | --- |
 | [OPEN-01](../requirements.md#open-01) | 아래의 HTML·폼·이벤트 지원 목록을 적용한다. | 샘플 편집과 상호작용에 필요한 범위를 명시 | [렌더러](renderer.md), [웹페이지](playground-history.md) |
 | [OPEN-02](../requirements.md#open-02) | 테스트 영역에 HTML 입력창과 미리보기를 둔다. | 태그·속성·텍스트 변경을 모두 표현 가능 | [웹페이지](playground-history.md) |
@@ -31,9 +31,9 @@ flowchart TD
 | [OPEN-05](../requirements.md#open-05) | 사용자 요청으로 채택: 새 Phase 1 VDOM이 현재 appliedTree와 의미상 같으면 새 이력을 저장하지 않고 entries·cursor·앞으로가기 기록·appliedTree를 유지한다. | 무변경 Patch로 인한 이후 기록 손실과 중복 스냅샷 방지 | [이력](playground-history.md), [검증](verification.md) |
 | [OPEN-06](../requirements.md#open-06) | 현재 페이지 메모리에만 저장한다. 새로고침 시 초기화하며, 초기 구현에는 자동 삭제나 개수 제한을 두지 않는다. | 저장소 연동 없이 복원 기능에 집중 | [이력](playground-history.md) |
 | [OPEN-07](../requirements.md#open-07) | 직접 값·함수형 업데이트를 지원하고, 함수형 초기값도 지원한다. Object.is로 같은 상태면 갱신을 생략한다. | 이전 값 기반 변경과 초기화 동작을 명확히 함 | [Hook](hooks.md) |
-| [OPEN-08](../requirements.md#open-08) | 권장 EFF-04를 임시 채택한다. 루트에 unmount()를 추가한다. idle/faulted에서만 제거를 시작하며 실행 중 재진입은 거부한다. 제거 완료 후 mount()하면 새 상태로 시작한다. | 실행 중 setup의 cleanup 소유권을 끊지 않고 제거 경계 제공 | [런타임](component-runtime.md), [Hook](hooks.md) |
+| [OPEN-08](../requirements.md#open-08) | EFF-04의 권장 동작을 구현 범위에 포함한다. 루트에 unmount()를 추가한다. idle/faulted에서만 제거를 시작하며 실행 중 재진입은 거부한다. 제거 완료 후 mount()하면 새 상태로 시작한다. | 실행 중 setup의 cleanup 소유권을 끊지 않고 제거 경계 제공 | [런타임](component-runtime.md), [Hook](hooks.md) |
 | [OPEN-09](../requirements.md#open-09) | 입력은 적용 전 검증한다. 검증 실패 시 실제 영역·적용 기준·이력을 유지하고 오류를 표시한다. 런타임 실패는 단계별로 처리한다. | 잘못된 입력이 적용 상태를 훼손하지 않도록 함 | [렌더러](renderer.md), [런타임](component-runtime.md), [웹페이지](playground-history.md) |
-| [OPEN-10](../requirements.md#open-10) | TypeScript, Vite, Vitest+jsdom, Playwright를 개발 도구 후보로 사용한다. 실행 UI에는 외부 프레임워크를 사용하지 않는다. | 타입 계약과 모듈·브라우저 검증 지원 | [전체 구조](architecture.md), [검증](verification.md) |
+| [OPEN-10](../requirements.md#open-10) | 실제 프로젝트는 TypeScript, Vite, Vitest+jsdom, Playwright를 사용한다([앱 설정](../../package.json), [테스트 설정](../../tests/package.json)). 실행 UI에는 외부 프레임워크를 사용하지 않는 설계다. 지원 브라우저·버전의 정책 채택은 별개다. | 타입 계약과 모듈·브라우저 검증 지원 | [전체 구조](architecture.md), [검증](verification.md) |
 | [OPEN-11](../requirements.md#open-11) | 의존성은 항목별 Object.is로 비교한다. Effect는 생략·빈 배열·배열을 지원한다. Memo는 배열을 필수로 받는다. | 비용과 실행 규칙이 예측 가능한 비교 | [Hook](hooks.md) |
 | [OPEN-12](../requirements.md#open-12) | 이력 이동이 가능한 경우 미적용 편집을 폐기하고 선택 상태로 입력창·미리보기를 동기화한다. 경계의 무효 이동은 편집을 보존한다. | 이동 완료 후 두 영역이 같은 상태를 나타냄 | [웹페이지](playground-history.md) |
 | [OPEN-13](../requirements.md#open-13) | 의존성이 같으면 Memo 결과의 같은 객체 참조를 반환한다. | 재계산과 불필요한 복사 생략 | [Hook](hooks.md) |
@@ -61,7 +61,7 @@ flowchart TD
 - 단일 ID 참조는 `aria-activedescendant`, `aria-errormessage`; ID 목록 참조는 `aria-labelledby`, `aria-describedby`, `aria-controls`, `aria-owns`, `aria-flowto`를 지원한다. 그 외 ARIA 속성은 미지원 오류다. 새 ID 참조 속성은 읽기·쓰기 양방향 변환을 정의한 뒤 추가한다.
 - 중복·빈 ID, 공백을 포함한 ID, 같은 VRoot 안에 대상이 없는 ID 참조는 검증 오류다. 영역 밖 요소를 참조하는 입력은 지원하지 않는다.
 
-기존의 포괄적인 `aria-*` 표기를 명시적 지원 목록으로 보완한 임시 제안이다. 이는 OPEN-01의 지원 범위 구체화이며, 팀 채택 전까지 요구사항의 결정 상태를 바꾸지 않는다.
+기존의 포괄적인 `aria-*` 표기를 명시적 지원 목록으로 구체화한 구현 기준이다. 이는 OPEN-01의 지원 범위 구체화이며, 팀 채택 전까지 요구사항의 결정 상태를 바꾸지 않는다.
 
 ### 폼의 현재 값
 
@@ -100,9 +100,9 @@ key는 비어 있지 않은 문자열만 지원하고 형제 중복은 적용 �
 
 메모리 이력은 상태 수와 DOM 크기에 비례해 증가한다. 자동 삭제 정책이 필요해지면 OPEN-06을 다시 결정한다.
 
-## 임시 결정을 확정하는 절차
+## 구현에 사용된 정책을 확정하는 절차
 
-1. 팀에서 선택과 이유를 검토한다.
+1. 실제 구현·검증 결과와 선택의 이유를 대조하고 팀에서 정책 채택 여부를 검토한다.
 2. 외부 동작·지원 범위는 requirements.md의 인수 조건과 결정 상태에 반영한다.
 3. 자료구조·알고리즘·파일 구성은 설계 문서에서 유지한다.
 4. 변경 영향을 받는 문서와 검증 사례를 함께 갱신한다.
