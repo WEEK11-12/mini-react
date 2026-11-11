@@ -7,6 +7,27 @@ function required<T extends HTMLElement>(selector: string, type: new (...args: n
   return element;
 }
 
+const tabs = [...document.querySelectorAll<HTMLButtonElement>('.phase-tabs [role="tab"]')];
+function selectTab(tab: HTMLButtonElement): void {
+  for (const item of tabs) {
+    const selected = item === tab;
+    item.setAttribute('aria-selected', String(selected));
+    item.tabIndex = selected ? 0 : -1;
+    required(`#${item.getAttribute('aria-controls')}`, HTMLElement).hidden = !selected;
+  }
+}
+for (const tab of tabs) {
+  tab.addEventListener('click', () => selectTab(tab));
+  tab.addEventListener('keydown', (event) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' && event.key !== 'Home' && event.key !== 'End') return;
+    event.preventDefault();
+    const next = event.key === 'Home' ? tabs[0] : event.key === 'End' ? tabs[tabs.length - 1]
+      : tabs[(tabs.indexOf(tab) + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+    selectTab(next);
+    next.focus();
+  });
+}
+
 const stop = startPlayground({
   actual: required('[data-testid="actual-region"]', HTMLElement),
   preview: required('[data-testid="preview-region"]', HTMLElement),

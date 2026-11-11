@@ -31,7 +31,8 @@ function ProductCard(props: Props): Child {
     h('p', null, '재고: ', String(props.stock)),
     h('p', null, '수량: ', h('span', { attrs: { 'data-testid': 'quantity' } }, String(props.quantity))),
     h('p', null, '합계: ', h('span', { attrs: { 'data-testid': 'total' } }, String(props.total))),
-    h('button', { attrs: { type: 'button', 'data-testid': 'increase-quantity' }, events: { click: props.onIncrease as () => void } }, '수량 증가'),
+    h('button', { attrs: { type: 'button', 'data-testid': 'increase-quantity', title: 'useState: 수량을 바꾸고 useMemo로 합계를 다시 계산합니다' }, events: { click: props.onIncrease as () => void } }, '수량 증가'),
+    h('span', { attrs: { class: 'button-note' } }, 'quantity · 합계 · 계산 횟수'),
   );
 }
 
@@ -88,9 +89,10 @@ export function startCartDemo(view: DemoElements): () => void {
     }, [productId]);
     return h('div', null,
       h(ProductCard, { productId, stock: inventory, quantity, total, onIncrease: () => run(() => setQuantity((value) => value + 1), 'cart') }),
-      h('button', { attrs: { type: 'button', 'data-testid': 'change-product' }, events: { click: () => run(() => setProductId((value) => value === '사과' ? '배' : '사과'), 'cart') } }, '상품 변경'),
-      h('label', { attrs: { for: 'cart-memo' } }, '메모'),
-      h('input', { attrs: { id: 'cart-memo', type: 'text', 'data-testid': 'memo-input' }, domProps: { value: memo }, events: { input: (event: Event) => run(() => setMemo((event.target as HTMLInputElement).value), 'cart') } }),
+      h('button', { attrs: { type: 'button', 'data-testid': 'change-product', title: 'useEffect: 이전 재고 구독을 정리하고 새 상품을 구독합니다' }, events: { click: () => run(() => setProductId((value) => value === '사과' ? '배' : '사과'), 'cart') } }, '상품 변경'),
+      h('span', { attrs: { class: 'button-note' } }, 'productId · 재고 · 구독 횟수'),
+      h('label', { attrs: { for: 'cart-memo' } }, '메모 ', h('span', { attrs: { class: 'button-note' } }, 'memo만 · 합계 재계산 없음')),
+      h('input', { attrs: { id: 'cart-memo', type: 'text', 'data-testid': 'memo-input', title: 'useMemo: 메모만 바꾸면 합계 계산을 재사용합니다' }, domProps: { value: memo }, events: { input: (event: Event) => run(() => setMemo((event.target as HTMLInputElement).value), 'cart') } }),
       h('p', { attrs: { 'data-testid': 'memo-output' } }, memo),
     );
   }
