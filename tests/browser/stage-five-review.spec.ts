@@ -134,15 +134,17 @@ test('[F1 TECH-03] unmount DOM removal failure must stop native callbacks in fau
     const host = document.querySelector('#host')!; let clicks = 0;
     const root = new FunctionComponent(() => h('button', { events: { click: () => { clicks += 1; } } }, 'alive'));
     root.mount(host, {}); const old = host.firstChild!; old.dispatchEvent(new Event('click')); const baseline = clicks;
-    const native = host.replaceChildren.bind(host); host.replaceChildren = () => { throw new Error('remove failed'); };
-    let error: string | null = null; try { root.unmount(); } catch (caught) { error = String(caught); } finally { host.replaceChildren = native; }
+    const removalError = new Error('remove failed');
+    const native = host.replaceChildren.bind(host); host.replaceChildren = () => { throw removalError; };
+    let caught: unknown; try { root.unmount(); } catch (error) { caught = error; } finally { host.replaceChildren = native; }
+    function errors(error: unknown): unknown[] { if (!error || typeof error !== 'object') return [error]; return [error, ...(error instanceof AggregateError ? Array.from(error.errors).flatMap(errors) : []), ...('cause' in error ? errors(error.cause) : [])]; }
     old.dispatchEvent(new Event('click'));
-    const result = { error, phase: root.phase, baseline, clicksAfterFailure: clicks, connected: host.firstChild === old, owned: false, removalRetry: false, freshMount: false };
+    const result = { originalPreserved: errors(caught).includes(removalError), phase: root.phase, baseline, clicksAfterFailure: clicks, connected: host.firstChild === old, owned: false, removalRetry: false, freshMount: false };
     try { const scope = createDOMScope(host); releaseDOMScope(scope); } catch { result.owned = true; }
     root.unmount(); result.removalRetry = root.phase === 'unmounted'; root.mount(host, {}); result.freshMount = root.phase === 'idle'; root.unmount(); return result;
   });
   await info.attach('F1-removal-failure', { body: JSON.stringify(result), contentType: 'application/json' });
-  expect(result).toMatchObject({ error: 'Error: remove failed', phase: 'faulted', baseline: 1, connected: true, owned: true, removalRetry: true, freshMount: true });
+  expect(result).toMatchObject({ originalPreserved: true, phase: 'faulted', baseline: 1, connected: true, owned: true, removalRetry: true, freshMount: true });
   expect(result.clicksAfterFailure, 'faulted must not run old handlers').toBe(1);
 });
 

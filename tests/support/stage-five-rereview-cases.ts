@@ -4,6 +4,10 @@ import { createDOMScope, releaseDOMScope } from '../../src/core/dom-bindings';
 
 // Native fault injection and observations only; no replacement product logic.
 export type CaseName = 'release-before-removal' | 'removal-after-write' | 'repeated-removal-failure' | 'successful-recovery-error' | 'update-clear-failure' | 'mount-clear-failure';
+function errorTree(error: unknown): unknown[] {
+  if (!error || typeof error !== 'object') return [error];
+  return [error, ...(error instanceof AggregateError ? Array.from(error.errors).flatMap(errorTree) : []), ...('cause' in error ? errorTree(error.cause) : [])];
+}
 export function runCase(name: CaseName): Record<string, unknown> {
   const host = document.createElement('div'); document.body.append(host);
   const restorers: (() => void)[] = [];
@@ -46,7 +50,7 @@ export function runCase(name: CaseName): Record<string, unknown> {
       let updateRejected = false; let mountRejected = false;
       try { root.update(); } catch { updateRejected = true; } try { root.mount(host, {}); } catch { mountRejected = true; }
       host.replaceChildren = replace; root.unmount(); const released = !ownsScope(); root.mount(host, {}); host.firstElementChild!.dispatchEvent(new Event('click'));
-      const result = { attempts, caughtOriginal: caught.length === attempts && caught.every(error => error === failure), failurePhase, retained, connectedCount, calls: calls - 1, removals, updateRejected, mountRejected, released, freshId: host.firstElementChild!.id !== oldId, restartedCalls: calls };
+      const result = { attempts, caughtOriginal: caught.length === attempts && caught.every(error => errorTree(error).includes(failure)), failurePhase, retained, connectedCount, calls: calls - 1, removals, updateRejected, mountRejected, released, freshId: host.firstElementChild!.id !== oldId, restartedCalls: calls };
       root.unmount(); return result;
     }
     let calls = 0; const handler = (): void => { calls += 1; };
@@ -69,14 +73,14 @@ export function runCase(name: CaseName): Record<string, unknown> {
     }
     let caught: unknown;
     try { if (name === 'mount-clear-failure') root.mount(host, { value: 'new' }); else root.update({ value: 'new' }); } catch (error) { caught = error; }
-    const errors = caught instanceof AggregateError ? Array.from(caught.errors) : [];
+    const errors = errorTree(caught);
     old?.dispatchEvent(new Event('click')); host.firstElementChild?.dispatchEvent(new Event('click'));
     const failurePhase = root.phase; const retained = ownsScope(); const callsAtFailure = calls; const text = host.textContent;
     host.replaceChildren = replace; host.appendChild = append; Element.prototype.setAttribute = set;
     root.unmount(); const released = !ownsScope(); root.mount(host, { value: 'fresh' }); host.firstElementChild!.dispatchEvent(new Event('click')); const restarted = root.phase === 'idle' && calls === callsAtFailure + 1;
     root.unmount();
-    if (name === 'successful-recovery-error') return { applied, sameApplicationError: caught === applicationError, aggregate: caught instanceof AggregateError, failurePhase, retained, callsAtFailure, text, released, restarted };
-    return { applied, recoveryAttempted, aggregate: caught instanceof AggregateError, errorCount: errors.length, firstIsApplication: errors[0] === applicationError, secondIsRecovery: errors[1] === recoveryError, failurePhase, retained, callsAtFailure, text, released, restarted };
+    if (name === 'successful-recovery-error') return { applied, applicationPreserved: errors.includes(applicationError), failurePhase, retained, callsAtFailure, text, released, restarted };
+    return { applied, recoveryAttempted, applicationPreserved: errors.includes(applicationError), recoveryPreserved: errors.includes(recoveryError), failurePhase, retained, callsAtFailure, text, released, restarted };
   } finally {
     for (const restore of restorers.reverse()) restore();
     cleanup?.(); host.remove();

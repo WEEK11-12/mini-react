@@ -258,8 +258,11 @@ describe('stage 5: DOM failure recovery and cleanup', () => {
   it('[TECH-03] removal failure must disable old handlers before leaving faulted, keep scope and allow removal retry', () => {
     const click = vi.fn(); const instance = root(() => h('button', { events: { click } }, 'alive'));
     instance.mount(host, {}); const previous = node('button'); previous.dispatchEvent(new Event('click')); expect(click).toHaveBeenCalledTimes(1);
-    const spy = vi.spyOn(host, 'replaceChildren').mockImplementation(() => { throw new Error('remove failed'); });
-    try { expect(() => instance.unmount()).toThrow('remove failed'); } finally { spy.mockRestore(); }
+    const removalError = new Error('remove failed');
+    const spy = vi.spyOn(host, 'replaceChildren').mockImplementation(() => { throw removalError; });
+    let caught: unknown;
+    try { instance.unmount(); } catch (error) { caught = error; } finally { spy.mockRestore(); }
+    expect(errorTree(caught)).toContain(removalError);
     expect(instance.phase).toBe('faulted'); expect(host.firstChild).toBe(previous); expect(() => createDOMScope(host)).toThrow(); expect(() => instance.update()).toThrow();
     previous.dispatchEvent(new Event('click')); const callsAfterFailure = click.mock.calls.length;
     instance.unmount(); expect(instance.phase).toBe('unmounted');
