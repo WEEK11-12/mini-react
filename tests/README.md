@@ -4,7 +4,7 @@
 
 stage-01~09의 범위별 구현·검증 기록은 [단계 기록](../docs/implementation/stage-09.md)에 연결되어 있다. 전체 suite는 기존 오류 포장 기대값 관련 실패가 남아 있으므로 Green으로 표기하지 않는다. 이 문서의 과거 기록 대신 최신 runner 결과를 확인한다.
 
-새 테스트를 작성할 때는 [테스트 작업 지침](AGENTS.md), [테스트 코드 컨벤션](conventions.md)을 먼저 확인한다. 과거 영문 단계 파일과 초기 [test-cases.json](test-cases.json)·[검증 결과](verification-results.md)는 역사적 증거로 보존하며 현재 총계가 아니다.
+새 테스트를 작성할 때는 [테스트 작업 지침](AGENTS.md), [테스트 코드 컨벤션](conventions.md)을 먼저 확인한다. 단계별 독립 검증 테스트는 대상별 `review/`에 분리하되 일반 계약·구현 스모크와 함께 실행한다. 과거 runner 스냅샷은 무시되는 `local-history/`에 로컬 보관하며 현재 총계가 아니다.
 
 이 폴더는 `docs/requirements.md`와 `docs/design/`을 기준으로 작성한 **테스트 전용 작업 공간**이며 프로젝트의 실제 `src/`를 검증한다. 테스트를 통과시키기 위한 대체 구현은 두지 않는다. 원본 요구사항과 설계의 확정 상태도 변경하지 않는다.
 
@@ -41,15 +41,15 @@ npm run test:browser
 npm run test:catalog
 ```
 
-마지막 명령은 두 runner의 실제 JSON 결과에서 무시되는 `reports/test-cases.json`을 재생성한다. 제목·파일·요구사항 ID·현재 실패 원인을 기록하고 중복 및 집계 불일치를 검사한다. 카탈로그를 만들기 전에 `reports/unit.json`과 `reports/browser.json`이 모두 있어야 한다. 버전 관리된 [test-cases.json](test-cases.json)은 초기 단계 과거 스냅샷으로만 보존한다.
+마지막 명령은 두 runner의 실제 JSON 결과에서 무시되는 `reports/test-cases.json`을 재생성한다. 제목·파일·요구사항 ID·현재 실패 원인을 기록하고 중복 및 집계 불일치를 검사한다. 카탈로그를 만들기 전에 `reports/unit.json`과 `reports/browser.json`이 모두 있어야 한다.
 
-`reports/`, `test-results/`, 의존성은 버전 관리에서 제외한다. 의존성의 정확한 버전은 `package-lock.json`에 고정한다.
+`reports/`, `test-results/`, `local-history/`, 의존성은 버전 관리에서 제외한다. 의존성의 정확한 버전은 `package-lock.json`에 고정한다.
 
 ## 범위와 상태
 
 - 요구사항별 연결: [검증 대응표](test-plan.md).
 - 설계의 불명확한 접점·UI 연결 규칙: [테스트 연결 계약](contracts.md).
-- 초기 테스트 작성 단계의 과거 실행 기록: [검증 결과](verification-results.md). 현재 단계 결과는 [구현 기록](../docs/implementation/stage-09.md)과 해당 runner를 확인한다.
+- 현재 단계 결과는 [구현 기록](../docs/implementation/stage-09.md)과 해당 runner를 확인한다. 초기 테스트 작성 단계의 과거 스냅샷은 제출물에서 제외한다.
 - 각 테스트 이름의 `[VDOM-01]` 등은 요구사항 ID다. `[임시 OPEN-…]`는 아직 확정되지 않은 설계 전제다. 파일 상단·각 영역 README에 적은 전제도 함께 적용한다.
 - 스냅샷 문자열만 비교하지 않고 DOM 객체 동일성, 실제 프로퍼티, 이벤트 호출, MutationObserver/쓰기 계측, cleanup 소유권, 실패 후 재시도 가능 여부를 관찰한다.
 - 원본 설계의 인터페이스가 바뀌면 모듈 로더 바인딩·생성자·UI 선택자부터 맞춘다. 테스트를 통과시키려고 인수조건을 약화하지 않는다.
@@ -65,6 +65,7 @@ npm run test:catalog
 | `runtime/` | 컴포넌트·State·Effect·Memo·수명·실패 처리 |
 | `history/` | 저장·탐색·스냅샷 독립·무변경 보존 |
 | `browser/` | 실제 Chromium 사용자 흐름과 실패 주입 |
+| 각 대상의 `review/` | 단계별 독립 검증·재검토 회귀 테스트 (실행 대상) |
 
 ## 판단 기준
 

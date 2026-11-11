@@ -3,11 +3,11 @@ import { build } from 'vite';
 import { fileURLToPath } from 'node:url';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-type Library = typeof import('../support/stage-three-entry');
+type Library = typeof import('../../support/stage-three-entry');
 let bundle: string;
 test.beforeAll(async () => {
   const result = await build({ configFile: false, logLevel: 'silent', build: { write: false, lib: {
-    entry: fileURLToPath(new URL('../support/stage-three-entry.ts', import.meta.url)), formats: ['iife'], name: 'StageThreeLibrary',
+    entry: fileURLToPath(new URL('../../support/stage-three-entry.ts', import.meta.url)), formats: ['iife'], name: 'StageThreeLibrary',
   } } });
   const output = Array.isArray(result) ? result[0] : result;
   if (!('output' in output)) throw new Error('Missing product bundle');

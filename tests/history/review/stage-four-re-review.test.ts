@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { HistoryStore } from '../../src/playground/history';
-import { parseHTML, serializeHTML } from '../../src/playground/html-editor';
-import { diff } from '../../src/core/diff';
-import { validateRoot, type VElement, type VRoot } from '../../src/core/vdom';
+import { HistoryStore } from '../../../src/playground/history';
+import { parseHTML, serializeHTML } from '../../../src/playground/html-editor';
+import { diff } from '../../../src/core/diff';
+import { validateRoot, type VElement, type VRoot } from '../../../src/core/vdom';
 
 const parse = (html: string) => parseHTML(html, document);
 

@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { parseHTML, serializeHTML } from '../../src/playground/html-editor';
-import { HistoryStore } from '../../src/playground/history';
-import { diff } from '../../src/core/diff';
-import { validateRoot, type VElement, type VRoot } from '../../src/core/vdom';
-import { startPlayground } from '../../src/playground/controller';
-import { createDOMScope, releaseDOMScope } from '../../src/core/dom-bindings';
+import { parseHTML, serializeHTML } from '../../../src/playground/html-editor';
+import { HistoryStore } from '../../../src/playground/history';
+import { diff } from '../../../src/core/diff';
+import { validateRoot, type VElement, type VRoot } from '../../../src/core/vdom';
+import { startPlayground } from '../../../src/playground/controller';
+import { createDOMScope, releaseDOMScope } from '../../../src/core/dom-bindings';
 
 const parse = (html: string) => parseHTML(html, document);
 const same = (a: VRoot, b: VRoot) => expect(diff(a, b).hasChanges).toBe(false);

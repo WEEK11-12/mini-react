@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest';
-import { FunctionComponent, useEffect, useState, h, runErrorQueueCase, runSparseCase, runRecoveryCase, errorMessages } from '../support/stage-seven-review-cases';
+import { FunctionComponent, useEffect, useState, h, runErrorQueueCase, runSparseCase, runRecoveryCase, errorMessages } from '../../support/stage-seven-review-cases';
 
 for (const trigger of ['mount', 'props', 'setter'] as const) {
   for (const failure of ['setup', 'cleanup'] as const) {

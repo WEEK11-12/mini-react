@@ -2,7 +2,7 @@
 
 기준: [요구사항](../docs/requirements.md), [검증 설계](../docs/design/verification.md), [임시 결정](../docs/design/temporary-decisions.md).
 
-이 표의 ‘자동’은 테스트 코드가 있다는 뜻이며 통과를 뜻하지 않는다. 실제 실행 결과는 [검증 결과](verification-results.md)에 별도로 기록한다. 임시 OPEN 정책이 포함된 테스트는 현재 설계를 검증하는 계약이며 정책 확정으로 간주하지 않는다.
+이 표의 ‘자동’은 테스트 코드가 있다는 뜻이며 통과를 뜻하지 않는다. 현재 실행 결과는 [단계별 구현 기록](../docs/implementation/stage-09.md)과 runner에 기록한다. 임시 OPEN 정책이 포함된 테스트는 현재 설계를 검증하는 계약이며 정책 확정으로 간주하지 않는다.
 
 ## 인수조건
 
@@ -48,7 +48,7 @@
 | QA-02 | Phase 1/2 사용자 흐름 | `npm run test:browser`; 앱 준비 필요 |
 | QA-03 | 빈 요소·빈 텍스트·조합·deps·탐색 경계 | 각 영역 테스트 |
 | QA-04 | 노드 참조와 불필요한 쓰기 관찰 | `renderer/`, `runtime/`, `browser/` |
-| QA-05 | 명령·환경·실행결과·요구사항 연결 | README·contracts·본 표·verification-results |
+| QA-05 | 명령·환경·실행결과·요구사항 연결 | README·contracts·본 표·단계별 구현 기록 |
 
 ## 우선 추적할 실패·회귀 시나리오
 

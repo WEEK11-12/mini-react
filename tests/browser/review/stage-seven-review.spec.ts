@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { build } from 'vite';
 import { fileURLToPath } from 'node:url';
-import type * as Cases from '../support/stage-seven-review-cases';
+import type * as Cases from '../../support/stage-seven-review-cases';
 
 type WindowState = { ReviewCases: typeof Cases; lifecycle: {
   root: InstanceType<typeof Cases.FunctionComponent>;
@@ -13,7 +13,7 @@ type WindowState = { ReviewCases: typeof Cases; lifecycle: {
 let bundle: string;
 test.beforeAll(async () => {
   const result = await build({ configFile: false, logLevel: 'silent', build: { write: false, lib: {
-    entry: fileURLToPath(new URL('../support/stage-seven-review-cases.ts', import.meta.url)), formats: ['iife'], name: 'ReviewCases',
+    entry: fileURLToPath(new URL('../../support/stage-seven-review-cases.ts', import.meta.url)), formats: ['iife'], name: 'ReviewCases',
   } } });
   const output = Array.isArray(result) ? result[0] : result;
   if (!('output' in output)) throw new Error('Product bundle missing');

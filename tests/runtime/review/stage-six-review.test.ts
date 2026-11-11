@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { FunctionComponent } from '../../src/core/component';
-import { useState, type Setter } from '../../src/core/hooks';
-import { h, type Child } from '../../src/core/vdom';
-import { runChildCase, runFaultCase, runLifetimeCase, runLimitCase, runMountQueueCase, runQueueCase } from '../support/stage-six-review-cases';
+import { FunctionComponent } from '../../../src/core/component';
+import { useState, type Setter } from '../../../src/core/hooks';
+import { h, type Child } from '../../../src/core/vdom';
+import { runChildCase, runFaultCase, runLifetimeCase, runLimitCase, runMountQueueCase, runQueueCase } from '../../support/stage-six-review-cases';
 
 const roots: FunctionComponent<unknown>[] = [];
 function create<P>(render: (props: P) => Child): FunctionComponent<P> {

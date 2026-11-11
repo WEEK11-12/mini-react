@@ -12,8 +12,9 @@
 | `harness/` | 검증 도구 자체의 반례 | `주제.test.ts` |
 | `browser/` | 실제 앱 사용자 흐름·브라우저 동작 | `주제.spec.ts` |
 | `support/` | 실제 코드 로더·fixture·공유 관찰 도구·실행 보조 | 테스트 파일을 두지 않음 |
+| 각 대상의 `review/` | 단계별 독립 검증과 재검토 회귀 | 대상 디렉터리와 동일한 확장자 |
 
-새 단계 테스트는 `stage-NN-review.spec.ts`, `stage-NN-recheck.test.ts`처럼 **두 자리 숫자**와 `implementation`/`review`/`recheck`를 쓴다. 대상별 하위 디렉터리와 확장자를 유지한다. 일반 기능 계약은 단계명이 아닌 `diff.test.ts`, `phase-two.spec.ts`처럼 기능명으로 둔다. 검토 차수별 추가 증거는 기존 파일을 덮어쓰지 말고 해당 단계의 별도 파일로 둔다. 과거의 영문 숫자·`rereview`·`re-review` 등은 `support/legacy-stage-tests.json`에 고정한 예외다. 목록은 기존 파일을 정리하면서 *삭제만* 하고 새 파일을 면제하려고 추가하지 않는다.
+새 단계 테스트는 `stage-NN-review.spec.ts`, `stage-NN-recheck.test.ts`처럼 **두 자리 숫자**와 `implementation`/`review`/`recheck`를 쓴다. 독립 검증·재검토 테스트는 대상별 `review/` 하위 디렉터리와 확장자를 유지한다. 일반 기능 계약은 단계명이 아닌 `diff.test.ts`, `phase-two.spec.ts`처럼 기능명으로 둔다. 검토 차수별 추가 증거는 기존 파일을 덮어쓰지 말고 해당 단계의 별도 파일로 둔다. 과거의 영문 숫자·`rereview`·`re-review` 등은 `support/legacy-stage-tests.json`에 고정한 예외다. 목록은 기존 파일을 정리하면서 *삭제만* 하고 새 파일을 면제하려고 추가하지 않는다.
 
 ## 케이스 작성
 
@@ -27,4 +28,4 @@
 
 `tests/`에서 `npm run check`로 배치·명명·숨긴 테스트 금지 및 타입 검사를 수행한다. 모든 공개 테스트 실행 스크립트(`test`, `test:unit`, `test:harness`, `test:watch`, `test:browser`, `test:stage-one`, `test:stage-one:browser`)는 실행 전 컨벤션 검사를 자동 실행한다. 새 단계 파일은 추가 직후 `npm run check:conventions` 및 해당 파일의 선택 실행으로 확인한다. 전체 회귀와 브라우저 흐름은 검증 담당에게 맡기고, 이전 단계에서 통과한 항목은 수정 범위 밖이면 반복하지 않는다.
 
-Vitest의 고유 사례는 JSON `testResults[].assertionResults`, Playwright는 `suites[].specs[].tests[]`를 기준으로 세며 재실행 시도 수·최신 고유 수·skipped를 분리한다. 정적 `--list`를 실제 통과로 세지 않는다. 새 실행의 JSON·로그는 과거 증거를 덮어쓰지 않는다. `npm run test:catalog`는 실행 JSON 두 개가 갖춰졌을 때만 무시되는 `reports/test-cases.json`을 만든다. 버전 관리된 `test-cases.json`과 `verification-results.md`는 초기 테스트 작성 단계의 **과거 스냅샷**이므로 현행 총계나 판정으로 인용하지 않는다. 단계별 최신 상태는 `docs/implementation/stage-NN.md`와 원본 runner에 기록한다.
+Vitest의 고유 사례는 JSON `testResults[].assertionResults`, Playwright는 `suites[].specs[].tests[]`를 기준으로 세며 재실행 시도 수·최신 고유 수·skipped를 분리한다. 정적 `--list`를 실제 통과로 세지 않는다. 새 실행의 JSON·로그는 과거 증거를 덮어쓰지 않는다. `npm run test:catalog`는 실행 JSON 두 개가 갖춰졌을 때만 무시되는 `reports/test-cases.json`을 만든다. 초기 테스트 작성 단계의 과거 스냅샷은 `local-history/`에 로컬 보관하고 현행 총계나 판정으로 인용하지 않는다. 단계별 최신 상태는 `docs/implementation/stage-NN.md`와 원본 runner에 기록한다.

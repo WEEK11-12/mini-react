@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { build } from 'vite';
 import { fileURLToPath } from 'node:url';
-import type * as original from '../support/stage-six-review-cases';
-import type * as adjacent from '../support/stage-six-rereview-cases';
+import type * as original from '../../support/stage-six-review-cases';
+import type * as adjacent from '../../support/stage-six-rereview-cases';
 
 let originalBundle: string;
 let adjacentBundle: string;
@@ -17,8 +17,8 @@ async function bundle(entry: string, name: string): Promise<string> {
   return chunk.code;
 }
 test.beforeAll(async () => {
-  originalBundle = await bundle('../support/stage-six-review-cases.ts', 'OriginalCases');
-  adjacentBundle = await bundle('../support/stage-six-rereview-cases.ts', 'AdjacentCases');
+  originalBundle = await bundle('../../support/stage-six-review-cases.ts', 'OriginalCases');
+  adjacentBundle = await bundle('../../support/stage-six-rereview-cases.ts', 'AdjacentCases');
 });
 
 for (const kind of ['state', 'props'] as const) {

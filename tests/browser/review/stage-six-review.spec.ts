@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test';
 import { build } from 'vite';
 import { fileURLToPath } from 'node:url';
-import * as cases from '../support/stage-six-review-cases';
+import * as cases from '../../support/stage-six-review-cases';
 
 let bundle: string;
 test.beforeAll(async () => {
   const result = await build({ configFile: false, logLevel: 'silent', build: { write: false, lib: {
-    entry: fileURLToPath(new URL('../support/stage-six-review-cases.ts', import.meta.url)), formats: ['iife'], name: 'StageSixReview',
+    entry: fileURLToPath(new URL('../../support/stage-six-review-cases.ts', import.meta.url)), formats: ['iife'], name: 'StageSixReview',
   } } });
   const output = Array.isArray(result) ? result[0] : result;
   if (!('output' in output)) throw new Error('Product bundle missing');
@@ -51,7 +51,7 @@ for (const kind of ['state', 'props'] as const) {
 
 test('[STA-01 STA-02 STA-03 COMP-03 TECH-05 TECH-06] native click and input synchronously patch real product and preserve siblings', async ({ page, browser }, info) => {
   const result = await build({ configFile: false, logLevel: 'silent', build: { write: false, lib: {
-    entry: fileURLToPath(new URL('../support/stage-six-review-entry.ts', import.meta.url)), formats: ['iife'], name: 'StageSixProduct',
+    entry: fileURLToPath(new URL('../../support/stage-six-review-entry.ts', import.meta.url)), formats: ['iife'], name: 'StageSixProduct',
   } } });
   const output = Array.isArray(result) ? result[0] : result;
   if (!('output' in output)) throw new Error('Product bundle missing');
@@ -60,7 +60,7 @@ test('[STA-01 STA-02 STA-03 COMP-03 TECH-05 TECH-06] native click and input sync
   await page.setContent('<main></main>');
   await page.addScriptTag({ content: chunk.code });
   await page.evaluate(() => {
-    const { FunctionComponent, h, useState } = (window as unknown as { StageSixProduct: typeof import('../support/stage-six-review-entry') }).StageSixProduct;
+    const { FunctionComponent, h, useState } = (window as unknown as { StageSixProduct: typeof import('../../support/stage-six-review-entry') }).StageSixProduct;
     const root = new FunctionComponent(() => {
       const [count, setCount] = useState(0);
       const [label, setLabel] = useState('a');

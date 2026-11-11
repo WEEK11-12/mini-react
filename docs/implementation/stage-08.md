@@ -22,6 +22,6 @@
 
 ## 검증 에이전트 검토
 
-독립 Memo 단위 31개와 실제 Chromium 라이브러리 검증 31개가 통과했다. 최신 회귀의 고유 실행 664개 중 654개가 통과했고, 기존 오류 포장 기대값 관련 단위 5개·브라우저 5개는 실패했다. 구현 스모크 1개는 이미 자체 점검에서 통과해 검증 에이전트가 중복 실행하지 않았고, 후속 Phase 2 시연 브라우저 4개는 제외했다. 브라우저 Memo 31개는 브라우저 회귀 147개에 포함되어 중복 합산하지 않았다. 검증 에이전트는 `tests/support/stage-eight-review-cases.ts`, `tests/runtime/stage-eight-review.test.ts`, `tests/browser/stage-eight-review.spec.ts`를 추가했다.
+독립 Memo 단위 31개와 실제 Chromium 라이브러리 검증 31개가 통과했다. 최신 회귀의 고유 실행 664개 중 654개가 통과했고, 기존 오류 포장 기대값 관련 단위 5개·브라우저 5개는 실패했다. 구현 스모크 1개는 이미 자체 점검에서 통과해 검증 에이전트가 중복 실행하지 않았고, 후속 Phase 2 시연 브라우저 4개는 제외했다. 브라우저 Memo 31개는 브라우저 회귀 147개에 포함되어 중복 합산하지 않았다. 검증 에이전트는 `tests/support/stage-eight-review-cases.ts`, `tests/runtime/review/stage-eight-review.test.ts`, `tests/browser/review/stage-eight-review.spec.ts`를 추가했다.
 
 원본 보고서·runner JSON·제품 SHA-256 manifest는 저장소 외부 검증 작업 디렉터리의 `report.md`, `runner-summary.json`, `memo-unit-final.json`, `unit-regression.json`, `browser-final.json`, `product-source-sha256.json`에 보관했다. 구현 에이전트가 runner의 실제 상태를 집계하고 제품 소스 13개의 현재 해시가 승인 manifest와 일치함을 확인했다. 승인 후에는 이 구현 기록과 README의 상태 설명만 변경했으며 제품 소스는 수정하지 않았다. 검증 에이전트는 제품 빌드·core 타입 검사·구현 스모크를 반복하지 않았고, Phase 2 앱 시연 및 이전 커밋 실행 baseline은 확인하지 않았다.

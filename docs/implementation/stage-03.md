@@ -58,7 +58,7 @@ Chromium 두 실행 모두 skipped·unexpected·flaky는 0이다. 기존 전체 
 
 실제 runner JSON은 같은 디렉터리의 `mini-react-stage-three-re-review-original-and-rejection.json`, `mini-react-stage-three-re-review-focused-unit.json`, `mini-react-stage-three-re-review-original-browser.json`, `mini-react-stage-three-re-review-focused-browser.json`이며 재현 명령·로그·전체 소스 해시는 보고서에 있다. 승인 대상 `src/core/patch.ts`의 SHA-256은 `e9b37467c721f854c95b3634071cad13d9c8ed34c93e12b8f4e1f0832458357e`다.
 
-검증 에이전트가 추가한 검증 파일은 `tests/renderer/stage-three-review.test.ts`, `tests/renderer/stage-three-re-review.test.ts`, `tests/browser/stage-three.spec.ts`, `tests/browser/stage-three-re-review.spec.ts`, 실제 src export 전용 `tests/support/stage-three-entry.ts`다.
+검증 에이전트가 추가한 검증 파일은 `tests/renderer/review/stage-three-review.test.ts`, `tests/renderer/review/stage-three-re-review.test.ts`, `tests/browser/stage-three.spec.ts`, `tests/browser/review/stage-three-re-review.spec.ts`, 실제 src export 전용 `tests/support/stage-three-entry.ts`다.
 
 ## 남은 범위
 

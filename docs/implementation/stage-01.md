@@ -85,8 +85,7 @@ releaseDOMScope(scope);
 - 구현 전 RED: `tests/reports/stage-one-red.json`, `stage-one-red.log`
 - 단계 Chromium 로그: `tests/reports/stage-one-browser.log`
 - 전체 결과: `tests/reports/unit.json`, `browser.json`
-- 현재 수집 카탈로그: [test-cases.json](../../tests/test-cases.json)
-- 테스트 전용 작성/수정 단계의 과거 기록: [verification-results.md](../../tests/verification-results.md)
+- 초기 테스트 작성 단계의 카탈로그와 실행 기록은 제출물에서 제외하고 무시되는 `tests/local-history/`에 로컬 보관한다. 현재 실행 결과로 인용하지 않는다.
 
 ## 남은 범위
 

@@ -39,11 +39,14 @@ async function hiddenCalls(source, filename) {
 }
 
 function checkTestFile(relative) {
-  const [dir, name] = relative.split('/');
-  if (!testDirs.has(dir) || relative.split('/').length !== 2 ||
+  const parts = relative.split('/');
+  const dir = parts[0];
+  const name = parts.at(-1);
+  if (!testDirs.has(dir) || (parts.length !== 2 && !(parts.length === 3 && parts[1] === 'review')) ||
     (dir === 'browser' ? !name.endsWith('.spec.ts') : !name.endsWith('.test.ts'))) {
-    return '테스트는 browser/*.spec.ts 또는 renderer/runtime/history/harness/*.test.ts에 둡니다';
+    return '테스트는 각 대상 디렉터리 또는 그 review/ 하위 폴더에 둡니다';
   }
+  if (parts.length === 3 && !name.startsWith('stage-')) return 'review/에는 단계 검증 테스트만 둡니다';
   if (!kebabName.test(name)) return '파일명은 소문자 kebab-case를 사용합니다';
   if (name.startsWith('stage-') && !stageName.test(name) && !legacy.has(relative)) {
     return '새 단계 테스트는 stage-NN-review/recheck/implementation 형식을 사용합니다';
@@ -54,6 +57,8 @@ function checkTestFile(relative) {
 if (process.argv.includes('--self-test')) {
   assert.equal(checkTestFile('browser/stage-10-review.spec.ts'), null);
   assert.equal(checkTestFile('runtime/stage-10-recheck.test.ts'), null);
+  assert.equal(checkTestFile('runtime/review/stage-10-recheck.test.ts'), null);
+  assert.match(checkTestFile('runtime/review/ordinary.test.ts'), /단계 검증/);
   assert.match(checkTestFile('browser/stage-ten-review.spec.ts'), /stage-NN/);
   assert.match(checkTestFile('support/new.test.ts'), /테스트는/);
   assert.match(checkTestFile('browser/new.test.ts'), /테스트는/);

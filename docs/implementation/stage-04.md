@@ -56,7 +56,7 @@
 
 보고서와 원본 JSON은 검증 에이전트의 저장소 외부 임시 작업 디렉터리에 보관되며 저장소에는 포함되지 않는다. 파일명은 `stage-four-re-review.txt`, `re-review-original-unit.json`, `re-review-focused-unit.json`, `re-review-original-browser.json`, `re-review-focused-browser.json`, `re-review-sha256-manifest.json`이다. 재현 명령·환경·전체 소스 해시는 보고서에 있다.
 
-검증 에이전트가 추가한 파일은 `tests/history/stage-four-review.test.ts`, `tests/history/stage-four-re-review.test.ts`, `tests/browser/stage-four-review.spec.ts`, `tests/browser/stage-four-re-review.spec.ts`다.
+검증 에이전트가 추가한 파일은 `tests/history/review/stage-four-review.test.ts`, `tests/history/review/stage-four-re-review.test.ts`, `tests/browser/review/stage-four-review.spec.ts`, `tests/browser/review/stage-four-re-review.spec.ts`다.
 
 ## 남은 범위
 

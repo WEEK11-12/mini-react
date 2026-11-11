@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FunctionComponent } from '../../src/core/component';
-import { h, normalizeChildren, type Child, type Props, type VElement } from '../../src/core/vdom';
-import { createDOMScope, releaseDOMScope } from '../../src/core/dom-bindings';
+import { FunctionComponent } from '../../../src/core/component';
+import { h, normalizeChildren, type Child, type Props, type VElement } from '../../../src/core/vdom';
+import { createDOMScope, releaseDOMScope } from '../../../src/core/dom-bindings';
 
 // Stage 5 deliberately imports no Hook module. Only real product modules are exercised.
 let host: HTMLDivElement;

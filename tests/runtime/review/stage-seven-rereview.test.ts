@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { runErrorBudget, runFatalAfterEffect, runDepsBoundary } from '../support/stage-seven-rereview-cases';
+import { runErrorBudget, runFatalAfterEffect, runDepsBoundary } from '../../support/stage-seven-rereview-cases';
 
 for (const trigger of ['mount', 'props', 'setter'] as const) {
   for (const request of ['state', 'props'] as const) {

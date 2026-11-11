@@ -22,7 +22,7 @@
 
 ## 제한 재검토 승인
 
-검증 에이전트는 최초 실패 재현 3개와 직접 영향받는 신규 호스트 경로 9개를 현재 소스의 Chromium에서 실행해 12개 모두 통과(실패·skip 0)했다고 보고했다. 새 테스트 `tests/browser/stage-nine-review.spec.ts`와 `tests/browser/stage-nine-recheck.spec.ts`를 추가했다. 구현 에이전트가 실제 runner JSON의 고유 상태 12건과 실행 목록 12건을 대조하고, 승인 manifest의 제품 19개 파일·검증 테스트 2개의 현재 SHA-256 일치를 확인했다. 변경된 제품 파일은 `src/demo/cart.ts`, `src/main.ts`이고, 이후 수정된 것은 이 구현 기록과 README뿐이다. 최초 검토 때 통과한 브라우저 시나리오와 전체 suite는 반복하지 않았다. 원본 보고서·runner·manifest는 저장소 밖 검증 작업 디렉터리의 `report.md`, `recheck-runner-summary.json`, `product-source-sha256.json`에 보관했다.
+검증 에이전트는 최초 실패 재현 3개와 직접 영향받는 신규 호스트 경로 9개를 현재 소스의 Chromium에서 실행해 12개 모두 통과(실패·skip 0)했다고 보고했다. 새 테스트 `tests/browser/review/stage-nine-review.spec.ts`와 `tests/browser/review/stage-nine-recheck.spec.ts`를 추가했다. 구현 에이전트가 실제 runner JSON의 고유 상태 12건과 실행 목록 12건을 대조하고, 승인 manifest의 제품 19개 파일·검증 테스트 2개의 현재 SHA-256 일치를 확인했다. 변경된 제품 파일은 `src/demo/cart.ts`, `src/main.ts`이고, 이후 수정된 것은 이 구현 기록과 README뿐이다. 최초 검토 때 통과한 브라우저 시나리오와 전체 suite는 반복하지 않았다. 원본 보고서·runner·manifest는 저장소 밖 검증 작업 디렉터리의 `report.md`, `recheck-runner-summary.json`, `product-source-sha256.json`에 보관했다.
 
 ## 남은 범위
 

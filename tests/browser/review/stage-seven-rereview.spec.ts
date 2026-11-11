@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
 import { build } from 'vite';
 import { fileURLToPath } from 'node:url';
-import type * as Cases from '../support/stage-seven-rereview-cases';
+import type * as Cases from '../../support/stage-seven-rereview-cases';
 let bundle: string;
 test.beforeAll(async () => {
   const result = await build({ configFile: false, logLevel: 'silent', build: { write: false, lib: {
-    entry: fileURLToPath(new URL('../support/stage-seven-rereview-cases.ts', import.meta.url)), formats: ['iife'], name: 'RereviewCases',
+    entry: fileURLToPath(new URL('../../support/stage-seven-rereview-cases.ts', import.meta.url)), formats: ['iife'], name: 'RereviewCases',
   } } });
   const output = Array.isArray(result) ? result[0] : result;
   if (!('output' in output)) throw new Error('Product bundle missing');

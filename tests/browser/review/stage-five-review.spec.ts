@@ -1,11 +1,11 @@
 import { expect, test } from '@playwright/test';
 import { build } from 'vite';
 import { fileURLToPath } from 'node:url';
-type Library = typeof import('../support/stage-five-entry');
+type Library = typeof import('../../support/stage-five-entry');
 let bundle: string;
 test.beforeAll(async () => {
   const result = await build({ configFile: false, logLevel: 'silent', build: { write: false, lib: {
-    entry: fileURLToPath(new URL('../support/stage-five-entry.ts', import.meta.url)), formats: ['iife'], name: 'StageFiveLibrary',
+    entry: fileURLToPath(new URL('../../support/stage-five-entry.ts', import.meta.url)), formats: ['iife'], name: 'StageFiveLibrary',
   } } });
   const output = Array.isArray(result) ? result[0] : result;
   if (!('output' in output)) throw new Error('Product bundle missing');

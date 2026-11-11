@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test';
 import { build } from 'vite';
 import { fileURLToPath } from 'node:url';
-import { cases } from '../support/stage-eight-review-cases';
-import type * as Cases from '../support/stage-eight-review-cases';
+import { cases } from '../../support/stage-eight-review-cases';
+import type * as Cases from '../../support/stage-eight-review-cases';
 let bundle: string;
 test.beforeAll(async () => {
   const result = await build({ configFile: false, logLevel: 'silent', build: { write: false, lib: {
-    entry: fileURLToPath(new URL('../support/stage-eight-review-cases.ts', import.meta.url)), formats: ['iife'], name: 'StageEightVerification',
+    entry: fileURLToPath(new URL('../../support/stage-eight-review-cases.ts', import.meta.url)), formats: ['iife'], name: 'StageEightVerification',
   } } });
   const output = Array.isArray(result) ? result[0] : result;
   if (!('output' in output)) throw new Error('Product bundle missing');

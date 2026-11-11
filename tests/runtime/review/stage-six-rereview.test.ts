@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { runMountBudgetCase } from '../support/stage-six-rereview-cases';
+import { runMountBudgetCase } from '../../support/stage-six-rereview-cases';
 
 for (const kind of ['state', 'props'] as const) {
   for (const limit of [50, 51]) {

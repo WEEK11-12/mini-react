@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
 import { afterEach, expect, it, vi } from 'vitest';
-import { applyPlan, mountTree } from '../../src/core/patch';
-import { diff } from '../../src/core/diff';
-import { createDOMScope, releaseDOMScope } from '../../src/core/dom-bindings';
-import { readDOM } from '../../src/core/dom-reader';
-import { element, freeze, host, keyed, root, text } from './fixtures';
-import type { VNode, VRoot } from '../../src/core/vdom';
+import { applyPlan, mountTree } from '../../../src/core/patch';
+import { diff } from '../../../src/core/diff';
+import { createDOMScope, releaseDOMScope } from '../../../src/core/dom-bindings';
+import { readDOM } from '../../../src/core/dom-reader';
+import { element, freeze, host, keyed, root, text } from '../fixtures';
+import type { VNode, VRoot } from '../../../src/core/vdom';
 
 const scopes: { container: Element; scope: object }[] = [];
 function mount(tree: VRoot) {
