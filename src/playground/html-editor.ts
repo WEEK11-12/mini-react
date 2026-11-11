@@ -18,7 +18,7 @@ export function serializeHTML(tree: VRoot): string {
     if (node.domProps.checked) attrs.checked = '';
     if (node.domProps.disabled) attrs.disabled = '';
     const opening = `<${node.tag}${Object.entries(attrs).map(([name, value]) => ` ${name}="${escape(value)}"`).join('')}>`;
-    if (node.tag === 'input' || node.tag === 'br' || node.tag === 'hr') return opening;
+    if (node.tag === 'input' || node.tag === 'br') return opening;
     // HTML parsing strips the first newline immediately after a textarea start tag.
     const content = node.tag === 'textarea' ? `\n${escape(node.domProps.value ?? '')}` : node.children.map(serialize).join('');
     return `${opening}${content}</${node.tag}>`;
