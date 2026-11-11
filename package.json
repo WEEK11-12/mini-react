@@ -1,0 +1,13 @@
+{
+  "name": "mini-react",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "start": "node tools/serve.js",
+    "test": "node --test \"test/*.test.js\"",
+    "test:in-process": "node --test --test-isolation=none \"test/*.test.js\""
+  }
+}

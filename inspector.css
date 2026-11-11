@@ -1,0 +1,64 @@
+.inspector {
+  margin-top: 32px;
+  padding: 32px;
+  background: #fff;
+  border: 1px solid #e5e8eb;
+  border-radius: 24px;
+  color: #191f28;
+  min-width: 0;
+}
+.inspector-heading, .inspector-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.inspector-heading h2 { margin: 6px 0 0; font-size: 25px; letter-spacing: -.04em; }
+.inspector-state { flex-shrink: 0; border-radius: 20px; padding: 7px 12px; background: #e8f3ff; color: #1b64da; font-size: 13px; font-weight: 650; }
+.inspector-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 24px 0; }
+.inspector-metric { padding: 20px 24px; background: #f9fafb; border-radius: 16px; }
+.inspector-metric > span { display: block; color: #6b7684; font-size: 13px; }
+.inspector-metric > strong { display: block; margin-top: 8px; color: #191f28; font-size: 29px; font-variant-numeric: tabular-nums; letter-spacing: -.035em; }
+.inspector-toolbar { color: #6b7684; font-size: 14px; }
+.inspector-toolbar p { margin: 0; }
+.inspector-filter { display: flex; gap: 8px; align-items: center; flex-shrink: 0; cursor: pointer; min-height: 40px; }
+.inspector-filter input { width: 17px; height: 17px; accent-color: #3182f6; }
+.inspector-operations { padding: 0; margin: 12px 0; list-style: none; max-height: 330px; overflow: auto; }
+.inspector-operations li + li { margin-top: 6px; }
+.inspector-operation {
+  display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px 16px;
+  background: #fff; border: 1px solid #f2f4f6; border-radius: 12px; text-align: left;
+  cursor: pointer; font: inherit; color: #333d4b; white-space: normal;
+}
+.inspector-operation:hover { background: #f9fafb; }
+.inspector-operation[aria-pressed="true"] { border-color: #3182f6; background: #f2f8ff; }
+.operation-kind { flex-shrink: 0; padding: 6px 9px; border-radius: 8px; font-size: 12px; font-weight: 700; background: #e8f3ff; color: #1b64da; }
+.kind-insert { background: #e8faf1; color: #087443; }
+.kind-remove { background: #fff0f0; color: #c72837; }
+.kind-move { background: #f3eeff; color: #7040bf; }
+.kind-replace { background: #fff4e5; color: #965600; }
+.kind-events { background: #f2f4f6; color: #4e5968; }
+.operation-content { display: grid; min-width: 0; gap: 4px; overflow-wrap: anywhere; }
+.operation-content strong { font-size: 13px; font-weight: 600; }
+.operation-content > span { font-family: ui-monospace, Consolas, monospace; font-size: 12px; color: #6b7684; }
+.inspector-selection { margin: 12px 0 18px; padding: 12px 16px; border-radius: 10px; background: #f9fafb; color: #4e5968; font-size: 13px; }
+.inspector-trees { padding-top: 18px; border-top: 1px solid #f2f4f6; }
+.inspector-trees summary { cursor: pointer; padding: 8px 0; color: #333d4b; font-size: 14px; font-weight: 650; }
+.inspector-tree-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.inspector-tree-grid > div { min-width: 0; }
+.inspector-tree-grid h3 { color: #6b7684; font-size: 13px; margin: 0 0 10px; }
+.inspector-tree-grid pre { overflow: auto; max-height: 320px; margin: 0; padding: 18px; border-radius: 12px; background: #f9fafb; font: 12px/1.8 ui-monospace, Consolas, monospace; color: #4e5968; tab-size: 2; }
+.inspector-footnote { margin: 20px 0 0; font-size: 12px; color: #6b7684; line-height: 1.7; }
+.inspector-overlay { position: fixed; z-index: 1000; pointer-events: none; border: 2px solid #3182f6; border-radius: 7px; background: #3182f610; box-shadow: 0 0 0 4px #3182f618; }
+@media (max-width: 640px) {
+  .inspector { padding: 22px 18px; border-radius: 20px; margin-top: 20px; }
+  .inspector-heading { align-items: flex-start; }
+  .inspector-heading h2 { font-size: 21px; }
+  .inspector-metrics { gap: 6px; }
+  .inspector-metric { padding: 14px 10px; }
+  .inspector-metric > span { font-size: 11px; }
+  .inspector-metric > strong { font-size: 23px; }
+  .inspector-toolbar { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .inspector-tree-grid { grid-template-columns: 1fr; }
+  .inspector-operation { padding: 12px 10px; gap: 10px; }
+}

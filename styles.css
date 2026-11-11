@@ -1,0 +1,58 @@
+.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 18px 22px; margin-bottom: 20px; border: 1px solid var(--border); border-radius: 20px; background: #fff; }
+.history-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+#status { margin-left: 12px; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.toolbar .primary { min-width: 160px; }
+.workbench { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr); align-items: start; gap: 24px; }
+.panel { min-width: 0; padding: 28px; border: 1px solid var(--border); border-radius: 24px; background: #fff; }
+.panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.step { color: #6b7684; font-size: 10px; font-weight: 750; letter-spacing: .1em; }
+.panel-heading h2 { margin: 4px 0 0; font-size: 24px; line-height: 1.4; }
+.badge { padding: 5px 10px; border-radius: 8px; background: #f2f4f6; color: #6b7684; font-size: 11px; white-space: nowrap; }
+.badge.draft { background: #e8f3ff; color: #1b64da; }
+.panel-help { margin: 12px 0 24px; color: var(--muted); font-size: 13px; }
+.canvas { min-height: 250px; padding: 28px; border: 1px solid #edf0f3; border-radius: 18px; background: #f9fafb; overflow-wrap: anywhere; }
+.cart > h2 { margin: 0 0 6px; font-size: 23px; }
+.cart .count { margin: 0 0 24px; color: var(--muted); font-size: 13px; }
+.cart ul { padding: 0; margin: 0; list-style: none; }
+.cart li { display: flex; justify-content: space-between; gap: 12px; padding: 18px 0; border-top: 1px solid #e5e8eb; }
+.cart li strong { font-size: 15px; }
+.cart li span { color: #6b7684; font-size: 13px; }
+.cart .total { display: flex; justify-content: space-between; gap: 12px; margin: 16px 0 0; padding-top: 22px; border-top: 1px solid #d1d6db; font-size: 15px; }
+.cart .total strong { color: #1b64da; font-size: 19px; }
+.empty { color: #6b7684; }
+.filled { color: #16866b; }
+.try-note { margin-top: 26px; padding: 18px; border-radius: 14px; background: #f9fafb; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.try-note strong { color: #4e5968; }
+.try-note p { margin: 5px 0; }
+.editor-label, .preview-label { display: block; margin: 0 0 10px; color: #4e5968; font-size: 13px; font-weight: 650; }
+.editor-note { margin: 0 0 14px; padding: 12px 14px; border-radius: 12px; background: #e8f3ff; color: #4e5968; font-size: 12px; line-height: 1.8; }
+.editor-note a { display: block; font-weight: 600; }
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 370px;
+  resize: vertical;
+  padding: 22px;
+  border: 1px solid #253247;
+  border-radius: 16px;
+  background: #172235;
+  color: #e8eef9;
+  font: 12px/1.9 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  tab-size: 2;
+  white-space: pre;
+  overflow: auto;
+}
+.preview-label { margin-top: 24px; }
+.preview-canvas { min-height: 180px; }
+@media (max-width: 950px) { .workbench { grid-template-columns: 1fr; } }
+@media (max-width: 700px) {
+  .toolbar { padding: 16px; flex-direction: column; align-items: stretch; border-radius: 18px; }
+  .history-actions { gap: 6px; }
+  .history-actions button { padding: 9px 12px; font-size: 12px; }
+  #status { margin-left: auto; font-size: 12px; }
+  .panel { padding: 20px; border-radius: 20px; }
+  .canvas { padding: 20px; }
+  .cart li { flex-wrap: wrap; }
+  .panel-heading h2 { font-size: 22px; }
+  textarea { padding: 16px; min-height: 330px; }
+}
