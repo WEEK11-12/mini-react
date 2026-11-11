@@ -47,7 +47,8 @@ test('[VIEW-01, VIEW-02, QA-02] 두 영역과 조작 버튼을 제공하고 초�
   await expect(view.actual).toBeVisible();
   await expect(view.preview).toBeVisible();
   await expect(view.actual).toHaveAccessibleName('실제 영역');
-  await expect(view.preview).toHaveAccessibleName('테스트 영역');
+  await expect(page.getByRole('region', { name: '테스트 영역', exact: true })).toContainText('미리보기');
+  await expect(view.preview).toHaveAccessibleName('미리보기');
   for (const button of [view.patch, view.back, view.forward]) await expect(button).toBeVisible();
   await expect(view.back).toBeDisabled();
   await expect(view.forward).toBeDisabled();

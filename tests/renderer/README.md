@@ -13,7 +13,7 @@ import { projectModule } from '../support/project';
 
 로더의 경로는 `src/` 기준이다. 모듈이 없으면 로더의 명시적 Error로 각 테스트가 RED가 되어야 한다. 정적 SUT import, mock 구현, skip, todo, source-reading 검증은 사용하지 않는다. 이 폴더의 `fixtures.ts`는 리터럴 트리·타입·DOM fixture만 제공하며 정규화·Diff·Patch·scope 알고리즘을 대신 구현하지 않는다.
 
-통합 실행 명령과 실제 결과 기록은 상위 작업의 테스트 README/package script를 따른다. 이 하위 작업에서는 Vitest 실행을 담당하지 않으며, 이 문서는 실행·통과를 주장하지 않는다.
+최초 작성 당시 이 하위 작업은 실행을 담당하지 않았다. 현재 전체 Vitest·Chromium 실행 결과는 [테스트 안내](../README.md)와 [최종 검증 기록](../../docs/implementation/stage-10.md)을 따른다. 작성 당시 상태와 현재 통과 범위를 구별한다.
 
 ## API 바인딩 전제
 
@@ -48,7 +48,7 @@ import { projectModule } from '../support/project';
 
 ## 정책과 검증 경계
 
-- `[임시 OPEN-01]`: 지원 HTML/속성/폼/이벤트, ID 및 ARIA 범위에 의존한다. `[임시 OPEN-09]`: 검증 실패의 적용 중단·기존 상태 보존을 전제로 한다. 이를 확정 정책으로 바꾸지 않는다. key 기반 대응과 무변경 의미 비교는 채택된 계약이다.
+- `[임시 OPEN-01]`: 지원 HTML/속성/폼/이벤트, ID 및 ARIA 범위에 의존한다. `[임시 OPEN-09]`: 검증 실패의 적용 중단·기존 상태 보존을 전제로 한다. 이 표기는 작성 당시 출처이며 현재 OPEN-01·09도 요구사항에 채택했다. key 기반 대응과 무변경 의미 비교는 기존 채택을 유지한다.
 - 무변경 검사는 MutationObserver에 더해 DOM 이동/속성 쓰기, 폼 setter 및 이벤트 바인딩 계측을 사용한다. 폼 현재값이 다르면 `hasChanges=false`여도 보정해야 하므로 이 사례를 별도로 검사한다.
 - DOM 결과 문자열만 비교하지 않는다. 기존 노드 참조는 `support/observations.ts`의 길이+인덱스별 `toBe`로 검사한다. DOM 배열의 `toEqual`은 구조가 같은 복제를 구별하지 못하므로 정체성 판정에 사용하지 않는다. VDOM 구조·ID 문자열·이벤트 호출 기록의 구조 비교는 유지한다.
 - 서로 다른 객체/속성 열거 순서의 동등 트리에도 폼·같은 이벤트 함수 참조를 포함해 무쓰기 검사를 수행한다. 동일 내용 reuse의 내부 NodePlan을 반드시 `keep`으로 표현할 것을 강제하지 않고 공개 대응·목표 트리·최종 결과 계약을 검사한다.

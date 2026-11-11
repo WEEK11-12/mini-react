@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { assertPrepend } from '../support/prepend-observation';
+import { selectPhase } from '../support/phase-navigation';
 
 async function count(page: Page, name: string): Promise<number> {
   const value = (await page.getByTestId(name).innerText()).trim();
@@ -10,6 +11,7 @@ async function count(page: Page, name: string): Promise<number> {
 test.beforeEach(async ({ page }) => {
   const response = await page.goto('/');
   expect(response?.ok()).toBe(true);
+  await selectPhase(page, 'two');
 });
 
 test('[VIEW-04, COMP-03, STA-03, MEMO-02, QA-02] 수량 갱신은 합계를 계산하고 메모 갱신은 계산을 재사용한다', async ({ page }) => {
@@ -83,10 +85,13 @@ test('[PATCH-03, COMP-03, QA-04] keyed 목록 역순과 앞 삽입은 기존 노
 
 test('[HIST-03, STA-02] Phase 1 이력 이동은 Phase 2 루트 State를 되돌리지 않는다', async ({ page }) => {
   const demo = page.getByTestId('component-demo');
+  await selectPhase(page, 'one');
   await page.getByTestId('html-editor').fill('<p>history-only</p>');
   await page.getByTestId('patch-button').click();
+  await selectPhase(page, 'two');
   await demo.getByTestId('increase-quantity').click();
   const quantity = await demo.getByTestId('quantity').innerText();
+  await selectPhase(page, 'one');
   await page.getByTestId('back-button').click();
   await expect(demo.getByTestId('quantity')).toHaveText(quantity);
   await page.getByTestId('forward-button').click();

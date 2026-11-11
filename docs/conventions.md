@@ -1,6 +1,6 @@
 # 코드·문서 작성 규칙
 
-상태: 프로젝트 작성 규칙 초안
+상태: 프로젝트 작성 규칙. 2026-11-11 검증 종결 시 현행 관례를 유지하며 채택했다.
 
 이 문서는 Mini-React의 이름, 코드 형식, 문서 구성 기준을 정한다. 언어 자체의 필수 문법과 구별되는 프로젝트 관례이며, 기존 요구사항의 기능 범위나 임시 설계 결정을 변경하지 않는다.
 
@@ -78,7 +78,7 @@ export function diff(previous: VRoot, next: VRoot): PatchPlan {
 | [requirements.md](requirements.md) | 제공해야 하는 동작, 인수 조건, 우선순위, 제약, 미결정 사항 |
 | [design/README.md](design/README.md) | 설계 문서 목차와 전체 범위 |
 | `design/`의 시스템별 문서 | 책임, 데이터, 인터페이스, 처리 흐름, 오류 처리 |
-| [design/temporary-decisions.md](design/temporary-decisions.md) | 미결정 사항에 대한 임시 선택·이유·영향 |
+| [design/temporary-decisions.md](design/temporary-decisions.md) | 설계 당시 임시 선택과 현재 채택 상태·이유·영향 |
 | [design/verification.md](design/verification.md) | 요구사항별 검증 계획과 구현 순서 |
 | `implementation/stage-NN.md` | 단계별 구현 범위·변경·검증 결과·남은 작업. 파일명은 ‘이름과 파일’의 단계별 구현 기록 규칙을 따른다. |
 

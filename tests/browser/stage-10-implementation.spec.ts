@@ -1,11 +1,14 @@
 import { expect, test } from '@playwright/test';
+import { selectPhase } from '../support/phase-navigation';
 
 test.beforeEach(async ({ page }) => {
   const response = await page.goto('/');
   expect(response?.ok()).toBe(true);
+  await selectPhase(page, 'two');
 });
 
 test('[VIEW-01, HIST-03] 편집·적용·이동 안내는 실제 결과와 편집 폐기를 구분한다', async ({ page }) => {
+  await selectPhase(page, 'one');
   await expect(page.getByRole('heading', { name: 'DOM·컴포넌트 실험실' })).toBeVisible();
   await expect(page.getByTestId('status')).toContainText('적용 이력 1 / 1');
   await page.getByTestId('html-editor').fill('<h3>새 제목</h3>');
@@ -278,10 +281,12 @@ test('[EFF-04] 계측 표시 쓰기 실패에도 복구 cleanup의 실제 구독
 
 test('[VIEW-01, VIEW-04] 모바일 너비에서 카드와 편집창이 화면 안에 있고 조작을 키보드로 실행한다', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 760 });
+  await selectPhase(page, 'one');
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   expect(overflow).toBe(false);
   await page.getByTestId('html-editor').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('html-editor')).toBeInViewport();
+  await selectPhase(page, 'two');
   await page.getByTestId('prepend-list-item').focus();
   await page.keyboard.press('Enter');
   await expect(page.getByTestId('list-count')).toHaveText('4');

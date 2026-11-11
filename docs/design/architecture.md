@@ -1,6 +1,6 @@
 # 전체 구조
 
-상태: key 기반 자식 대응·무변경 Patch의 History 보존 채택 / 나머지 정책은 구현에 사용됐으나 정식 채택 전 · 기준: [결정 기록](temporary-decisions.md)
+상태: 최종 설계 검토 완료 / OPEN-01~15 기존 정책 채택 · 기준: [결정 기록](temporary-decisions.md), [최종 검증 기록](../implementation/stage-10.md)
 
 ## 시스템 경계
 

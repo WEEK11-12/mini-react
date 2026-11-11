@@ -1,8 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
+import { selectPhase } from '../../support/phase-navigation';
 
 const by = (page: Page, id: string) => page.getByTestId(id);
 async function ready(page: Page) {
   await page.goto('/');
+  await selectPhase(page, 'two');
   await expect(by(page, 'quantity')).toHaveText('1');
   await expect(by(page, 'component-demo').locator('article')).toContainText('재고: 12');
 }
@@ -92,15 +94,18 @@ test('S09-02 [PATCH-03] keyed 삭제·빈 목록·재삽입에서 잔존 노드 
 
 test('S09-03 [HIST-03 STA-02] 양방향 상태·History 독립성과 Phase 2 제거 후 Phase 1 편집', async ({ page }) => {
   await ready(page);
+  await selectPhase(page, 'one');
   const initial = await by(page, 'html-editor').inputValue();
   await by(page, 'html-editor').fill('<p data-key="p">B</p>');
   await by(page, 'patch-button').click();
   const status = await by(page, 'status').textContent();
+  await selectPhase(page, 'two');
   await by(page, 'increase-quantity').click();
   await by(page, 'memo-input').fill('유지');
   await by(page, 'change-product').click();
   await by(page, 'reverse-list').click();
   await expect(by(page, 'status')).toHaveText(status!);
+  await selectPhase(page, 'one');
   await by(page, 'back-button').click();
   await expect(by(page, 'html-editor')).toHaveValue(initial);
   await expect(by(page, 'quantity')).toHaveText('2');
@@ -109,10 +114,13 @@ test('S09-03 [HIST-03 STA-02] 양방향 상태·History 독립성과 Phase 2 제
   expect(await by(page, 'list-item').allTextContents()).toEqual(['c', 'b', 'a']);
   await by(page, 'forward-button').click();
   await expect(by(page, 'actual-region').locator('p')).toHaveText('B');
+  await selectPhase(page, 'two');
   await by(page, 'unmount-component').click();
+  await selectPhase(page, 'one');
   await by(page, 'html-editor').fill('<p>C</p>');
   await by(page, 'patch-button').click();
   await expect(by(page, 'actual-region').locator('p')).toHaveText('C');
+  await selectPhase(page, 'two');
   await by(page, 'restart-component').click();
   await expect(by(page, 'quantity')).toHaveText('1');
   await expect(by(page, 'memo-input')).toHaveValue('');
@@ -202,6 +210,7 @@ test('S09-09 [VIEW-04 EFF] 실제 BFCache 왕복이 Cart State·구독·목록 D
     }));
     const page = await context.newPage();
     await page.goto(baseURL);
+    await selectPhase(page, 'two');
     await by(page, 'increase-quantity').click();
     await by(page, 'memo-input').fill('BFCache');
     await by(page, 'reverse-list').click();

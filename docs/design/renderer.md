@@ -2,7 +2,7 @@
 
 관련 요구사항: [VDOM](../requirements.md#vdom), [DIFF](../requirements.md#diff), [PATCH](../requirements.md#patch)
 
-기준: [OPEN-01·11 및 추가 설계 선택](temporary-decisions.md). key 기반 자식 대응은 사용자 요청으로 채택한 설계 방향이다. 나머지 지원 범위와 API 세부 정책은 임시 설계다.
+기준: [OPEN-01·11 및 추가 설계 선택](temporary-decisions.md). key 기반 자식 대응은 사용자 요청으로 채택한 설계 방향이다. 지원 범위와 API 세부 정책도 2026-11-11 기존 구현 선택을 채택했다. 실제 검증 결과는 [최종 기록](../implementation/stage-10.md)을 따른다.
 
 
 ## 한눈에 보기

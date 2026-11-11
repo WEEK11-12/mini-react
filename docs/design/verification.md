@@ -1,6 +1,6 @@
 # 검증 계획과 구현 순서
 
-상태: 설계 검증 계획. 아래 테스트는 아직 작성·실행하지 않았다.
+상태: 설계 검증 계획. 관련 테스트는 현재 `tests/`에 존재한다. 아래 표는 인수 조건과 관찰 기준이며, 항목의 존재 자체가 작성 완료나 실행 통과를 뜻하지 않는다. 실제 실행 범위·결과는 [테스트 안내](../../tests/README.md)와 단계별 검증 기록을 따른다. [최종 설계 검토](final-review.md)는 정책 채택 적합성과 남은 검증을 별도로 분류한다.
 
 
 ## 한눈에 보기
@@ -23,7 +23,7 @@ flowchart TD
 
 ## 환경
 
-[OPEN-10에서 사용한 도구 선택](temporary-decisions.md)에 따라 Vitest+jsdom으로 핵심 모듈을, Playwright Chromium으로 브라우저 흐름을 검증한다. 외부 UI 프레임워크는 사용하지 않는다. 도구와 버전은 [테스트 설정](../../tests/package.json)에 기록되어 있고, 실제 실행 명령·결과 범위는 [테스트 안내](../../tests/README.md)와 [구현 기록](../implementation/stage-09.md)을 따른다. 구현 사실만으로 지원 브라우저 정책을 확정하지 않는다.
+[OPEN-10에서 사용한 도구 선택](temporary-decisions.md)에 따라 Vitest+jsdom으로 핵심 모듈을, Playwright Chromium으로 브라우저 흐름을 검증한다. 외부 UI 프레임워크는 사용하지 않는다. 도구와 버전은 [테스트 설정](../../tests/package.json)에 기록되어 있고, 실제 실행 명령·결과 범위는 [테스트 안내](../../tests/README.md)와 [구현 기록](../implementation/stage-09.md)을 따른다. 2026-11-11 OPEN-10은 실제 최종 검증한 Playwright Chromium을 인수 환경으로 채택했으며 버전·실행 증거는 [최종 기록](../implementation/stage-10.md)을 따른다.
 
 ## 요구사항과 검증 연결
 
@@ -86,7 +86,7 @@ flowchart TD
 
 ## 설계 검토 회귀 사례
 
-아래는 구현 후 실행할 검증 계약이며, 현재 통과한 테스트를 뜻하지 않는다. 브라우저의 label 기본 동작은 jsdom 검사만으로 대체하지 않고 Playwright Chromium에서 확인한다.
+아래는 현재 구현의 검증 계약이다. 표 자체와 별개로 실제 통과 범위는 [최종 기록](../implementation/stage-10.md)에 연결한다. 브라우저의 label 기본 동작은 jsdom 검사만으로 대체하지 않고 Playwright Chromium에서 확인한다.
 
 ### 무변경 Patch의 History 보존
 
@@ -99,7 +99,7 @@ flowchart TD
 | B를 수정했다가 B로 되돌려 Patch | 편집 행동이 있었어도 무변경 판정. 속성 열거 순서 등 정규화 VDOM을 바꾸지 않는 HTML 원문 차이도 동일하게 처리 |
 | 서로 다른 VDOM 객체로 같은 논리 상태 구성·두 scope에서 읽기 | hasChanges=false, scope의 실제 ID나 객체 참조 차이로 이력을 추가하지 않음. ordered가 비어 있지 않아도 의미상 변경 여부는 별도 판단 |
 | 화면이 같아도 key만 변경, keyed 순서 변경, 의미 있는 공백 텍스트·폼 값 변경 | hasChanges=true. 모든 화면 반영 성공 후 새 스냅샷 추가. 무변경으로 오판하지 않음 |
-| B에서 E로 변경 후 Patch 성공 | 기존 임시 선형 분기 정책에 따라 이력 A,B,E로 변경. 반영 실패 시에는 C를 제거하지 않고 A,B,C와 현재 위치 B 유지 |
+| B에서 E로 변경 후 Patch 성공 | 채택한 선형 분기 정책에 따라 이력 A,B,E로 변경. 반영 실패 시에는 C를 제거하지 않고 A,B,C와 현재 위치 B 유지 |
 | B에서 과거 또는 이후 기록과 같은 값으로 실제 변경 | 비교는 현재 B와만 수행. 과거 전체를 중복 제거하거나 기존 위치로 자동 이동하지 않고 새 적용으로 저장 |
 | VDOM은 B와 같지만 실제 영역 폼 프로퍼티가 일시적으로 다름 | hasChanges=false인 채 applyPlan의 프로퍼티 보정 수행, 입력창·미리보기 동기화. 실제 DOM 쓰기가 발생했어도 History는 유지 |
 | 무변경 동기화 중 오류, 잘못된 HTML·중복 key 입력 | 성공 메시지를 내지 않고 오류 처리. entries·cursor·appliedTree와 이후 이력 유지, busy 해제. 복구 실패는 기존 재시작 정책 적용 |
@@ -133,7 +133,7 @@ DOM 결과 문자열만으로 판정하지 않고 변경 전 저장한 노드 �
 
 ### ID 격리와 논리 값 왕복
 
-관련: [VDOM-02](../requirements.md#vdom-02), [PATCH-01](../requirements.md#patch-01), [EDIT-01](../requirements.md#edit-01), [HIST-03](../requirements.md#hist-03), OPEN-01 임시 지원 범위.
+관련: [VDOM-02](../requirements.md#vdom-02), [PATCH-01](../requirements.md#patch-01), [EDIT-01](../requirements.md#edit-01), [HIST-03](../requirements.md#hist-03), OPEN-01 채택 지원 범위.
 
 | 조건 | 관찰할 결과 |
 | --- | --- |
@@ -150,7 +150,7 @@ DOM 결과 문자열만으로 판정하지 않고 변경 전 저장한 노드 �
 
 ### Effect 중 제거 진입 거부
 
-관련: [EFF-04](../requirements.md#eff-04)의 임시 채택, OPEN-08·09 및 런타임 재진입 계약.
+관련: [EFF-04](../requirements.md#eff-04)의 권장 기능 채택, OPEN-08·09 및 런타임 재진입 계약.
 
 | 조건 | 관찰할 결과 |
 | --- | --- |

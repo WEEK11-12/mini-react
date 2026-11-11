@@ -58,7 +58,11 @@
 
 구현 근거: [DOM 읽기](../src/playground/controller.ts) · [자식 함수 실행](../src/core/vdom.ts) · [Diff 기준](../src/core/diff.ts) · [갱신·Effect 처리](../src/core/component.ts)
 
-## 기존 검증 기록
+## 최신 검증 기록
+
+전체 실행은 Vitest 530개·Chromium 192개 통과이며, 2026-11-12 운영 담당이 기존 runner와 722개 카탈로그를 항목별 대조하고 현재 제품 동일성을 확인했다. 새 전체 실행으로 재표기하지 않는다. 설계·정책·오류 경로·화면 확인과 최종 상태는 [최종 검증 기록](implementation/stage-10.md)을 따른다.
+
+## 이전 검증 기록
 
 - 아래 결과는 문서 분리 전 README에 기록된 결과이며, 이번 문서 재구성에서 테스트를 다시 실행한 결과는 아니다.
 - 2026-11-11 실행 기준: 빌드·타입·테스트 컨벤션 검사, Vitest 518개 테스트 통과
@@ -72,3 +76,4 @@
 - 실행 환경: [편집·이력 UI](implementation/stage-04.md) · [컴포넌트](implementation/stage-05.md)
 - Hook: [State](implementation/stage-06.md) · [Effect](implementation/stage-07.md) · [Memo](implementation/stage-08.md)
 - 통합: [데모 연결과 오류 처리](implementation/stage-09.md)
+- 종결: [최종 검증과 문서 상태](implementation/stage-10.md)

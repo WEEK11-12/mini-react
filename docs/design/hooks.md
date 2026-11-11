@@ -2,7 +2,7 @@
 
 관련 요구사항: [STA](../requirements.md#sta), [EFF](../requirements.md#eff), [MEMO](../requirements.md#memo)
 
-기준: [OPEN-07·08·11·13·15](temporary-decisions.md). 다음 API 동작은 임시 결정이며 requirements.md에 확정 반영한 것이 아니다.
+기준: [OPEN-07·08·11·13·15](temporary-decisions.md). 다음 API 동작은 2026-11-11 기존 선택을 채택하고 requirements.md의 인수 조건에 반영했다.
 
 
 ## 한눈에 보기

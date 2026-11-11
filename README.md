@@ -70,6 +70,7 @@ npm run dev
 
 - 빌드: `npm run build`
 - 테스트 실행·검증 범위: [테스트 안내](tests/README.md)
+- 최신 검증·문서 종결 상태: [최종 검증 기록](docs/implementation/stage-10.md)
 
 ## 더 읽기
 

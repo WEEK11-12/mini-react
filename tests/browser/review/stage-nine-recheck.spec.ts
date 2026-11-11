@@ -1,8 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
+import { selectPhase } from '../../support/phase-navigation';
 
 const by = (page: Page, id: string) => page.getByTestId(id);
 async function ready(page: Page) {
   await page.goto('/');
+  await selectPhase(page, 'two');
   await expect(by(page, 'quantity')).toHaveText('1');
 }
 async function failCart(page: Page) {

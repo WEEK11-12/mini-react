@@ -1,6 +1,6 @@
 # FunctionComponent · Hook 계약 테스트
 
-이 디렉터리는 구현 전 Vitest 테스트만 포함한다. 구현 코드·대체 런타임·Hook 모형은 만들지 않는다. 공통 실행 환경과 `tests/support/project.ts`는 부모 작업에서 제공한다.
+이 디렉터리는 실제 FunctionComponent·Hook 구현의 Vitest 계약 테스트와 단계별 독립 검증을 포함한다. 구현 코드·대체 런타임·Hook 모형은 만들지 않는다. `tests/support/project.ts` 또는 실제 소스 import로 제품 코드를 실행한다.
 
 ## 실행 및 로딩 전제
 
@@ -10,7 +10,7 @@
 - named export `FunctionComponent`, `h`, `text`, `useState`, `useEffect`, `useMemo`를 전제로 한다. 테스트 파일 안에 structural API 타입을 선언하며 production 타입이나 `any`에 의존하지 않는다.
 - [전체 구조](../../docs/design/architecture.md#주요-인터페이스)에 생성자 시그니처가 없으므로 **`new FunctionComponent(renderFn)`만으로 루트 함수를 바인딩**한다고 가정한다. 초기 Props와 컨테이너는 `mount(container, props)`, Props 갱신은 `update(nextProps)`, 기존 성공 Props 재사용은 `update()`로 전달한다. 생성자 API가 결정되면 바인딩 부분만 변경한다.
 - `host()`는 실제 SUT `h/text`로 테스트 UI를 작성하고, `element()`는 DOM 존재를 확인한다. 두 지원 함수는 어떤 production 동작도 대신 구현하지 않는다.
-- 실행·타입 검증 명령과 실제 결과는 부모 작업의 최종 검증 기록을 따른다. 이 하위 작업에서는 사용자 지시에 따라 테스트를 실행하지 않았다. 작성 완료를 테스트 통과로 표시하지 않는다.
+- 최초 테스트 작성 때는 실행하지 않았으나 최종 검증에서는 실제 구현을 실행했다. 현재 전체 실행법·runner와 결과는 [상위 안내](../README.md)를 따른다. 최초 작성 완료·과거 RED와 현재 통과 결과를 구분한다.
 
 ## 검증 범위
 
@@ -35,15 +35,22 @@
 - 임시 선택 의존 사례는 제목에 `[임시 OPEN-...]`를 붙인다. 함수형 초기화·updater 및 같은 State 생략은 OPEN-07, 제거는 OPEN-08, 실패·동기 대기열·무한 갱신 차단은 OPEN-09, deps 비교는 OPEN-11, Memo 참조 보장은 OPEN-13, 문맥·슬롯 검사는 OPEN-15에 연결한다. 임시 도구 선택 OPEN-10과 일반 h/text API 전제는 본 문서에서 별도로 명시한다.
 - 연속 갱신 50회는 제품 요구사항이 아닌 임시 안전장치다. 경계 검사는 초기 render와 차단 시도 render의 집계 차이를 허용하되 51번째 갱신의 DOM 커밋은 허용하지 않는다.
 - key는 자식 DOM 대응 기준이다. 특정 key 탐색 구조·배치 순회·이동 횟수·LIS나 내부 generation 수치를 강제하지 않는다. 유지된 setter가 계속 동작하는지로 generation 수명도 관찰한다.
-- 오류 전달은 설계가 명시한 동기 호출자 예외만 `toThrow()`로 확인한다. 메시지·오류 클래스·AggregateError 형태·집계 개수는 미결정이므로 강제하지 않는다. 실제 resource 해제 성공을 runtime이 보장한다고 단정하지 않는다.
+- 오류 전달은 설계가 명시한 동기 호출자 예외만 `toThrow()`로 확인한다. 고정 메시지·오류 클래스·AggregateError 포장 깊이·집계 개수 자체는 인수 조건으로 강제하지 않는다. 원본 오류 보존과 단계별 상태는 실제 검사한다. 실제 resource 해제 성공을 runtime이 보장한다고 단정하지 않는다.
 - 부분 DOM 실패는 문서의 문자열 속성 반영 계약에 맞춰 `Element.prototype.setAttribute`에 일회성 spy를 설치한다. 기존 요소의 `title`을 실제로 변경한 **뒤에** 예외를 던지므로 준비 단계 실패와 구별된다. native 쓰기 진입 중 setter를 요청해 실패 시 대기열 폐기도 검증한다. spy는 finally에서 복원한다. 복구 DOM의 객체 정체성은 보장하지 않지만 cleanup이 이전에 캡처한 노드를 사용해야 한다.
 - faulted 후 State·Memo는 공개 `hooks`의 문서화된 `kind/value`로 진단하며 재실행 가능한 캐시로 취급하지 않는다. VDOM click 핸들러는 setter와 독립적인 spy로 정상 실행을 먼저 확인하고, 이전 노드·복구 노드에서 호출 증가가 없는지 검사한다. Effect 네이티브 리스너의 정리도 별도로 유지한다. 호스트 사용자 조작 차단은 웹페이지 계층 책임이므로 이 단위 테스트는 호스트 UI 차단 구현까지 요구하지 않는다.
 - recovering 중 첫 cleanup이 실제 리스너 자원을 해제한 뒤 오류를 던지는 사례에서 다음 cleanup 계속 실행, 슬롯 순서/각 1회, 마지막 성공 표시 재구성, faulted 유지와 후속 unmount의 중복 정리 없음을 검사한다.
 - setup이 cleanup을 반환하기 전에 직접 예외를 던지면 자원은 setup 자신이 정리해야 한다. 이 테스트는 반환되지 않은 cleanup의 실행을 기대하지 않는다.
 - 같은 종류 Hook끼리의 순서 교환 검출, 직접 자식 함수 호출, 브라우저 페인트 시점, 포커스·선택 범위, 비동기 배칭, Strict Mode는 검증 계약이 아니다.
 
-## 남은 검증 범위
+## 최종 오류 주입과 검증 경계
 
 `function-component.test.ts`에 더해 `edge-contracts.test.ts`는 잘못된 Effect 반환값/Promise, Memo deps 생략, 함수 State 저장, 루트 간 슬롯 독립, rendering 중 unmount 거부, 복구 DOM 생성 자체 실패와 명시적 제거를 검사한다.
 
-최초 mount 중 native DOM 실패, DOM 제거 자체 실패, committing/recovering 단계의 직접 unmount 재진입은 별도 주입하지 않는다. 후속 오류 주입 테스트 대상으로 남긴다. 상기 미검증 항목을 통과했다고 보고하지 않는다.
+최초 작성 당시 남겼던 아래 항목은 `review/stage-09-recheck-runtime-failures.test.ts`, `../browser/review/stage-09-recheck-runtime-failures.spec.ts`, `../support/final-runtime-failure-cases.ts`의 독립 주입으로 확인했다. 단위 12개와 실제 Chromium 라이브러리 12개가 통과했으며 상위 전체 runner에도 포함된다.
+
+- 최초 mount: 분리 노드의 native 속성 쓰기 후 실패, fragment 연결 후 실패, 연결 후 빈 화면 복구도 실패하는 세 조건에서 candidate State·Effect·대기열 폐기, 원본 오류 보존, scope 소유권, 오래된 setter/이벤트 차단, 명시적 제거·새 mount를 확인했다.
+- DOM 제거: native 제거 전/후 실패와 첫 cleanup 오류의 조합에서 나머지 cleanup 지속, 실제 리스너 해제, 원본 오류 보존, faulted·scope 유지, 제거 재시도의 cleanup 중복 방지, 새 수명을 확인했다.
+- committing 직접 unmount: 최초 mount와 State update의 native 쓰기 콜백에서 제거를 거부하고 원래 커밋·Effect·setter 수명·DOM 참조를 유지하는지 확인했다.
+- recovering 직접 unmount: cleanup이 거부 오류를 잡는 경우·전파하는 경우 및 native 복구 콜백의 경우에 후속 cleanup·표시 재구성을 계속하고 faulted에서 명시적 제거를 기다리는지 확인했다.
+
+이 검증은 대표적인 실패 경로와 수명 불변조건을 종결한 것이며 모든 native API의 모든 실패 조합·임의 getter/Proxy·외부 cleanup 자체의 성공을 보장하지 않는다. `[임시 OPEN-…]` 제목은 작성 당시 정책 출처를 보존한 표기이며 현재 채택 상태는 요구사항·결정 기록을 따른다.
