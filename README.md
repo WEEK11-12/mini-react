@@ -1,6 +1,6 @@
 # mini-react
 
-React 없이 Virtual DOM과 Hook을 구현하고, 상태 변경이 DOM 갱신으로 이어지는 과정을 확인하는 프로젝트다.
+Virtual DOM과 Diff, Patch를 구현하고, 컴포넌트 갱신과 Hook의 동작까지 확인하는 프로젝트다.
 
 ## 기본 스펙
 
