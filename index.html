@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mini React · DOM 실험실</title>
+    <link rel="stylesheet" href="/src/style.css">
+  </head>
+  <body>
+    <main>
+      <header class="site-header">
+        <h1>DOM·컴포넌트 실험실</h1>
+        <p class="intro">직접 바꾸고, 적용하고, 달라진 부분을 확인하세요.</p>
+      </header>
+      <div class="phase-tabs" role="tablist" aria-label="실험 단계">
+        <button type="button" role="tab" id="phase-one-tab" aria-controls="phase-one" aria-selected="true">Phase 01 · DOM과 이력</button>
+        <button type="button" role="tab" id="phase-two-tab" aria-controls="phase-two" aria-selected="false" tabindex="-1">Phase 02 · 컴포넌트와 Hook</button>
+      </div>
+      <section id="phase-one" class="phase" role="tabpanel" aria-labelledby="phase-one-tab">
+        <div class="phase-heading">
+          <span class="phase-number">01 / DOM &amp; HISTORY</span>
+          <h2 id="phase-one-title">HTML을 바꿔 보세요</h2>
+          <p>HTML 입력에서 <strong>‘나의 목록’</strong>을 수정하세요. 미리보기를 확인한 뒤 실제 영역에 적용합니다.</p>
+        </div>
+        <div class="regions">
+          <section class="panel actual-panel" aria-labelledby="actual-title">
+            <div class="panel-heading"><div><span class="eyebrow">RESULT</span><h3 id="actual-title">실제 영역</h3></div><span class="tag">마지막 적용 결과</span></div>
+            <div data-testid="actual-region" class="canvas" role="region" aria-labelledby="actual-title"><h3>나의 목록</h3>
+<ul>
+  <li data-key="a">사과</li>
+  <li data-key="b">배</li>
+  <li data-key="c">귤</li>
+</ul>
+<label for="note">메모</label>
+<input id="note" type="text" value="안녕하세요">
+<label for="agree">동의</label>
+<input id="agree" type="checkbox"></div>
+            <div class="toolbar history-controls"><span class="eyebrow">적용 이력</span><button type="button" data-testid="back-button">이전 적용 상태</button><button type="button" data-testid="forward-button">다음 적용 상태</button></div>
+            <p class="boundary-note">이전·다음은 저장된 이력이 있을 때만 열립니다. 이동하면 미적용 편집은 버리고, Phase 2는 그대로 둡니다.</p>
+          </section>
+          <section class="panel editor-panel" aria-labelledby="test-title">
+            <div class="panel-heading"><div><span class="eyebrow">EDIT &amp; PREVIEW</span><h3 id="test-title">테스트 영역</h3></div><span class="tag">적용 전</span></div>
+            <label class="field-label" for="html-editor">HTML 입력</label>
+            <textarea id="html-editor" data-testid="html-editor" spellcheck="false"></textarea>
+            <div class="preview-heading"><h4 id="preview-title">미리보기</h4><span>폼 값은 여기에서 바꿔 보세요</span></div>
+            <div data-testid="preview-region" class="canvas" role="region" aria-labelledby="preview-title"></div>
+            <div class="edit-actions"><button type="button" class="primary" data-testid="patch-button">실제 영역에 적용 (Patch)</button><output data-testid="status" role="status" aria-live="polite"></output></div>
+          </section>
+        </div>
+        <div class="help"><button type="button" class="help-trigger" aria-describedby="help-edit">ⓘ 편집과 이력</button><p class="help-tip" id="help-edit" role="tooltip">실제 영역은 마지막 적용 결과로, 편집 위치가 아닙니다. HTML 입력과 미리보기의 변경은 Patch 전까지 실제 영역에 반영되지 않습니다. 입력 오류가 나면 마지막 유효 미리보기를 유지하므로 HTML을 수정하세요.</p></div>
+      </section>
+
+      <section id="phase-two" class="phase demo-section" role="tabpanel" aria-labelledby="phase-two-tab" hidden>
+        <div class="phase-heading"><span class="phase-number">02 / COMPONENTS &amp; HOOKS</span><h2 id="demo-title">상태와 수명을 살펴보세요</h2></div>
+        <aside class="concept-box" aria-label="검증 대상">
+          <strong>검증 대상</strong>
+          <span>장바구니: <code>productId · quantity · memo · inventory</code>는 루트 State, 합계는 Memo, 재고 구독은 Effect. 상품 카드는 Props만 받습니다.</span>
+          <span>key 목록: <code>items</code>는 별도 루트 State, 각 항목은 상태 없는 자식입니다. ‘수명’은 State 값이 아닌 컴포넌트 실행 상태입니다.</span>
+        </aside>
+        <div class="demo-cards">
+          <section class="panel" aria-labelledby="cart-title">
+            <div class="panel-heading"><div><span class="eyebrow">STATE / MEMO / EFFECT</span><h3 id="cart-title">장바구니</h3></div><span class="state-badge">수명 <output data-testid="cart-state" role="status">실행 중</output></span></div>
+            <p data-testid="cart-error" class="error-message"></p>
+            <div data-testid="component-demo" class="demo-region canvas"></div>
+            <p data-testid="cart-empty" class="empty-message" hidden>장바구니가 종료되었습니다. 초기화·시작으로 다시 열 수 있습니다.</p>
+            <div class="metrics" aria-label="누적 실행 시도 횟수"><span>합계 계산 <output data-testid="memo-count">0</output>회</span><span>구독 설정 <output data-testid="effect-setup-count">0</output>회</span><span>구독 정리 <output data-testid="effect-cleanup-count">0</output>회</span></div>
+            <div class="toolbar card-actions"><span class="action-pair"><button type="button" data-testid="unmount-component" title="useEffect: 구독을 정리하고 컴포넌트를 해제합니다">장바구니 종료 (unmount)</button><small>UI 제거 · 구독 정리</small></span><span class="action-pair"><button type="button" data-testid="restart-component" title="FunctionComponent: 초기 상태로 새로 mount합니다">장바구니 초기화·시작</button><small>State 초기화 · 목록 유지</small></span></div>
+            <div class="help"><button type="button" class="help-trigger" aria-describedby="help-cart">ⓘ 메모·상품 변경과 초기화</button><p class="help-tip" id="help-cart" role="tooltip">메모 입력은 메모만 바꾸고 합계 계산을 재사용합니다. 상품 변경은 로컬 모의 재고 구독을 교체합니다. 종료는 상품 삭제가 아니라 장바구니 UI와 구독을 정리합니다. 초기화는 실행 중이면 종료 후 사과·수량 1·빈 메모로 새로 시작하며 이전 입력은 복원하지 않습니다. 목록과 Phase 1은 그대로 둡니다.</p></div>
+            <div class="help"><button type="button" class="help-trigger" aria-describedby="help-metrics">ⓘ 계측 수치</button><p class="help-tip" id="help-metrics" role="tooltip">페이지를 연 뒤 누적된 실행 시도 횟수입니다. 실패 시도도 포함될 수 있고 초기화해도 0으로 돌아가지 않습니다. 성공 횟수나 자원 해제 완료의 증거는 아닙니다.</p></div>
+          </section>
+          <section class="panel" aria-labelledby="list-title">
+            <div class="panel-heading"><div><span class="eyebrow">KEYED DIFF</span><h3 id="list-title">key 목록</h3></div><span class="state-badge">수명 <output data-testid="list-state" role="status">실행 중</output></span></div>
+            <p data-testid="list-error" class="error-message"></p>
+            <div class="list-overview"><span>현재 순서 <output data-testid="list-order">a → b → c</output></span><span><output data-testid="list-count">3</output>개 항목</span></div>
+            <div data-testid="keyed-list-demo" class="demo-region canvas"></div>
+            <p data-testid="list-empty" class="empty-message" hidden>목록이 비었습니다. ‘맨 앞에 추가’로 다시 채우세요.</p>
+            <div class="toolbar card-actions"><span class="action-pair"><button type="button" data-testid="reverse-list" title="key 기반 Diff: 순서를 바꿔도 같은 항목의 DOM을 재사용합니다">순서 뒤집기</button><small>items 순서 · DOM 재사용</small></span><span class="action-pair"><button type="button" data-testid="prepend-list-item" title="key 기반 Patch: 앞에 새 항목을 삽입하고 기존 DOM을 재사용합니다">맨 앞에 추가</button><small>items 앞에 삽입</small></span><span class="action-pair"><button type="button" data-testid="remove-list-item" title="key 기반 Patch: 첫 항목만 제거합니다">첫 항목 삭제</button><small>items 첫 항목 제거</small></span><span class="action-pair"><button type="button" data-testid="restart-list" title="useState: 목록을 초기값으로 새로 시작합니다" hidden>목록 초기화·시작</button><small>items → a·b·c</small></span></div>
+            <div class="help"><button type="button" class="help-trigger" aria-describedby="help-key">ⓘ 같은 key의 DOM</button><p class="help-tip" id="help-key" role="tooltip">순서를 뒤집거나 앞에 추가해도 남은 같은 key의 DOM을 재사용합니다. 화면의 순서만으로는 참조 동일성을 증명할 수 없어 브라우저 테스트에서 확인합니다.</p></div>
+          </section>
+        </div>
+        <output data-testid="component-status" class="sr-only" role="alert" aria-live="assertive"></output>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
